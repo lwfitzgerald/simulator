@@ -1,6 +1,6 @@
 package com.fitzgerald.simulator;
 
-public class IntegerRegister {
+public class IntegerRegister extends Register {
     
     protected Integer currentValue;
     protected Integer nextValue;

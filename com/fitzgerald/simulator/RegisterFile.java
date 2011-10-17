@@ -5,8 +5,10 @@ public class RegisterFile {
     protected static final int NUM_INTEGER_REGISTERS = 10;
     protected static final int NUM_FLOAT_REGISTERS   = 10;
     
-    protected int[] intRegisterArray = null;
-    protected float[] floatRegisterArray = null;
+    protected IntegerRegister[] intRegisterArray = null;
+    protected FloatRegister[] floatRegisterArray = null;
+    
+    public enum RegisterType {INTEGER, FLOAT};
     
     /**
      * Singleton instance
@@ -18,8 +20,8 @@ public class RegisterFile {
      */
     protected RegisterFile() {
         // Create the arrays holding the entries for each register
-        intRegisterArray = new int[NUM_INTEGER_REGISTERS];
-        floatRegisterArray = new float[NUM_FLOAT_REGISTERS];
+        intRegisterArray = new IntegerRegister[NUM_INTEGER_REGISTERS];
+        floatRegisterArray = new FloatRegister[NUM_FLOAT_REGISTERS];
     }
     
     /**
@@ -30,10 +32,17 @@ public class RegisterFile {
         // Create an instance if necessary
         if (singletonInstance == null) {
             singletonInstance = new RegisterFile();
-
         }
         
         return singletonInstance;
+    }
+    
+    public Register getRegister(RegisterType regType, int regNumber) {
+        if (regType == RegisterType.INTEGER) {
+            return intRegisterArray[regNumber];
+        } else {
+            return floatRegisterArray[regNumber];
+        }
     }
     
     @SuppressWarnings("unused")

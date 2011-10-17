@@ -1,6 +1,6 @@
 package com.fitzgerald.simulator;
 
-public class FloatRegister {
+public class FloatRegister extends Register {
     
     protected Float currentValue;
     protected Float nextValue;
