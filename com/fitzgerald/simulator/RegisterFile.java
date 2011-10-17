@@ -21,7 +21,16 @@ public class RegisterFile {
     protected RegisterFile() {
         // Create the arrays holding the entries for each register
         intRegisterArray = new IntegerRegister[NUM_INTEGER_REGISTERS];
+        
+        for (int i=0; i < NUM_INTEGER_REGISTERS; i++) {
+            intRegisterArray[i] = new IntegerRegister();
+        }
+        
         floatRegisterArray = new FloatRegister[NUM_FLOAT_REGISTERS];
+        
+        for (int i=0; i < NUM_FLOAT_REGISTERS; i++) {
+            floatRegisterArray[i] = new FloatRegister();
+        }
     }
     
     /**
