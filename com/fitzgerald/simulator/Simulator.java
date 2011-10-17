@@ -11,7 +11,11 @@ public class Simulator {
 	
 	public static void test() {
 	    System.out.println("Starting tests");
+	    
 	    IntegerRegister.test();
+	    FloatRegister.test();
+	    RegisterFile.test();
+	    
 	    LinkedList<String> failedTests = TestUtil.getFailedTests();
 	    
 	    if (failedTests.size() > 0) {
@@ -22,6 +26,8 @@ public class Simulator {
 	        while (itr.hasNext()) {
 	            System.err.println("Testing " + itr.next() + " FAILED");
 	        }
+	    } else {
+	        System.out.println("All tests passed :)");
 	    }
 	}
 }

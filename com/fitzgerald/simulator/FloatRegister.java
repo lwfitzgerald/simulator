@@ -1,24 +1,24 @@
 package com.fitzgerald.simulator;
 
-public class IntegerRegister {
+public class FloatRegister {
     
-    protected Integer currentValue;
-    protected Integer nextValue;
+    protected Float currentValue;
+    protected Float nextValue;
     
-    public Integer getCurrentValue() {
+    public Float getCurrentValue() {
         return currentValue;
     }
 
-    public void setCurrentValue(Integer newValue) {
+    public void setCurrentValue(Float newValue) {
         currentValue = newValue;
     }
 
-    public Integer getNextValue() {
+    public Float getNextValue() {
         return nextValue;
     }
     
     
-    public void setNextValue(Integer newValue) {
+    public void setNextValue(Float newValue) {
         nextValue = newValue;
     }
     
@@ -28,13 +28,13 @@ public class IntegerRegister {
     }
     
     public static void test_getCurrentValue() {
-        String identifier = "IntegerRegister.getCurrentValue";
+        String identifier = "FloatRegister.getCurrentValue";
         
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 21;
+        final Float testVal = 21.123f;
         
-        IntegerRegister testReg = new IntegerRegister();
+        FloatRegister testReg = new FloatRegister();
         testReg.currentValue = testVal;
         
         if (testReg.getCurrentValue() != testVal) {
@@ -46,13 +46,13 @@ public class IntegerRegister {
     }
     
     public static void test_setCurrentValue() {
-        String identifier = "IntegerRegister.setCurrentValue";
+        String identifier = "FloatRegister.setCurrentValue";
         
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 35;
+        final Float testVal = 35.532f;
         
-        IntegerRegister testReg = new IntegerRegister();
+        FloatRegister testReg = new FloatRegister();
         testReg.setCurrentValue(testVal);
         
         if (testReg.currentValue != testVal) {
@@ -64,12 +64,12 @@ public class IntegerRegister {
     }
     
     public static void test_getNextValue() {
-        String identifier = "IntegerRegister.getNextValue";
+        String identifier = "FloatRegister.getNextValue";
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 21;
+        final Float testVal = 21.214f;
         
-        IntegerRegister testReg = new IntegerRegister();
+        FloatRegister testReg = new FloatRegister();
         testReg.nextValue = testVal;
         
         if (testReg.getNextValue() != testVal) {
@@ -81,12 +81,12 @@ public class IntegerRegister {
     }
     
     public static void test_setNextValue() {
-        String identifier = "IntegerRegister.setNextValue";
+        String identifier = "FloatRegister.setNextValue";
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 35;
+        final Float testVal = 35.463f;
         
-        IntegerRegister testReg = new IntegerRegister();
+        FloatRegister testReg = new FloatRegister();
         testReg.setNextValue(testVal);
         
         if (testReg.nextValue != testVal) {
@@ -98,13 +98,13 @@ public class IntegerRegister {
     }
     
     public static void test_finishCycle() {
-        String identifier = "IntegerRegister.finishCycle";
+        String identifier = "FloatRegister.finishCycle";
         TestUtil.startTest(identifier);
         
-        final Integer testVal1 = 35;
-        final Integer testVal2 = 47;
+        final Float testVal1 = 35.353254f;
+        final Float testVal2 = 47.324523f;
         
-        IntegerRegister testReg = new IntegerRegister();
+        FloatRegister testReg = new FloatRegister();
         
         testReg.currentValue = testVal1;
         testReg.nextValue = testVal2;
