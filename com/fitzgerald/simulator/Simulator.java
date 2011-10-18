@@ -1,12 +1,21 @@
-package com.fitzgerald.simulator;
+package com.fitzgerald.simulator.processor;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import com.fitzgerald.simulator.processor.RegisterFile.RegisterType;
+
 public class Simulator {
 
 	public static void main(String[] args) {
-	    test();
+	    RegisterFile registerFile = RegisterFile.getSingleton();
+	    IntegerRegister intReg0 = (IntegerRegister) registerFile.getRegister(RegisterType.INTEGER, 0);
+	    intReg0.setCurrentValue(0);
+	    intReg0.setNextValue(5);
+	    intReg0.finishCycle();
+	    System.out.println(intReg0.getCurrentValue());
+	    
+	    //test();
 	}
 	
 	public static void test() {

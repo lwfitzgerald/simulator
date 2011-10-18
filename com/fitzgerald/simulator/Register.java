@@ -1,3 +1,3 @@
-package com.fitzgerald.simulator;
+package com.fitzgerald.simulator.processor;
 
 public abstract class Register {}

@@ -1,4 +1,4 @@
-package com.fitzgerald.simulator;
+package com.fitzgerald.simulator.processor;
 
 public class IntegerRegister extends Register {
     
@@ -16,7 +16,6 @@ public class IntegerRegister extends Register {
     public Integer getNextValue() {
         return nextValue;
     }
-    
     
     public void setNextValue(Integer newValue) {
         nextValue = newValue;

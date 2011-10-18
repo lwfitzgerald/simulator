@@ -1,4 +1,4 @@
-package com.fitzgerald.simulator;
+package com.fitzgerald.simulator.processor;
 
 public class FloatRegister extends Register {
     

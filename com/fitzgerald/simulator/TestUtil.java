@@ -1,4 +1,4 @@
-package com.fitzgerald.simulator;
+package com.fitzgerald.simulator.processor;
 
 import java.util.LinkedList;
 
