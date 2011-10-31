@@ -3,26 +3,23 @@ package com.fitzgerald.simulator.processor;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import com.fitzgerald.simulator.processor.RegisterFile.RegisterType;
-
 public class Simulator {
 
 	public static void main(String[] args) {
 	    RegisterFile registerFile = RegisterFile.getSingleton();
-	    IntegerRegister intReg0 = (IntegerRegister) registerFile.getRegister(RegisterType.INTEGER, 0);
+	    Register intReg0 = registerFile.getRegister(0);
 	    intReg0.setCurrentValue(0);
 	    intReg0.setNextValue(5);
 	    intReg0.finishCycle();
 	    System.out.println(intReg0.getCurrentValue());
 	    
-	    //test();
+	    test();
 	}
 	
 	public static void test() {
 	    System.out.println("Starting tests");
 	    
-	    IntegerRegister.test();
-	    FloatRegister.test();
+	    Register.test();
 	    RegisterFile.test();
 	    
 	    LinkedList<String> failedTests = TestUtil.getFailedTests();

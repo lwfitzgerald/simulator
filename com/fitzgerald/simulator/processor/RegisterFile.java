@@ -2,13 +2,9 @@ package com.fitzgerald.simulator.processor;
 
 public class RegisterFile {
     
-    protected static final int NUM_INTEGER_REGISTERS = 10;
-    protected static final int NUM_FLOAT_REGISTERS   = 10;
+    protected static final int NUM_REGISTERS = 10;
     
-    protected IntegerRegister[] intRegisterArray = null;
-    protected FloatRegister[] floatRegisterArray = null;
-    
-    public enum RegisterType {INTEGER, FLOAT};
+    protected Register[] registerArray = null;
     
     /**
      * Singleton instance
@@ -20,16 +16,10 @@ public class RegisterFile {
      */
     protected RegisterFile() {
         // Create the arrays holding the entries for each register
-        intRegisterArray = new IntegerRegister[NUM_INTEGER_REGISTERS];
+        registerArray = new Register[NUM_REGISTERS];
         
-        for (int i=0; i < NUM_INTEGER_REGISTERS; i++) {
-            intRegisterArray[i] = new IntegerRegister();
-        }
-        
-        floatRegisterArray = new FloatRegister[NUM_FLOAT_REGISTERS];
-        
-        for (int i=0; i < NUM_FLOAT_REGISTERS; i++) {
-            floatRegisterArray[i] = new FloatRegister();
+        for (int i=0; i < NUM_REGISTERS; i++) {
+            registerArray[i] = new Register();
         }
     }
     
@@ -46,12 +36,8 @@ public class RegisterFile {
         return singletonInstance;
     }
     
-    public Register getRegister(RegisterType regType, int regNumber) {
-        if (regType == RegisterType.INTEGER) {
-            return intRegisterArray[regNumber];
-        } else {
-            return floatRegisterArray[regNumber];
-        }
+    public Register getRegister(int regNumber) {
+        return registerArray[regNumber];
     }
     
     @SuppressWarnings("unused")
@@ -60,12 +46,7 @@ public class RegisterFile {
         
         TestUtil.startTest(identifier);
         
-        if (NUM_INTEGER_REGISTERS < 0 || NUM_INTEGER_REGISTERS > 100) {
-            TestUtil.testFailed(identifier);
-            return;
-        }
-        
-        if (NUM_FLOAT_REGISTERS < 0 || NUM_FLOAT_REGISTERS > 100) {
+        if (NUM_REGISTERS < 0 || NUM_REGISTERS > 100) {
             TestUtil.testFailed(identifier);
             return;
         }
@@ -92,9 +73,8 @@ public class RegisterFile {
             return;
         }
         
-        // Check arrays are initialised
-        if (RegisterFile.getSingleton().intRegisterArray == null
-                || RegisterFile.getSingleton().floatRegisterArray == null) {
+        // Check array is initialised
+        if (RegisterFile.getSingleton().registerArray == null) {
             TestUtil.testFailed(identifier);
             return;
         }
