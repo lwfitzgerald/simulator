@@ -1,9 +1,13 @@
 package com.fitzgerald.simulator.instruction;
 
-public interface Instruction {
-    public abstract boolean conditional();
+public abstract class Instruction {
+    protected abstract boolean conditional();
     
-    public abstract void executeConditionally();
+    public void executeConditionally() {
+        if (this.conditional()) {
+            execute();
+        }
+    }
     
-    public abstract void execute();
+    protected abstract void execute();
 }
