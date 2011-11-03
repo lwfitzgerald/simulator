@@ -2,22 +2,22 @@ package com.fitzgerald.simulator.processor;
 
 public class Register {
     
-    protected Integer currentValue;
-    protected Integer nextValue;
+    protected byte[] currentValue;
+    protected byte[] nextValue;
     
-    public Integer getCurrentValue() {
+    public byte[] getCurrentValue() {
         return currentValue;
     }
 
-    public void setCurrentValue(Integer newValue) {
+    public void setCurrentValue(byte[] newValue) {
         currentValue = newValue;
     }
 
-    public Integer getNextValue() {
+    public byte[] getNextValue() {
         return nextValue;
     }
     
-    public void setNextValue(Integer newValue) {
+    public void setNextValue(byte[] newValue) {
         nextValue = newValue;
     }
     
@@ -31,7 +31,7 @@ public class Register {
         
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 21;
+        final byte[] testVal = Util.intToBytes(21);
         
         Register testReg = new Register();
         testReg.currentValue = testVal;
@@ -49,7 +49,7 @@ public class Register {
         
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 35;
+        final byte[] testVal = Util.intToBytes(35);
         
         Register testReg = new Register();
         testReg.setCurrentValue(testVal);
@@ -66,7 +66,7 @@ public class Register {
         String identifier = "Register.getNextValue";
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 21;
+        final byte[] testVal = Util.intToBytes(21);
         
         Register testReg = new Register();
         testReg.nextValue = testVal;
@@ -83,7 +83,7 @@ public class Register {
         String identifier = "Register.setNextValue";
         TestUtil.startTest(identifier);
         
-        final Integer testVal = 35;
+        final byte[] testVal = Util.intToBytes(35);
         
         Register testReg = new Register();
         testReg.setNextValue(testVal);
@@ -100,8 +100,8 @@ public class Register {
         String identifier = "Register.finishCycle";
         TestUtil.startTest(identifier);
         
-        final Integer testVal1 = 35;
-        final Integer testVal2 = 47;
+        final byte[] testVal1 = Util.intToBytes(35);
+        final byte[] testVal2 = Util.intToBytes(47);
         
         Register testReg = new Register();
         
