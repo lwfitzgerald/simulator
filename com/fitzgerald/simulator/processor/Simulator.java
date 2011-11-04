@@ -1,7 +1,6 @@
 package com.fitzgerald.simulator.processor;
 
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 public class Simulator {
     
@@ -44,10 +43,8 @@ public class Simulator {
 	    if (failedTests.size() > 0) {
 	        System.err.println("Some tests failed:");
 	        
-	        ListIterator<String> itr = failedTests.listIterator();
-	        
-	        while (itr.hasNext()) {
-	            System.err.println("Testing " + itr.next() + " FAILED");
+	        for (String function : failedTests) {
+	        	System.err.println("Testing " + function + " FAILED");
 	        }
 	    } else {
 	        System.out.println("All tests passed :)");
