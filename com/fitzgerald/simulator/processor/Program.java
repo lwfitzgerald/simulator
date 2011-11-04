@@ -13,6 +13,10 @@ public class Program implements Serializable {
     
     protected Instruction[] instructions;
     
+    public Program(Instruction[] instructions) {
+        this.instructions = instructions;
+    }
+    
     public Instruction getInstruction(int memoryLocation) {
         // Memory locations are in bytes and word aligned so divide by 4
         if (memoryLocation / 4 >= instructions.length) {

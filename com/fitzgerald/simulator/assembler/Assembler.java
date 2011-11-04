@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.Util;
 
 public class Assembler {
@@ -110,7 +111,7 @@ public class Assembler {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-            
+        
         instructions = (Instruction[]) instructionList.toArray(new Instruction[0]);
     }
     
@@ -127,7 +128,7 @@ public class Assembler {
         try {
             outputStream = new FileOutputStream(outputFilename);
             objectOutput = new ObjectOutputStream(outputStream);
-            objectOutput.writeObject(instructions);
+            objectOutput.writeObject(new Program(instructions));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
