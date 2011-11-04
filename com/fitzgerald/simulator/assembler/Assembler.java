@@ -3,8 +3,10 @@ package com.fitzgerald.simulator.assembler;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -81,6 +83,8 @@ public class Assembler {
         
         firstPass(inputFilename);
         secondPass();
+        
+        writeOutput(outputFilename);
     }
     
     protected void firstPass(String inputFilename) {
@@ -114,6 +118,19 @@ public class Assembler {
         for (OperandLabelReplace toReplace : labelsToReplace) {
             byte[] value = Util.intToBytes(labels.get(toReplace.getLabel()));
             instructions[toReplace.getLineNo()].setOperand(toReplace.getOperandNo(), value);
+        }
+    }
+    
+    protected void writeOutput(String outputFilename) {
+        FileOutputStream outputStream;
+        ObjectOutputStream objectOutput;
+        try {
+            outputStream = new FileOutputStream(outputFilename);
+            objectOutput = new ObjectOutputStream(outputStream);
+            objectOutput.writeObject(instructions);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     
