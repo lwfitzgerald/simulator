@@ -1,11 +1,14 @@
 package com.fitzgerald.simulator.processor;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 
 public class Simulator {
     
-    protected static Simulator singleton;
-
+    /**
+     * Processor linked to memory, registers etc
+     */
     protected Processor processor;
     
     public static void main(String[] args) {
@@ -16,27 +19,42 @@ public class Simulator {
         intReg0.finishCycle();
         System.out.println(intReg0.getCurrentValue());*/
         
-        test();
-    }
-    
-    public Simulator getSingleton() {
-        return singleton;
+        //test();
+        
+        // args[0] = "Compiled" program path
+        
+        if (args.length < 1) {
+            System.err.println("No program argument given!");
+            System.exit(1);
+        }
+        
+        new Simulator(args[0]);
     }
     
     /**
-     * Creates an instance of the simulator for the given
-     * program file
+     * Runs the Simulator for the given program file
      * @param programFile Program file to load and run
      */
     public Simulator(String programFile) {
+        try {
+            processor = new Processor(loadProgram(programFile), new Memory());
+        } catch (Exception e) {
+            System.err.println("Could not load supplied program file");
+            System.exit(1);
+        }
+    }
+    
+    protected Program loadProgram(String programPath) throws Exception {
+        FileInputStream inputStream = new FileInputStream(programPath);
+        ObjectInputStream objectStream = new ObjectInputStream(inputStream);
         
+        return (Program) objectStream.readObject();
     }
     
     public static void test() {
         System.out.println("Starting tests");
         
         Register.test();
-        RegisterFile.test();
         
         LinkedList<String> failedTests = TestUtil.getFailedTests();
         
