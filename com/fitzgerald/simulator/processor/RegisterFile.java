@@ -2,7 +2,7 @@ package com.fitzgerald.simulator.processor;
 
 public class RegisterFile {
     
-    protected static final int NUM_REGISTERS = 10;
+    protected static final int NUM_REGISTERS = 16;
     
     protected Register[] registerArray = null;
     
@@ -22,5 +22,15 @@ public class RegisterFile {
      */
     public Register getRegister(int regNumber) {
         return registerArray[regNumber];
+    }
+    
+    /**
+     * Called at the end of a clock cycle
+     * to update the "current" values of the registers
+     */
+    public void finishCycle() {
+        for (Register reg : registerArray) {
+            reg.finishCycle();
+        }
     }
 }
