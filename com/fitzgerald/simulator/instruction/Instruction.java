@@ -1,6 +1,13 @@
 package com.fitzgerald.simulator.instruction;
 
-public abstract class Instruction {
+import java.io.Serializable;
+
+public abstract class Instruction implements Serializable {
+    
+    /**
+     * Serialising ID
+     */
+    private static final long serialVersionUID = 570193615900542137L;
     
     protected byte[] operand1;
     protected byte[] operand2;
