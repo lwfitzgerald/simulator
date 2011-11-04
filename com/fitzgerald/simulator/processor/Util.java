@@ -7,8 +7,7 @@ public class Util {
     public static Integer bytesToInt(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.put(bytes);
-        buffer.position(0);
-        return buffer.getInt();
+        return buffer.getInt(0);
     }
     
     public static byte[] intToBytes(Integer integer) {
