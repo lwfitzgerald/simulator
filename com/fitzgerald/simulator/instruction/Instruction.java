@@ -2,6 +2,9 @@ package com.fitzgerald.simulator.instruction;
 
 import java.io.Serializable;
 
+import com.fitzgerald.simulator.processor.PipelineLatch;
+import com.fitzgerald.simulator.processor.RegisterFile;
+
 public abstract class Instruction implements Serializable {
     
     /**
@@ -20,6 +23,8 @@ public abstract class Instruction implements Serializable {
             execute();
         }
     }
+    
+    public abstract void decode(RegisterFile registerFile, PipelineLatch decodeLatch);
     
     protected abstract void execute();
     
