@@ -12,8 +12,8 @@ public class J extends Instruction {
 
     @Override
     protected boolean conditional() {
-        // TODO Auto-generated method stub
-        return false;
+        // Unconditional jump, always execute!
+        return true;
     }
     
     public void decode(RegisterFile registerFile, PipelineLatch decodeLatch) {
@@ -21,9 +21,9 @@ public class J extends Instruction {
     }
 
     @Override
-    protected void execute() {
-        // TODO Auto-generated method stub
-
+    protected void executeOperation(RegisterFile registerFile, PipelineLatch decodeLatch, PipelineLatch executeLatch) {
+        // TODO: Set PC here?
+        // Not sure how this is going to work yet
     }
 
 }

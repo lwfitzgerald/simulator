@@ -10,7 +10,7 @@ public class Add extends Instruction {
      * Serialisation ID
      */
     private static final long serialVersionUID = -2371581904490721607L;
-
+    
     @Override
     protected boolean conditional() {
         // TODO Auto-generated method stub
@@ -30,10 +30,12 @@ public class Add extends Instruction {
         decodeLatch.setNextSourceData1(sourceData1.clone());
         decodeLatch.setNextSourceData1(sourceData2.clone());
     }
-    
+
     @Override
-    protected void execute() {
+    protected void executeOperation(RegisterFile registerFile,
+            PipelineLatch decodeLatch, PipelineLatch executeLatch) {
         // TODO Auto-generated method stub
 
     }
+
 }
