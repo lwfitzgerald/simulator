@@ -42,6 +42,8 @@ public class Simulator {
             System.err.println("Could not load supplied program file");
             System.exit(1);
         }
+        
+        while (processor.step());
     }
     
     protected Program loadProgram(String programPath) throws Exception {
