@@ -2,7 +2,8 @@ package com.fitzgerald.simulator.instruction;
 
 import java.io.Serializable;
 
-import com.fitzgerald.simulator.processor.PipelineLatch;
+import com.fitzgerald.simulator.pipeline.DecodeStage;
+import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public abstract class Instruction implements Serializable {
@@ -38,20 +39,19 @@ public abstract class Instruction implements Serializable {
      * Perform the individual decode operations for this
      * instruction
      * @param registerFile Register file reference
-     * @param decodeLatch Decode latch reference
+     * @param decodeStage Decode stage reference
      */
-    public abstract void decode(RegisterFile registerFile, PipelineLatch decodeLatch);
+    public abstract void decode(RegisterFile registerFile, DecodeStage decodeStage);
     
     /**
      * Evaluate the conditional method for this instruction
      * and execute if it evaluates to true
      * @param registerFile Register file reference
-     * @param decodeLatch Decode latch reference
-     * @param executeLatch Execute latch refererence
+     * @param executeStage Execute stage reference
      */
-    public void execute(RegisterFile registerFile, PipelineLatch decodeLatch, PipelineLatch executeLatch) {
+    public void execute(RegisterFile registerFile, ExecuteStage executeStage) {
         if (conditional()) {
-            executeOperation(registerFile, decodeLatch, executeLatch);
+            executeOperation(registerFile, executeStage);
         }
     }
     
@@ -63,10 +63,9 @@ public abstract class Instruction implements Serializable {
      * execute method which checks the conditional for the
      * instruction
      * @param registerFile Register file reference
-     * @param decodeLatch Decode latch reference
-     * @param executeLatch Execute latch reference
+     * @param executeStage Execute stage reference
      */
-    protected abstract void executeOperation(RegisterFile registerFile, PipelineLatch decodeLatch, PipelineLatch executeLatch);
+    protected abstract void executeOperation(RegisterFile registerFile, ExecuteStage executeStage);
     
     /**
      * Set the value of an operand for this instruction

@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.instruction;
 
-import com.fitzgerald.simulator.processor.PipelineLatch;
+import com.fitzgerald.simulator.pipeline.DecodeStage;
+import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public class J extends Instruction {
@@ -16,12 +17,12 @@ public class J extends Instruction {
         return true;
     }
     
-    public void decode(RegisterFile registerFile, PipelineLatch decodeLatch) {
+    public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         // No latch changes required
     }
 
     @Override
-    protected void executeOperation(RegisterFile registerFile, PipelineLatch decodeLatch, PipelineLatch executeLatch) {
+    protected void executeOperation(RegisterFile registerFile, ExecuteStage executeStage) {
         // TODO: Set PC here?
         // Not sure how this is going to work yet
     }

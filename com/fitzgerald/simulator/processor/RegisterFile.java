@@ -25,12 +25,12 @@ public class RegisterFile {
     }
     
     /**
-     * Called at the end of a clock cycle
+     * Called at the end of a simulation step
      * to update the "current" values of the registers
      */
-    public void finishCycle() {
+    public void finishStep() {
         for (Register reg : registerArray) {
-            reg.finishCycle();
+            reg.finishStep();
         }
     }
 }

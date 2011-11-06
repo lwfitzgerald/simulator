@@ -1,11 +1,25 @@
 package com.fitzgerald.simulator.processor;
 
+import java.util.Random;
+
 public class Register {
     
     protected byte[] currentValue;
     protected byte[] nextValue;
     
     public byte[] getCurrentValue() {
+        if (currentValue == null) {
+            /*
+             * Register has not been written to / read yet
+             * 
+             * In a real machine there would be a random value here so
+             * simulate that by writing a random value (for consistency)
+             * and returning that
+             */
+            Random generator = new Random();
+            currentValue = Util.intToBytes(generator.nextInt());
+        }
+        
         return currentValue;
     }
 
@@ -21,7 +35,7 @@ public class Register {
         nextValue = newValue;
     }
     
-    public void finishCycle() {
+    public void finishStep() {
         currentValue = nextValue;
         nextValue = null;
     }
@@ -96,8 +110,8 @@ public class Register {
         TestUtil.testPassed(identifier);
     }
     
-    public static void test_finishCycle() {
-        String identifier = "Register.finishCycle";
+    public static void test_finishStep() {
+        String identifier = "Register.finishStep";
         TestUtil.startTest(identifier);
         
         final byte[] testVal1 = Util.intToBytes(35);
@@ -108,7 +122,7 @@ public class Register {
         testReg.currentValue = testVal1;
         testReg.nextValue = testVal2;
         
-        testReg.finishCycle();
+        testReg.finishStep();
         
         // Check the next value has been moved into the current
         if (testReg.currentValue != testVal2) {
@@ -130,6 +144,6 @@ public class Register {
         test_setCurrentValue();
         test_getNextValue();
         test_setNextValue();
-        test_finishCycle();
+        test_finishStep();
     }
 }
