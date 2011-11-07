@@ -27,7 +27,13 @@ public class FetchStage extends PipelineStage {
          */
         registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(programCounter + 4));
         
-        // TODO: return false here if it's a faux NOP
+        // Check if this is an artificial Nop
+        if (instruction.isNop()) {
+            if (((Nop) instruction).isEndOfProgramNop()) {
+                return false;
+            }
+        }
+        
         return true;
     }
 }
