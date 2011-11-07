@@ -1,9 +1,5 @@
 package com.fitzgerald.simulator.ui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.SwingUtilities;
 
 public class UI implements Runnable {
@@ -13,26 +9,18 @@ public class UI implements Runnable {
     
     public UI() {
         SwingUtilities.invokeLater(this);
-        
-        while(true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+    }
+    
+    public void run() {
+        mainWindow = new MainWindow();
     }
     
     /**
-     * Called by Swing to allow the application
-     * thread to make changes to the GUI
+     * Set the value of a register status box
+     * @param registerNum Register number
+     * @param value Value to set to
      */
-    public void run() {
-        System.out.println("Invoked!");
-        if (!initialised) {
-            mainWindow = new MainWindow();
-            initialised = true;
-        }
+    public void setRegisterValue(int registerNum, byte[] value) {
+        mainWindow.setRegisterValue(registerNum, value);
     }
 }

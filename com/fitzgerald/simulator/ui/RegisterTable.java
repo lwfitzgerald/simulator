@@ -28,6 +28,11 @@ public class RegisterTable extends JPanel {
         }
     }
     
+    /**
+     * Set the value of a register status box
+     * @param registerNum Register number
+     * @param value Value to set to
+     */
     public void setRegisterValue(int registerNum, byte[] value) {
         registers[registerNum].setValue(value);
     }

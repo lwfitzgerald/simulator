@@ -37,6 +37,10 @@ public class RegisterStatus extends JPanel {
         setVisible(true);
     }
     
+    /**
+     * Set the value of this register status box
+     * @param value Value to set to
+     */
     public void setValue(byte[] value) {
         textField.setText(String.valueOf(Util.bytesToInt(value)));
     }
