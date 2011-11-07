@@ -16,7 +16,7 @@ public class Memory {
      * @return Word at address
      * @throws MemoryException
      */
-    public byte[] load(int memoryAddress) throws MemoryException {
+    public byte[] load(int memoryAddress) {
         byte[] loaded;
         
         if ((loaded = memorySpace.get(memoryAddress)) == null) {
@@ -35,7 +35,7 @@ public class Memory {
         return loaded;
     }
     
-    public void store(int memoryAddress, byte[] toStore) throws MemoryException {
+    public void store(int memoryAddress, byte[] toStore) {
         memorySpace.put(memoryAddress, toStore);
     }
     

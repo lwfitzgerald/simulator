@@ -10,9 +10,6 @@ public abstract class PipelineStage {
     protected byte[] sourceData1;
     protected byte[] sourceData2;
     
-    // Not sure this is needed yet
-    protected int programCounter;
-    
     public PipelineStage() {}
     
     /**
