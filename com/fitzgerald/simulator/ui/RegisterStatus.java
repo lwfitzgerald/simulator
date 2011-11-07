@@ -12,15 +12,13 @@ import com.fitzgerald.simulator.processor.Util;
 
 public class RegisterStatus extends JPanel {
     
-    protected JLabel label;
     protected JTextField textField;
     
     public RegisterStatus(String registerName) {
         super();
         
-        label = new JLabel(registerName);
-        // TODO: Make this empty + changeable via setters
-        textField = new JTextField("0");
+        JLabel label = new JLabel(registerName);
+        textField = new JTextField();
         textField.setEnabled(false);
         textField.setDisabledTextColor(new Color(0));
         textField.setMinimumSize(new Dimension(82, 19));

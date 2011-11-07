@@ -1,5 +1,7 @@
 package com.fitzgerald.simulator.ui;
 
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 
 public class MainWindow extends JFrame {
@@ -10,6 +12,12 @@ public class MainWindow extends JFrame {
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
+        
+        GridLayout layoutMgr = new GridLayout(1, 2);
+        setLayout(layoutMgr);
+        
+        StageTable stageTable = new StageTable();
+        add(stageTable);
         
         registerTable = new RegisterTable();
         add(registerTable);
