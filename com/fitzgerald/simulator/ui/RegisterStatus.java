@@ -26,8 +26,19 @@ public class RegisterStatus extends JPanel {
         textField.setPreferredSize(new Dimension(82, 19));
         textField.setHorizontalAlignment(JTextField.RIGHT);
         
-        GroupLayout layoutMgr = new GroupLayout(this);
-        layoutMgr.setHorizontalGroup(layoutMgr.createSequentialGroup()
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        
+        layout.setAutoCreateGaps(true);
+        
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                .addComponent(label)
+                .addComponent(textField)
+        );
+        
+        layout.setVerticalGroup(
+                layout.createBaselineGroup(false, true)
                 .addComponent(label)
                 .addComponent(textField)
         );

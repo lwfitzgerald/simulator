@@ -1,7 +1,6 @@
 package com.fitzgerald.simulator.ui;
 
-import java.awt.GridLayout;
-
+import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -14,13 +13,24 @@ public class StageStatus extends JPanel {
     public StageStatus(String stageName) {
         super();
         
-        GridLayout layoutMgr = new GridLayout(2, 1);
-        setLayout(layoutMgr);
-        
-        add(new JLabel(stageName));
-        
         instruction = new JLabel("");
-        add(instruction);
+        
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        
+        JLabel stageLabel = new JLabel(stageName);
+        
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                .addComponent(stageLabel)
+                .addComponent(instruction)
+        );
+        
+        layout.setHorizontalGroup(
+                layout.createParallelGroup()
+                .addComponent(stageLabel)
+                .addComponent(instruction)
+        );
         
         setVisible(true);
     }
