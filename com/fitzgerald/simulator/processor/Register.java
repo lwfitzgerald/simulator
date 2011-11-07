@@ -36,8 +36,10 @@ public class Register {
     }
     
     public void finishStep() {
-        currentValue = nextValue;
-        nextValue = null;
+        if (nextValue != null) {
+            // Do a deep copy to unlink the two values
+            currentValue = nextValue.clone();
+        }
     }
     
     public static void test_getCurrentValue() {
@@ -126,12 +128,6 @@ public class Register {
         
         // Check the next value has been moved into the current
         if (testReg.currentValue != testVal2) {
-            TestUtil.testFailed(identifier);
-            return;
-        }
-        
-        // Check the next value has been set to null
-        if (testReg.nextValue != null) {
             TestUtil.testFailed(identifier);
             return;
         }

@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public class Nop extends Instruction {
@@ -43,7 +44,9 @@ public class Nop extends Instruction {
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {}
 
     @Override
-    protected void executeOperation(RegisterFile registerFile, ExecuteStage executeStage) {}
+    protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
+        return true;
+    }
 
     /**
      * Returns if this is a Nop inserted

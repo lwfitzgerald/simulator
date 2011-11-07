@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public abstract class Instruction implements Serializable {
@@ -47,12 +48,17 @@ public abstract class Instruction implements Serializable {
      * Evaluate the conditional method for this instruction
      * and execute if it evaluates to true
      * @param registerFile Register file reference
+     * @param memoryController TODO
      * @param executeStage Execute stage reference
+     * @return True if execution completed, false if
+     * more cycles required
      */
-    public void execute(RegisterFile registerFile, ExecuteStage executeStage) {
+    public boolean execute(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
         if (conditional()) {
-            executeOperation(registerFile, executeStage);
+            return executeOperation(registerFile, memoryController, executeStage);
         }
+        
+        return true;
     }
     
     /**
@@ -63,9 +69,12 @@ public abstract class Instruction implements Serializable {
      * execute method which checks the conditional for the
      * instruction
      * @param registerFile Register file reference
+     * @param memoryController TODO
      * @param executeStage Execute stage reference
+     * @return True if execution completed, false if
+     * more cycles required
      */
-    protected abstract void executeOperation(RegisterFile registerFile, ExecuteStage executeStage);
+    protected abstract boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage);
     
     /**
      * Set the value of an operand for this instruction

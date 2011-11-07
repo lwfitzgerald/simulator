@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
@@ -9,6 +10,12 @@ public abstract class PipelineStage {
     
     protected byte[] sourceData1;
     protected byte[] sourceData2;
+    
+    /**
+     * Represents if the stage has completed handling
+     * of the current instruction 
+     */
+    protected boolean isCompleted = false;
     
     public PipelineStage() {}
     
@@ -22,9 +29,13 @@ public abstract class PipelineStage {
     
     /**
      * Step this pipeline stage
-     * @return
+     * @param program Reference to program object
+     * @param registerFile Reference to register file object
+     * @param memoryController Reference to memory controller object
+     * @return True if operating on real instruction.
+     * False if operating on artificial Nop
      */
-    public abstract boolean step(Program program, RegisterFile registerFile);
+    public abstract boolean step(Program program, RegisterFile registerFile, MemoryController memoryController);
     
     /**
      * Copies the state of this pipeline stage to the
@@ -78,4 +89,19 @@ public abstract class PipelineStage {
     public void setSourceData2(byte[] sourceData2) {
         this.sourceData2 = sourceData2;
     }
+    
+    /**
+     * @return True if execution has completed
+     */
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    /**
+     * @param Whether execution has completed
+     */
+    public void setCompleted(boolean isCompleted) {
+        this.isCompleted = isCompleted;
+    }
+    
 }

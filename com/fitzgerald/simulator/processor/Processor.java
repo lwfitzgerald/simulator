@@ -5,7 +5,7 @@ import com.fitzgerald.simulator.pipeline.*;
 
 public class Processor {
     
-    protected Memory memory;
+    protected MemoryController memoryController;
     protected RegisterFile registerFile;
     protected Program program;
     
@@ -21,7 +21,7 @@ public class Processor {
     public Processor(Program program, Memory memory) {
         this.program = program;
         this.registerFile = new RegisterFile();
-        this.memory = memory;
+        this.memoryController = new MemoryController(memory);
         
         // Initialise pipeline stages
         this.fetchStage = new FetchStage();
@@ -38,13 +38,18 @@ public class Processor {
      * of the program has been reached
      */
     public boolean step() {
-        boolean fetchResult = fetchStage.step(program, registerFile);
-        boolean decodeResult = decodeStage.step(program, registerFile);
-        boolean executeResult = executeStage.step(program, registerFile);
+        boolean fetchResult = fetchStage.step(program, registerFile, memoryController);
+        boolean decodeResult = decodeStage.step(program, registerFile, memoryController);
+        boolean executeResult = executeStage.step(program, registerFile, memoryController);
         
-        finishStep();
+        if (executeStage.isCompleted()) {
+            /*
+             * Execute stage has completed (require no more cycles)
+             * so copy register nexts to currents etc
+             */
+            finishStep();
+        }
         
-        // TODO: take finishStep into account?
         return fetchResult || decodeResult || executeResult;
     }
     
@@ -52,6 +57,11 @@ public class Processor {
         // In reverse order to maintain data correctness
         decodeStage.copyState(executeStage);
         fetchStage.copyState(decodeStage);
+        
+        // Set completed to false on all stages
+        fetchStage.setCompleted(false);
+        decodeStage.setCompleted(false);
+        executeStage.setCompleted(false);
         
         // Copy register "next"'s to "current"'s
         registerFile.finishStep();
