@@ -1,25 +1,19 @@
 package com.fitzgerald.simulator.processor;
 
-import java.util.Random;
-
 public class Register {
     
     protected byte[] currentValue;
     protected byte[] nextValue;
     
+    /**
+     * Constructor
+     */
+    public Register() {
+        // Initialise value to 0
+        currentValue = new byte[] {0, 0, 0, 0};
+    }
+    
     public byte[] getCurrentValue() {
-        if (currentValue == null) {
-            /*
-             * Register has not been written to / read yet
-             * 
-             * In a real machine there would be a random value here so
-             * simulate that by writing a random value (for consistency)
-             * and returning that
-             */
-            Random generator = new Random();
-            currentValue = Util.intToBytes(generator.nextInt());
-        }
-        
         return currentValue;
     }
 
@@ -37,8 +31,7 @@ public class Register {
     
     public void finishStep() {
         if (nextValue != null) {
-            // Do a deep copy to unlink the two values
-            currentValue = nextValue.clone();
+            currentValue = nextValue;
         }
     }
     

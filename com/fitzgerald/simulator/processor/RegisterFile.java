@@ -2,7 +2,7 @@ package com.fitzgerald.simulator.processor;
 
 public class RegisterFile {
     
-    protected static final int NUM_REGISTERS = 16;
+    public static final int NUM_REGISTERS = 16;
     
     protected Register[] registerArray = null;
     
