@@ -84,4 +84,12 @@ public abstract class Instruction implements Serializable {
             operand3 = value;
         }
     }
+    
+    /**
+     * Returns if this instruction is a Nop
+     * @return True if this instruction is a Nop
+     */
+    public boolean isNop() {
+        return this instanceof Nop;
+    }
 }

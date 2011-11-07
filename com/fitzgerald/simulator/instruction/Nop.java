@@ -45,4 +45,14 @@ public class Nop extends Instruction {
     @Override
     protected void executeOperation(RegisterFile registerFile, ExecuteStage executeStage) {}
 
+    /**
+     * Returns if this is a Nop inserted
+     * when there are no more instructions in the
+     * program to execute
+     * @return True if Nop is artificial
+     */
+    public boolean isEndOfProgramNop() {
+        return endOfProgramNop;
+    }
+    
 }
