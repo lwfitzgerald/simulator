@@ -156,7 +156,6 @@ public class Assembler {
         
         String[] instructionSplit = line.split(" ");
         String opcode = instructionSplit[0];
-        String[] operands = instructionSplit[1].split(",");
         
         // Get an instance of the relevant instruction class
         String className = opcode.substring(0, 1).toUpperCase() + opcode.substring(1).toLowerCase();
@@ -176,50 +175,54 @@ public class Assembler {
         }
         
         // Set operands in the object
-        if (operands.length >= 1) {
-            String operand1 = operands[0];
+        if (instructionSplit.length > 1) {
+            String[] operands = instructionSplit[1].split(",");
             
-            if (!operand1.matches("r?[0-9]")) {
-                // Label
-                labelsToReplace.addLast(new OperandLabelReplace(lineNo, 1, operand1));
-            } else {
-                operand1 = operand1.replace("r", "");
-                instruction.setOperand(1, Util.intToBytes(Integer.parseInt(operand1)));
-            }
-            
-            if (operands.length >= 2) {
-                String operand2 = operands[1];
+            if (operands.length >= 1) {
+                String operand1 = operands[0];
                 
-                if (!operand2.matches("r?[0-9]")) {
+                if (!operand1.matches("r?[0-9]")) {
                     // Label
-                    labelsToReplace.addLast(new OperandLabelReplace(lineNo, 2, operand2));
+                    labelsToReplace.addLast(new OperandLabelReplace(lineNo, 1, operand1));
                 } else {
-                    operand2 = operand2.replace("r", "");
-                    instruction.setOperand(2, Util.intToBytes(Integer.parseInt(operand2)));
+                    operand1 = operand1.replace("r", "");
+                    instruction.setOperand(1, Util.intToBytes(Integer.parseInt(operand1)));
                 }
                 
-                if (operands.length >= 3) {
-                    String operand3 = operands[2];
+                if (operands.length >= 2) {
+                    String operand2 = operands[1];
                     
-                    if (!operand3.matches("r?[0-9]")) {
+                    if (!operand2.matches("r?[0-9]")) {
                         // Label
-                        labelsToReplace.addLast(new OperandLabelReplace(lineNo, 3, operand3));
+                        labelsToReplace.addLast(new OperandLabelReplace(lineNo, 2, operand2));
                     } else {
-                        operand3 = operand3.replace("r", "");
-                        instruction.setOperand(3, Util.intToBytes(Integer.parseInt(operand3)));
+                        operand2 = operand2.replace("r", "");
+                        instruction.setOperand(2, Util.intToBytes(Integer.parseInt(operand2)));
+                    }
+                    
+                    if (operands.length >= 3) {
+                        String operand3 = operands[2];
+                        
+                        if (!operand3.matches("r?[0-9]")) {
+                            // Label
+                            labelsToReplace.addLast(new OperandLabelReplace(lineNo, 3, operand3));
+                        } else {
+                            operand3 = operand3.replace("r", "");
+                            instruction.setOperand(3, Util.intToBytes(Integer.parseInt(operand3)));
+                        }
+                    } else {
+                        instruction.setOperand(3, Util.intToBytes(0));
                     }
                 } else {
+                    instruction.setOperand(2, Util.intToBytes(0));
                     instruction.setOperand(3, Util.intToBytes(0));
                 }
             } else {
+                // No operands so set to 0
+                instruction.setOperand(1, Util.intToBytes(0));
                 instruction.setOperand(2, Util.intToBytes(0));
                 instruction.setOperand(3, Util.intToBytes(0));
             }
-        } else {
-            // No operands so set to 0
-            instruction.setOperand(1, Util.intToBytes(0));
-            instruction.setOperand(2, Util.intToBytes(0));
-            instruction.setOperand(3, Util.intToBytes(0));
         }
         
         // Insert into the instruction list
