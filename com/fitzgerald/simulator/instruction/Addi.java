@@ -45,4 +45,11 @@ public class Addi extends Instruction {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "ADDI r" + Util.bytesToInt(operand1) + 
+               ", r" + Util.bytesToInt(operand2) + 
+               ", " + Util.bytesToInt(operand3);
+    }
+
 }

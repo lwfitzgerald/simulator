@@ -34,4 +34,10 @@ public class Ldc extends Instruction {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "LDC r" + Util.bytesToInt(operand1) + 
+               ", " + Util.bytesToInt(operand2);
+    }
+
 }

@@ -101,4 +101,9 @@ public abstract class Instruction implements Serializable {
     public boolean isNop() {
         return this instanceof Nop;
     }
+    
+    /**
+     * Returns a string representation of the instruction
+     */
+    public abstract String toString();
 }

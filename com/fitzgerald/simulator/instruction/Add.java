@@ -46,4 +46,11 @@ public class Add extends Instruction {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "ADD r" + Util.bytesToInt(operand1) +
+                ", r" + Util.bytesToInt(operand2) +
+                ", r" + Util.bytesToInt(operand3);
+    }
+
 }

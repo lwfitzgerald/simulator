@@ -4,6 +4,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
+import com.fitzgerald.simulator.processor.Util;
 
 public class J extends Instruction {
 
@@ -27,6 +28,11 @@ public class J extends Instruction {
         // TODO: Set PC here?
         // Not sure how this is going to work yet
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "J " + Util.bytesToInt(operand1);
     }
 
 }

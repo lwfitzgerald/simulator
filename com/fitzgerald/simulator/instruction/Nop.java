@@ -57,5 +57,10 @@ public class Nop extends Instruction {
     public boolean isEndOfProgramNop() {
         return endOfProgramNop;
     }
+
+    @Override
+    public String toString() {
+        return "NOP";
+    }
     
 }

@@ -46,4 +46,11 @@ public class Sub extends Instruction {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "SUB r" + Util.bytesToInt(operand1) + 
+               ", r" + Util.bytesToInt(operand2) + 
+               ", r" + Util.bytesToInt(operand3);
+    }
+
 }

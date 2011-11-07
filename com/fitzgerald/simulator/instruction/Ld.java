@@ -55,4 +55,10 @@ public class Ld extends Instruction {
         }
     }
 
+    @Override
+    public String toString() {
+        return "LD r" + Util.bytesToInt(operand1) + 
+               ", " + Util.bytesToInt(operand2);
+    }
+
 }
