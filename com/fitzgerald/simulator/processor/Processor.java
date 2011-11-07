@@ -45,7 +45,7 @@ public class Processor {
         finishStep();
         
         // TODO: take finishStep into account?
-        return fetchResult && decodeResult && executeResult;
+        return fetchResult || decodeResult || executeResult;
     }
     
     protected void finishStep() {
