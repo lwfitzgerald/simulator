@@ -54,6 +54,12 @@ public class Ld extends Instruction {
             return true;
         }
     }
+    
+    @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Absolute
+        return labelAddr;
+    }
 
     @Override
     public String toString() {

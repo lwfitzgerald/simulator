@@ -33,6 +33,12 @@ public class Ldc extends Instruction {
         // Load immediate always takes 1 cycle
         return true;
     }
+    
+    @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Absolute
+        return labelAddr;
+    }
 
     @Override
     public String toString() {

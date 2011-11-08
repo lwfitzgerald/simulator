@@ -44,6 +44,12 @@ public class Addi extends Instruction {
         // Addi always takes one cycle
         return true;
     }
+    
+    @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Absolute
+        return labelAddr;
+    }
 
     @Override
     public String toString() {

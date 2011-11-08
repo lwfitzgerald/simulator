@@ -47,6 +47,12 @@ public class Add extends Instruction {
     }
 
     @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Not applicable
+        return -1;
+    }
+    
+    @Override
     public String toString() {
         return "ADD r" + Util.bytesToInt(operand1) +
                 ", r" + Util.bytesToInt(operand2) +

@@ -45,6 +45,12 @@ public class Sub extends Instruction {
         // Completes in 1 cycle so return true
         return true;
     }
+    
+    @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Not applicable
+        return -1;
+    }
 
     @Override
     public String toString() {

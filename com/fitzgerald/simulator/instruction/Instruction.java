@@ -48,7 +48,7 @@ public abstract class Instruction implements Serializable {
      * Evaluate the conditional method for this instruction
      * and execute if it evaluates to true
      * @param registerFile Register file reference
-     * @param memoryController TODO
+     * @param memoryController Memory controller object reference
      * @param executeStage Execute stage reference
      * @return True if execution completed, false if
      * more cycles required
@@ -69,12 +69,24 @@ public abstract class Instruction implements Serializable {
      * execute method which checks the conditional for the
      * instruction
      * @param registerFile Register file reference
-     * @param memoryController TODO
+     * @param memoryController Memory controller object reference
      * @param executeStage Execute stage reference
      * @return True if execution completed, false if
      * more cycles required
      */
     protected abstract boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage);
+    
+    /**
+     * Takes an address of a label and converts it
+     * to an immediate value according to the behaviour
+     * of the instruction (absolute or relative)
+     * 
+     * Used during assembly (for J / B)
+     * @param labelAddr Address of label
+     * @param instructionAddr Instruction address 
+     * @return Immediate value to use
+     */
+    public abstract int labelToAddress(int labelAddr, int instructionAddr);
     
     /**
      * Set the value of an operand for this instruction

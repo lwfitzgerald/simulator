@@ -47,6 +47,12 @@ public class Nop extends Instruction {
     protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
         return true;
     }
+    
+    @Override
+    public int labelToAddress(int labelAddr, int instructionAddr) {
+        // Not applicable
+        return -1;
+    }
 
     /**
      * Returns if this is a Nop inserted
