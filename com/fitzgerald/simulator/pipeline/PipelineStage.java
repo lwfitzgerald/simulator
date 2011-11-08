@@ -1,9 +1,11 @@
 package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.instruction.Nop;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
+import com.fitzgerald.simulator.ui.UI;
 
 public abstract class PipelineStage {
     protected Instruction instruction;
@@ -12,19 +14,25 @@ public abstract class PipelineStage {
     protected byte[] sourceData2;
     
     /**
+     * Stage number for this stage
+     */
+    protected int STAGE_NUM;
+    
+    /**
+     * UI control object reference
+     */
+    protected UI ui;
+    
+    /**
      * Represents if the stage has completed handling
      * of the current instruction 
      */
     protected boolean isCompleted = false;
     
-    public PipelineStage() {}
-    
-    /**
-     * Initialise this pipeline stage with an instruction
-     * @param instruction Instruction to initialise with
-     */
-    public PipelineStage(Instruction instruction) {
-        this.instruction = instruction;
+    public PipelineStage(UI ui) {
+        this.ui = ui;
+        
+        this.instruction = new Nop(true);
     }
     
     /**
@@ -46,6 +54,13 @@ public abstract class PipelineStage {
         newStage.setInstruction(instruction);
         newStage.setSourceData1(sourceData1);
         newStage.setSourceData2(sourceData2);
+    }
+    
+    /**
+     * Updates the UI for this stage
+     */
+    protected void updateUI() {
+        ui.setStageInstruction(STAGE_NUM, instruction);
     }
     
     /**

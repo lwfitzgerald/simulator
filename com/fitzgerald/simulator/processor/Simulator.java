@@ -4,12 +4,19 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 
+import com.fitzgerald.simulator.ui.UI;
+
 public class Simulator {
     
     /**
      * Processor linked to memory, registers etc
      */
     protected Processor processor;
+    
+    /**
+     * UI controller
+     */
+    protected UI ui;
     
     public static void main(String[] args) {
         /*RegisterFile registerFile = RegisterFile.getSingleton();
@@ -36,14 +43,30 @@ public class Simulator {
      * @param programFile Program file to load and run
      */
     public Simulator(String programFile) {
+        // Initialise the UI
+        ui = new UI();
+        
         try {
-            processor = new Processor(loadProgram(programFile), new Memory());
+            processor = new Processor(loadProgram(programFile), new Memory(), ui);
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Could not load supplied program file");
             System.exit(1);
         }
         
-        while (processor.step());
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+        
+        while (processor.step()) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     protected Program loadProgram(String programPath) throws Exception {

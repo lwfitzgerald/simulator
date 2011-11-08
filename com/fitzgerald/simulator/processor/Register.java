@@ -1,14 +1,29 @@
 package com.fitzgerald.simulator.processor;
 
+import com.fitzgerald.simulator.ui.UI;
+
 public class Register {
+    
+    /**
+     * Register number
+     */
+    protected int registerNum;
     
     protected byte[] currentValue;
     protected byte[] nextValue;
     
     /**
+     * UI control object reference
+     */
+    protected UI ui;
+    
+    /**
      * Constructor
      */
-    public Register() {
+    public Register(int registerNum, UI ui) {
+        this.registerNum = registerNum;
+        this.ui = ui;
+        
         // Initialise value to 0
         currentValue = new byte[] {0, 0, 0, 0};
     }
@@ -35,6 +50,11 @@ public class Register {
         }
     }
     
+    public void updateUI() {
+        // Update UI
+        ui.setRegisterValue(registerNum, currentValue);
+    }
+    
     public static void test_getCurrentValue() {
         String identifier = "Register.getCurrentValue";
         
@@ -42,7 +62,7 @@ public class Register {
         
         final byte[] testVal = Util.intToBytes(21);
         
-        Register testReg = new Register();
+        Register testReg = new Register(0, null);
         testReg.currentValue = testVal;
         
         if (testReg.getCurrentValue() != testVal) {
@@ -60,7 +80,7 @@ public class Register {
         
         final byte[] testVal = Util.intToBytes(35);
         
-        Register testReg = new Register();
+        Register testReg = new Register(0, null);
         testReg.setCurrentValue(testVal);
         
         if (testReg.currentValue != testVal) {
@@ -77,7 +97,7 @@ public class Register {
         
         final byte[] testVal = Util.intToBytes(21);
         
-        Register testReg = new Register();
+        Register testReg = new Register(0, null);
         testReg.nextValue = testVal;
         
         if (testReg.getNextValue() != testVal) {
@@ -94,7 +114,7 @@ public class Register {
         
         final byte[] testVal = Util.intToBytes(35);
         
-        Register testReg = new Register();
+        Register testReg = new Register(0, null);
         testReg.setNextValue(testVal);
         
         if (testReg.nextValue != testVal) {
@@ -112,7 +132,7 @@ public class Register {
         final byte[] testVal1 = Util.intToBytes(35);
         final byte[] testVal2 = Util.intToBytes(47);
         
-        Register testReg = new Register();
+        Register testReg = new Register(0, null);
         
         testReg.currentValue = testVal1;
         testReg.nextValue = testVal2;

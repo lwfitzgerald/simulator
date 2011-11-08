@@ -1,15 +1,22 @@
 package com.fitzgerald.simulator.pipeline;
 
-import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Nop;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
+import com.fitzgerald.simulator.ui.UI;
 
 public class DecodeStage extends PipelineStage {
 
-    public DecodeStage(Instruction instruction) {
-        super(instruction);
+    public DecodeStage(UI ui) {
+        super(ui);
+        
+        /*
+         * Set the stage number
+         */
+        STAGE_NUM = 2;
+        
+        updateUI();
     }
 
     @Override
@@ -18,6 +25,9 @@ public class DecodeStage extends PipelineStage {
         if (isCompleted == false) {
             // Call the instruction's individual decode method
             instruction.decode(registerFile, this);
+            
+            // Update the UI
+            updateUI();
             
             // Decode only ever takes 1 cycle so mark as completed
             setCompleted(true);

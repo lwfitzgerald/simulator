@@ -4,7 +4,10 @@ import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 
+import com.fitzgerald.simulator.instruction.Instruction;
+
 public class MainWindow extends JFrame {
+    protected StageTable stageTable;
     protected RegisterTable registerTable;
     
     public MainWindow() {
@@ -16,7 +19,7 @@ public class MainWindow extends JFrame {
         GridLayout layoutMgr = new GridLayout(1, 2);
         setLayout(layoutMgr);
         
-        StageTable stageTable = new StageTable();
+        stageTable = new StageTable();
         add(stageTable);
         
         registerTable = new RegisterTable();
@@ -24,6 +27,15 @@ public class MainWindow extends JFrame {
         
         pack();
         setVisible(true);
+    }
+    
+    /**
+     * Sets the instruction shown in the UI for this stage
+     * @param stageNum Stage number
+     * @param instruction Instruction to set
+     */
+    public void setStageInstruction(int stageNum, Instruction instruction) {
+        stageTable.setStageInstruction(stageNum, instruction);
     }
     
     /**

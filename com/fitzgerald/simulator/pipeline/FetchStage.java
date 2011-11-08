@@ -6,9 +6,21 @@ import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
+import com.fitzgerald.simulator.ui.UI;
 
 public class FetchStage extends PipelineStage {
-
+    
+    public FetchStage(UI ui) {
+        super(ui);
+        
+        /*
+         * Set the stage number
+         */
+        STAGE_NUM = 1;
+        
+        updateUI();
+    }
+    
     @Override
     public boolean step(Program program, RegisterFile registerFile, MemoryController memoryController) {
         // Only perform the step if it has not been done already
@@ -23,6 +35,9 @@ public class FetchStage extends PipelineStage {
                 // No more instructions to execute, insert a NOP
                 instruction = new Nop(true);
             }
+            
+            // Update the UI
+            updateUI();
             
             /*
              * Set the next value of the program counter.

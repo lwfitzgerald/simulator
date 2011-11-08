@@ -13,7 +13,7 @@ public class StageStatus extends JPanel {
     public StageStatus(String stageName) {
         super();
         
-        instruction = new JLabel("");
+        instruction = new JLabel();
         
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
