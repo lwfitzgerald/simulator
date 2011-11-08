@@ -22,14 +22,17 @@ public class J extends Instruction {
     
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         /*
-         * Store the current PC (not yet incremented by fetch so same)
+         * We are now +1 down the pipeline!
+         * 
          * 
          * Do a deep copy to unlink the value from the register value
          */
-        decodeStage.setSourceData1(registerFile.getRegister(Processor.PC_REG).getCurrentValue().clone());
+        int fetchPC = Util.bytesToInt(registerFile.getRegister(Processor.PC_REG).getCurrentValue());
+        int actualPC = fetchPC - 4;
+        decodeStage.setSourceData2(Util.intToBytes(actualPC));
         
         // Offset
-        decodeStage.setSourceData2(operand2);
+        decodeStage.setSourceData1(operand1);
     }
 
     @Override
