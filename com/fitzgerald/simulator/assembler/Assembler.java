@@ -21,18 +21,18 @@ public class Assembler {
      * needing replacement in the second pass
      */
     protected class OperandLabelReplace {
-        protected int lineNo;
+        protected int instructionAddr;
         protected int operandNo;
         protected String label;
         
-        public OperandLabelReplace(int lineNo, int operandNo, String label) {
-            this.lineNo = lineNo;
+        public OperandLabelReplace(int instructionAddr, int operandNo, String label) {
+            this.instructionAddr = instructionAddr;
             this.operandNo = operandNo;
             this.label = label;
         }
         
-        public int getLineNo() {
-            return lineNo;
+        public int getInstructionAddr() {
+            return instructionAddr;
         }
         
         public int getOperandNo() {
@@ -68,6 +68,12 @@ public class Assembler {
      */
     protected LinkedList<OperandLabelReplace> labelsToReplace = new LinkedList<OperandLabelReplace>();
     
+    /**
+     * Counts up through the addresses of instructions
+     * during parsing
+     */
+    protected int addressCounter = 0;
+    
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("Error: Assembler requires two arguments.");
@@ -80,8 +86,6 @@ public class Assembler {
     }
     
     protected Assembler(String inputFilename, String outputFilename) {
-        //parseLine("   beginning   :   add    r1,    r2,    r3   ", 1);
-        
         firstPass(inputFilename);
         secondPass();
         
@@ -93,23 +97,22 @@ public class Assembler {
         try {
             inputStream = new FileInputStream(inputFilename);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("Supplied program file not found");
+            System.exit(1);
         }
         
         InputStreamReader reader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(reader);
         
         String line;
-        int lineCounter = 0;
         
         try {
             while ((line = bufferedReader.readLine()) != null) {
-                parseLine(line, lineCounter++);
+                parseLine(line);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("Error whilst parsing file");
+            System.exit(1);
         }
         
         instructions = (Instruction[]) instructionList.toArray(new Instruction[0]);
@@ -117,8 +120,12 @@ public class Assembler {
     
     protected void secondPass() {
         for (OperandLabelReplace toReplace : labelsToReplace) {
-            byte[] value = Util.intToBytes(labels.get(toReplace.getLabel()));
-            instructions[toReplace.getLineNo()].setOperand(toReplace.getOperandNo(), value);
+            int instructionAddr = toReplace.getInstructionAddr();
+            String label = toReplace.getLabel();
+            Instruction instruction = instructions[instructionAddr / 4];
+            
+            byte[] value = Util.intToBytes(instruction.labelToAddress(labels.get(label), instructionAddr));
+            instruction.setOperand(toReplace.getOperandNo(), value);
         }
     }
     
@@ -130,31 +137,39 @@ public class Assembler {
             objectOutput = new ObjectOutputStream(outputStream);
             objectOutput.writeObject(new Program(instructions));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("Program object output failed");
+            System.exit(1);
         }
     }
     
-    protected void parseLine(String line, int lineNo) {
+    protected void parseLine(String lineStr) {
+        // Strip comments
+        lineStr = stripComments(lineStr);
+        
         // Remove preceding and trailing whitespace
-        line = line.trim();
+        lineStr = lineStr.trim();
         
         int colonPos;
         
-        if ((colonPos = line.indexOf(":")) != -1) {
+        if ((colonPos = lineStr.indexOf(":")) != -1) {
             // We have a label
-            String label = line.substring(0, colonPos).replaceAll("[ \t]", "");
+            String label = lineStr.substring(0, colonPos).replaceAll("[ \t]", "");
             
             // Remove it from the line
-            line = line.substring(colonPos+1, line.length()).trim();
+            lineStr = lineStr.substring(colonPos+1, lineStr.length()).trim();
             
             // Store it in the lookup table
-            labels.put(label, lineNo * 4);
+            labels.put(label, addressCounter);
         }
         
-        line = stripWhitespace(line);
+        lineStr = stripWhitespace(lineStr);
         
-        String[] instructionSplit = line.split(" ");
+        if (lineStr.length() == 0) {
+            // Blank / only comments line
+            return;
+        }
+        
+        String[] instructionSplit = lineStr.split(" ");
         String opcode = instructionSplit[0];
         
         // Get an instance of the relevant instruction class
@@ -163,15 +178,9 @@ public class Assembler {
         Instruction instruction = null;
         try {
             instruction = (Instruction) Class.forName("com.fitzgerald.simulator.instruction." + className).newInstance();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Instruction instantiation failed");
+            System.exit(1);
         }
         
         // Set operands in the object
@@ -183,7 +192,7 @@ public class Assembler {
                 
                 if (!operand1.matches("r?[0-9]")) {
                     // Label
-                    labelsToReplace.addLast(new OperandLabelReplace(lineNo, 1, operand1));
+                    labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 1, operand1));
                 } else {
                     operand1 = operand1.replace("r", "");
                     instruction.setOperand(1, Util.intToBytes(Integer.parseInt(operand1)));
@@ -194,7 +203,7 @@ public class Assembler {
                     
                     if (!operand2.matches("r?[0-9]")) {
                         // Label
-                        labelsToReplace.addLast(new OperandLabelReplace(lineNo, 2, operand2));
+                        labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 2, operand2));
                     } else {
                         operand2 = operand2.replace("r", "");
                         instruction.setOperand(2, Util.intToBytes(Integer.parseInt(operand2)));
@@ -205,7 +214,7 @@ public class Assembler {
                         
                         if (!operand3.matches("r?[0-9]")) {
                             // Label
-                            labelsToReplace.addLast(new OperandLabelReplace(lineNo, 3, operand3));
+                            labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 3, operand3));
                         } else {
                             operand3 = operand3.replace("r", "");
                             instruction.setOperand(3, Util.intToBytes(Integer.parseInt(operand3)));
@@ -227,6 +236,20 @@ public class Assembler {
         
         // Insert into the instruction list
         instructionList.addLast(instruction);
+        
+        // Increment the address counter for the next instruction
+        addressCounter += 4;
+    }
+    
+    protected String stripComments(String str) {
+        int hashPos = str.indexOf("#");
+        
+        if (hashPos == -1) {
+            // No comments
+            return str;
+        }
+        
+        return str.substring(0, hashPos);
     }
     
     protected String stripWhitespace(String str) {
