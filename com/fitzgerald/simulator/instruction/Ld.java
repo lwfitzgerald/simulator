@@ -26,33 +26,30 @@ public class Ld extends Instruction {
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         // Register containing base
         byte[] sourceData1 = registerFile.getRegister(Util.bytesToInt(operand2)).getCurrentValue();
-        // Immediate operand for offset
-        byte[] sourceData2 = operand3;
         
         // Deep copy of the register value to unlink
         decodeStage.setSourceData1(sourceData1.clone());
-        decodeStage.setSourceData2(sourceData2);
     }
 
     @Override
     protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
-        int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(executeStage.getSourceData1());
+        int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand3);
         
         byte[] loadResult = memoryController.load(memoryLocation);
         
         if (loadResult == null) {
             // Needs more cycles
             return false;
-        } else {
-            /*
-             * Load completed successfully
-             * 
-             * Do a deep copy of the result to unlink from memory
-             */
-            registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(loadResult.clone());
-            
-            return true;
         }
+        
+        /*
+         * Load completed successfully
+         * 
+         * Do a deep copy of the result to unlink from memory
+         */
+        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(loadResult.clone());
+        
+        return true;
     }
     
     @Override

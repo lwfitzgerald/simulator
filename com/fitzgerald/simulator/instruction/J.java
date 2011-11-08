@@ -24,7 +24,6 @@ public class J extends Instruction {
         /*
          * We are now +1 down the pipeline!
          * 
-         * 
          * Do a deep copy to unlink the value from the register value
          */
         int fetchPC = Util.bytesToInt(registerFile.getRegister(Processor.PC_REG).getCurrentValue());
