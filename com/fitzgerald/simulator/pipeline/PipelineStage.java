@@ -40,10 +40,8 @@ public abstract class PipelineStage {
      * @param program Reference to program object
      * @param registerFile Reference to register file object
      * @param memoryController Reference to memory controller object
-     * @return True if operating on real instruction.
-     * False if operating on artificial Nop
      */
-    public abstract boolean step(Program program, RegisterFile registerFile, MemoryController memoryController);
+    public abstract void step(Program program, RegisterFile registerFile, MemoryController memoryController);
     
     /**
      * Copies the state of this pipeline stage to the
@@ -61,6 +59,24 @@ public abstract class PipelineStage {
      */
     protected void updateUI() {
         ui.setStageInstruction(STAGE_NUM, instruction);
+    }
+    
+    /**
+     * Returns whether this stage contains an artificial
+     * Nop
+     * @return True if this stage contains an artificial
+     * Nop
+     */
+    public boolean containsArtificialNop() {
+        if (instruction.isNop()) {
+            if (((Nop) instruction).isEndOfProgramNop()) {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        return false;
     }
     
     /**

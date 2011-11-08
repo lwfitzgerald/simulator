@@ -22,7 +22,7 @@ public class FetchStage extends PipelineStage {
     }
     
     @Override
-    public boolean step(Program program, RegisterFile registerFile, MemoryController memoryController) {
+    public void step(Program program, RegisterFile registerFile, MemoryController memoryController) {
         // Only perform the step if it has not been done already
         if (isCompleted == false) {
             // Get the current program counter value
@@ -48,14 +48,5 @@ public class FetchStage extends PipelineStage {
             // Fetch only ever takes 1 cycle so mark as completed
             setCompleted(true);
         }
-        
-        // Check if this is an artificial Nop
-        if (instruction.isNop()) {
-            if (((Nop) instruction).isEndOfProgramNop()) {
-                return false;
-            }
-        }
-        
-        return true;
     }
 }

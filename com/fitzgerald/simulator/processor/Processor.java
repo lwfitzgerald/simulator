@@ -40,10 +40,19 @@ public class Processor {
      */
     public boolean step() {
         registerFile.updateUI();
+
+        fetchStage.step(program, registerFile, memoryController);
         
-        boolean fetchResult = fetchStage.step(program, registerFile, memoryController);
-        boolean decodeResult = decodeStage.step(program, registerFile, memoryController);
-        boolean executeResult = executeStage.step(program, registerFile, memoryController);
+        if (fetchStage.containsArtificialNop() &&
+            decodeStage.containsArtificialNop() &&
+            executeStage.containsArtificialNop()) {
+            
+            // All stages contain artificial Nops so we can halt
+            return false;
+        }
+        
+        decodeStage.step(program, registerFile, memoryController);
+        executeStage.step(program, registerFile, memoryController);
         
         if (executeStage.isCompleted()) {
             /*
@@ -53,7 +62,7 @@ public class Processor {
             finishStep();
         }
         
-        return fetchResult || decodeResult || executeResult;
+        return true;
     }
     
     protected void finishStep() {
@@ -69,4 +78,5 @@ public class Processor {
         // Copy register "next"'s to "current"'s
         registerFile.finishStep();
     }
+    
 }
