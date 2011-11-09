@@ -46,13 +46,13 @@ public class MemoryController {
         
         if ((ticksRemaining = loadRequests.get(memoryLocation)) == null) {
             // First request for this memory location
-            loadRequests.put(memoryLocation, MEM_TICKS_REQ);
+            loadRequests.put(memoryLocation, MEM_TICKS_REQ - 1);
             
             // Return null to indicate more cycles needed to fulfil load
             return null;
         }
         
-        if (ticksRemaining == 0) {
+        if (ticksRemaining == 1) {
             /*
              * Number of ticks satisfied, return the value in memory
              * and clear request
@@ -82,13 +82,13 @@ public class MemoryController {
         
         if ((ticksRemaining = storeRequests.get(memoryLocation)) == null) {
             // First request for this memory location
-            storeRequests.put(memoryLocation, MEM_TICKS_REQ);
+            storeRequests.put(memoryLocation, MEM_TICKS_REQ - 1);
             
             // Return false to indicate more cycles needed to fulfil store
             return false;
         }
         
-        if (ticksRemaining == 0) {
+        if (ticksRemaining == 1) {
             /*
              * Number of ticks satisfied, perform the store
              * and clear request
