@@ -8,7 +8,7 @@ public class MemoryController {
      * Number of ticks required for a read or write
      * of memory
      */
-    protected static final int MEM_TICKS_REQ = 10;
+    protected static final int MEM_TICKS_REQ = 3;
     
     /**
      * Reference to memory object
@@ -25,7 +25,7 @@ public class MemoryController {
      * Hash map for write requests
      * Maps location onto ticks remaining
      */
-    protected HashMap<Integer, Integer> writeRequests = new HashMap<Integer, Integer>();
+    protected HashMap<Integer, Integer> storeRequests = new HashMap<Integer, Integer>();
     
     /**
      * Constructor
@@ -46,19 +46,28 @@ public class MemoryController {
         
         if ((ticksRemaining = loadRequests.get(memoryLocation)) == null) {
             // First request for this memory location
-            ticksRemaining = MEM_TICKS_REQ;
+            loadRequests.put(memoryLocation, MEM_TICKS_REQ);
             
             // Return null to indicate more cycles needed to fulfil load
             return null;
         }
         
         if (ticksRemaining == 0) {
-            // Number of ticks satisfied, return the value in memory
+            /*
+             * Number of ticks satisfied, return the value in memory
+             * and clear request
+             */
+            loadRequests.remove(memoryLocation);
+            
             return memory.load(memoryLocation);
-        } else {
-            // Number of ticks NOT satisfied, return null to indicate so
-            return null;
         }
+        
+        /*
+         * Number of ticks NOT satisfied, decrement,
+         * then return null to indicate so
+         */
+        loadRequests.put(memoryLocation, ticksRemaining - 1);
+        return null;
     }
     
     /**
@@ -71,16 +80,20 @@ public class MemoryController {
     public boolean store(int memoryLocation, byte[] data) {
         Integer ticksRemaining;
         
-        if ((ticksRemaining = writeRequests.get(memoryLocation)) == null) {
+        if ((ticksRemaining = storeRequests.get(memoryLocation)) == null) {
             // First request for this memory location
-            ticksRemaining = MEM_TICKS_REQ;
+            storeRequests.put(memoryLocation, MEM_TICKS_REQ);
             
             // Return false to indicate more cycles needed to fulfil store
             return false;
         }
         
         if (ticksRemaining == 0) {
-            // Number of ticks satisfied, perform the store
+            /*
+             * Number of ticks satisfied, perform the store
+             * and clear request
+             */
+            storeRequests.remove(memoryLocation);
             
             /*
              * Do a deep copy on the data to prevent changes due to
@@ -88,10 +101,14 @@ public class MemoryController {
              */
             memory.store(memoryLocation, data.clone());
             return true;
-        } else {
-            // Number of ticks NOT satisfied, return false to indicate so
-            return false;
         }
+        
+        /*
+         * Number of ticks NOT satisfied, decrement,
+         * then return false to indicate so
+         */
+        storeRequests.put(memoryLocation, ticksRemaining - 1);
+        return false;
     }
     
 }
