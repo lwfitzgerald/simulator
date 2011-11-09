@@ -14,8 +14,6 @@ public class DecodeStage extends PipelineStage {
          * Set the stage number
          */
         STAGE_NUM = 2;
-        
-        updateUI();
     }
 
     @Override

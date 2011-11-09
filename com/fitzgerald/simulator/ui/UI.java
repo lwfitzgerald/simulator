@@ -3,19 +3,21 @@ package com.fitzgerald.simulator.ui;
 import javax.swing.SwingUtilities;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.processor.Simulator;
 
 public class UI implements Runnable {
     
+    protected Simulator simulator;
     protected MainWindow mainWindow;
     protected boolean initialised = false;
     
-    public UI() {
-        //SwingUtilities.invoke(this);
-        run();
+    public UI(Simulator simulator) {
+        this.simulator = simulator;
+        SwingUtilities.invokeLater(this);
     }
     
     public void run() {
-        mainWindow = new MainWindow();
+        mainWindow = new MainWindow(simulator);
     }
     
     /**
@@ -35,4 +37,13 @@ public class UI implements Runnable {
     public void setRegisterValue(int registerNum, byte[] value) {
         mainWindow.setRegisterValue(registerNum, value);
     }
+    
+    /**
+     * Sets the displayed cycle count
+     * @param cycleCount Number of cycles to display
+     */
+    public void setCycleCount(int cycleCount) {
+        mainWindow.setCycleCount(cycleCount);
+    }
+    
 }

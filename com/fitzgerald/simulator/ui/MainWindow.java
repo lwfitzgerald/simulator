@@ -6,16 +6,23 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JSeparator;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.processor.Simulator;
 
 public class MainWindow extends JFrame {
+    
+    protected Simulator simulator;
     protected StageTable stageTable;
     protected RegisterTable registerTable;
+    protected JLabel cycleCount;
     
-    public MainWindow() {
+    public MainWindow(Simulator simulator) {
         super();
+        
+        this.simulator = simulator;
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -38,15 +45,24 @@ public class MainWindow extends JFrame {
         stepButton.setMaximumSize(new Dimension(82, 19));
         stepButton.setPreferredSize(new Dimension(82, 19));
         
+        stepButton.addActionListener(simulator);
+        
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 2;
         add(new JSeparator(), c);
         
-        c.fill = GridBagConstraints.NONE;
-        c.gridx = 1;
+        cycleCount = new JLabel("Cycles: ");
+        c.anchor = GridBagConstraints.WEST;
+        c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 1;
+        add(cycleCount, c);
+        
+        
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridx = 1;
         add(stepButton, c);
         
         pack();
@@ -69,5 +85,13 @@ public class MainWindow extends JFrame {
      */
     public void setRegisterValue(int registerNum, byte[] value) {
         registerTable.setRegisterValue(registerNum, value);
+    }
+    
+    /**
+     * Sets the displayed cycle count
+     * @param cycleCount Number of cycles to display
+     */
+    public void setCycleCount(int cycleCount) {
+        this.cycleCount.setText("Cycles: " + cycleCount);
     }
 }

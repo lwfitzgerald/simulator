@@ -14,8 +14,6 @@ public class ExecuteStage extends PipelineStage {
          * Set the stage number
          */
         STAGE_NUM = 3;
-        
-        updateUI();
     }
 
     @Override

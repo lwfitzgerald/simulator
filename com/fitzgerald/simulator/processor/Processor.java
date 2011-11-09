@@ -10,6 +10,8 @@ public class Processor {
     protected Program program;
     protected UI ui;
     
+    protected int cycleCount = -1;
+    
     public static final int PC_REG = 15;
     
     /*
@@ -23,6 +25,7 @@ public class Processor {
         this.program = program;
         this.registerFile = new RegisterFile(ui);
         this.memoryController = new MemoryController(memory);
+        this.ui = ui;
         
         // Initialise pipeline stages
         this.fetchStage = new FetchStage(ui);
@@ -39,6 +42,8 @@ public class Processor {
      * of the program has been reached
      */
     public boolean step() {
+        // Update cycle count and register UIs
+        ui.setCycleCount(++cycleCount);
         registerFile.updateUI();
 
         fetchStage.step(program, registerFile, memoryController);

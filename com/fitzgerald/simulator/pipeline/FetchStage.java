@@ -17,8 +17,6 @@ public class FetchStage extends PipelineStage {
          * Set the stage number
          */
         STAGE_NUM = 1;
-        
-        updateUI();
     }
     
     @Override

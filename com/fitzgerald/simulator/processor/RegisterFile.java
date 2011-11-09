@@ -22,8 +22,6 @@ public class RegisterFile {
         for (int i=0; i < NUM_REGISTERS; i++) {
             registerArray[i] = new Register(i, ui);
         }
-        
-        updateUI();
     }
     
     /**

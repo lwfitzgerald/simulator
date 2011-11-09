@@ -1,12 +1,14 @@
 package com.fitzgerald.simulator.processor;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 
 import com.fitzgerald.simulator.ui.UI;
 
-public class Simulator {
+public class Simulator implements ActionListener {
     
     /**
      * Processor linked to memory, registers etc
@@ -44,7 +46,7 @@ public class Simulator {
      */
     public Simulator(String programFile) {
         // Initialise the UI
-        ui = new UI();
+        ui = new UI(this);
         
         try {
             processor = new Processor(loadProgram(programFile), new Memory(), ui);
@@ -54,7 +56,7 @@ public class Simulator {
             System.exit(1);
         }
         
-        try {
+        /*try {
             Thread.sleep(1000);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
@@ -66,9 +68,9 @@ public class Simulator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         
-        System.out.println("Halting");
+        //System.out.println("Halting");
     }
     
     protected Program loadProgram(String programPath) throws Exception {
@@ -76,6 +78,18 @@ public class Simulator {
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
         
         return (Program) objectStream.readObject();
+    }
+
+    /**
+     * Called when the UI is loaded and ready for data
+     */
+    public void uiLoaded() {
+        
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        processor.step();
     }
     
     public static void test() {
