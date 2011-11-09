@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.ui;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 
@@ -20,6 +21,9 @@ public class StageTable extends JPanel {
         
         GridLayout layoutMgr = new GridLayout(3, 1);
         setLayout(layoutMgr);
+        
+        setMinimumSize(new Dimension(130, 120));
+        setPreferredSize(new Dimension(130, 120));
         
         for (StageStatus stage : stages) {
             add(stage);
