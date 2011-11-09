@@ -47,7 +47,14 @@ public class Processor {
             decodeStage.containsArtificialNop() &&
             executeStage.containsArtificialNop()) {
             
-            // All stages contain artificial Nops so we can halt
+            /*
+             * All stages contain artificial Nops so we can halt
+             * but first we need to update the UI one last time to
+             * clear the last instruction
+             */
+            decodeStage.updateUI();
+            executeStage.updateUI();
+            
             return false;
         }
         
