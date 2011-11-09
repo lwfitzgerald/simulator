@@ -11,8 +11,10 @@ import com.fitzgerald.simulator.ui.UI;
 public abstract class PipelineStage {
     protected Instruction instruction;
     
-    protected byte[] sourceData1;
-    protected byte[] sourceData2;
+    protected byte[] sourceData1 = null;
+    protected byte[] sourceData2 = null;
+    protected byte[] sourceData3 = null;
+    protected byte[] buffer = null;
     
     /**
      * Stage number for this stage
@@ -55,6 +57,7 @@ public abstract class PipelineStage {
         newStage.setInstruction(instruction);
         newStage.setSourceData1(sourceData1);
         newStage.setSourceData2(sourceData2);
+        //newStage.setSourceData3(sourceData3);
     }
     
     /**
@@ -123,7 +126,35 @@ public abstract class PipelineStage {
     public void setSourceData2(byte[] sourceData2) {
         this.sourceData2 = sourceData2;
     }
-    
+
+    /**
+     * @return the sourceData3
+     */
+    public byte[] getSourceData3() {
+        return sourceData3;
+    }
+
+    /**
+     * @param sourceData3 the sourceData3 to set
+     */
+    public void setSourceData3(byte[] sourceData3) {
+        this.sourceData3 = sourceData3;
+    }
+
+    /**
+     * @return the buffer
+     */
+    public byte[] getBuffer() {
+        return buffer;
+    }
+
+    /**
+     * @param buffer the buffer to set
+     */
+    public void setBuffer(byte[] buffer) {
+        this.buffer = buffer;
+    }
+
     /**
      * @return True if execution has completed
      */
