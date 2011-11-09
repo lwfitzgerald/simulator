@@ -55,18 +55,20 @@ public class Simulator {
         }
         
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
         
         while (processor.step()) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        
+        System.out.println("Halting");
     }
     
     protected Program loadProgram(String programPath) throws Exception {
