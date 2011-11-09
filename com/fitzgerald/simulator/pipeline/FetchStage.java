@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.instruction.Nop;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.Program;
@@ -20,7 +21,9 @@ public class FetchStage extends PipelineStage {
     }
     
     @Override
-    public void step(Program program, RegisterFile registerFile, MemoryController memoryController) {
+    public void step(Program program, RegisterFile registerFile, ALU alu,
+            MemoryController memoryController) {
+        
         // Only perform the step if it has not been done already
         if (isCompleted == false) {
             // Get the current program counter value

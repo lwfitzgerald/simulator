@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -14,6 +15,12 @@ public class J extends Instruction {
      */
     private static final long serialVersionUID = 1871790764749534500L;
 
+    @Override
+    public int getALUCyclesRequired() {
+        // Not applicable
+        return -1;
+    }
+    
     @Override
     protected boolean conditional() {
         // Unconditional jump, always execute!
@@ -35,13 +42,21 @@ public class J extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
+    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage) {
+        
         int currentPC = Util.bytesToInt(executeStage.getSourceData1());
         int newPC = currentPC + Util.bytesToInt(executeStage.getSourceData2());
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(newPC));
         
         return true;
+    }
+
+    @Override
+    public byte[] aluOperation(ExecuteStage executeStage) {
+        // Not applicable
+        return null;
     }
     
     @Override

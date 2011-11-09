@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.pipeline;
 
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -17,7 +18,9 @@ public class ExecuteStage extends PipelineStage {
     }
 
     @Override
-    public void step(Program program, RegisterFile registerFile, MemoryController memoryController) {
+    public void step(Program program, RegisterFile registerFile, ALU alu,
+            MemoryController memoryController) {
+        
         // Update the UI
         updateUI();
         
@@ -27,7 +30,7 @@ public class ExecuteStage extends PipelineStage {
          */
         if (!isCompleted) {
             // Call the instruction's individual execute method
-            boolean executeResult = instruction.execute(registerFile, memoryController, this);
+            boolean executeResult = instruction.execute(registerFile, alu, memoryController, this);
             
             if (executeResult == true) {
                 // No more cycles required, mark as completed

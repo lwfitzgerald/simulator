@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Nop;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Program;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -39,9 +40,11 @@ public abstract class PipelineStage {
      * Step this pipeline stage
      * @param program Reference to program object
      * @param registerFile Reference to register file object
+     * @param alu Reference to ALU object
      * @param memoryController Reference to memory controller object
      */
-    public abstract void step(Program program, RegisterFile registerFile, MemoryController memoryController);
+    public abstract void step(Program program, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController);
     
     /**
      * Copies the state of this pipeline stage to the

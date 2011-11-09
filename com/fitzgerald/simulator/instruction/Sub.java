@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
@@ -13,6 +14,11 @@ public class Sub extends Instruction {
      */
     private static final long serialVersionUID = -12971856879705209L;
 
+    @Override
+    public int getALUCyclesRequired() {
+        return 1;
+    }
+    
     @Override
     protected boolean conditional() {
         // Always execute
@@ -34,16 +40,25 @@ public class Sub extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
-        int srcInt1 = Util.bytesToInt(executeStage.getSourceData1());
-        int srcInt2 = Util.bytesToInt(executeStage.getSourceData2());
-        int result = srcInt1 - srcInt2;
+    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage) {
+        
+        byte[] result = alu.performOperation(executeStage);
 
         // Set value as register's next value
-        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(Util.intToBytes(result));
+        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(result);
         
         // Completes in 1 cycle so return true
         return true;
+    }
+    
+    @Override
+    public byte[] aluOperation(ExecuteStage executeStage) {
+        int srcInt1 = Util.bytesToInt(executeStage.getSourceData1());
+        int srcInt2 = Util.bytesToInt(executeStage.getSourceData2());
+        int result = srcInt1 - srcInt2;
+        
+        return Util.intToBytes(result);
     }
     
     @Override

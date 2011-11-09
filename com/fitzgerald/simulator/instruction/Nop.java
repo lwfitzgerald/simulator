@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
@@ -35,6 +36,12 @@ public class Nop extends Instruction {
     }
     
     @Override
+    public int getALUCyclesRequired() {
+        // Not applicable
+        return -1;
+    }
+    
+    @Override
     protected boolean conditional() {
         // Never do anything!
         return false;
@@ -44,8 +51,16 @@ public class Nop extends Instruction {
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {}
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
+    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage) {
+        
         return true;
+    }
+    
+    @Override
+    public byte[] aluOperation(ExecuteStage executeStage) {
+        // Not applicable
+        return null;
     }
     
     @Override

@@ -7,27 +7,29 @@ import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
-public class Addi extends Instruction {
+public class Mul extends Instruction {
 
     /**
      * Serialisation ID
      */
-    private static final long serialVersionUID = 3348748444887990566L;
+    private static final long serialVersionUID = -2426553606105936083L;
 
     @Override
     public int getALUCyclesRequired() {
-        return 1;
+        // Multiplication requires 2 cycles
+        return 2;
     }
     
     @Override
     protected boolean conditional() {
+        // Always execute
         return true;
     }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         byte[] sourceData1 = registerFile.getRegister(Util.bytesToInt(operand2)).getCurrentValue();
-        byte[] sourceData2 = operand3;
+        byte[] sourceData2 = registerFile.getRegister(Util.bytesToInt(operand3)).getCurrentValue();
         
         /*
          * Do a deep copy of the source data and store the
@@ -35,22 +37,23 @@ public class Addi extends Instruction {
          * instruction
          */
         decodeStage.setSourceData1(sourceData1.clone());
-        decodeStage.setSourceData2(sourceData2);
+        decodeStage.setSourceData2(sourceData2.clone());
     }
 
     @Override
     protected boolean executeOperation(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
-        
         byte[] result = alu.performOperation(executeStage);
         
-        // Set value as register's next value
-        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(result);
+        if (result == null) {
+            // More cycles required
+            return false;
+        }
         
-        // Addi always takes one cycle
+        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(result);
         return true;
     }
-    
+
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
         int srcInt1 = Util.bytesToInt(executeStage.getSourceData1());
@@ -62,15 +65,15 @@ public class Addi extends Instruction {
     
     @Override
     public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Absolute
-        return labelAddr;
+        // Not applicable
+        return -1;
     }
 
     @Override
     public String toString() {
-        return "ADDI r" + Util.bytesToInt(operand1) + 
-               ", r" + Util.bytesToInt(operand2) + 
-               ", " + Util.bytesToInt(operand3);
+        return "MUL r" + Util.bytesToInt(operand1) +
+               ", r" + Util.bytesToInt(operand2) +
+               ", r" + Util.bytesToInt(operand3);
     }
 
 }

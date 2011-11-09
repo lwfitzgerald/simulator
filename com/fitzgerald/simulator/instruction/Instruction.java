@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
@@ -30,6 +31,13 @@ public abstract class Instruction implements Serializable {
     protected byte[] operand3;
     
     /**
+     * Returns the number of cycles required
+     * for this instruction to complete
+     * @return Number of cycles required to complete
+     */
+    public abstract int getALUCyclesRequired();
+    
+    /**
      * Called to decide whether to execute instruction
      * (for conditional branches etc)
      * @return True if instruction should be executed 
@@ -53,9 +61,10 @@ public abstract class Instruction implements Serializable {
      * @return True if execution completed, false if
      * more cycles required
      */
-    public boolean execute(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage) {
         if (conditional()) {
-            return executeOperation(registerFile, memoryController, executeStage);
+            return executeOperation(registerFile, alu, memoryController, executeStage);
         }
         
         return true;
@@ -74,7 +83,17 @@ public abstract class Instruction implements Serializable {
      * @return True if execution completed, false if
      * more cycles required
      */
-    protected abstract boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage);
+    protected abstract boolean executeOperation(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage);
+    
+    /**
+     * Called by the ALU
+     * Describes the operation performed by the ALU
+     * for this instruction
+     * @param executeStage Execute stage reference
+     * @return Result of operation
+     */
+    public abstract byte[] aluOperation(ExecuteStage executeStage);
     
     /**
      * Takes an address of a label and converts it

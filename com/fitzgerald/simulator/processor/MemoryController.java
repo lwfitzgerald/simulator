@@ -8,7 +8,7 @@ public class MemoryController {
      * Number of ticks required for a read or write
      * of memory
      */
-    protected static final int MEM_TICKS_REQ = 3;
+    protected static final int MEM_TICKS_REQ = 5;
     
     /**
      * Reference to memory object

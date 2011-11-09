@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
@@ -13,6 +14,12 @@ public class Stc extends Instruction {
      */
     private static final long serialVersionUID = 7387641905906737577L;
 
+    @Override
+    public int getALUCyclesRequired() {
+        // Not applicable
+        return -1;
+    }
+    
     @Override
     protected boolean conditional() {
         // Always execute
@@ -28,7 +35,9 @@ public class Stc extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, MemoryController memoryController, ExecuteStage executeStage) {
+    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+            MemoryController memoryController, ExecuteStage executeStage) {
+        
         int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand2);
         byte[] data = operand3;
         
@@ -42,7 +51,13 @@ public class Stc extends Instruction {
         // Store completed successfully
         return true;
     }
-
+    
+    @Override
+    public byte[] aluOperation(ExecuteStage executeStage) {
+        // Not applicable
+        return null;
+    }
+    
     @Override
     public int labelToAddress(int labelAddr, int instructionAddr) {
         // Absolute

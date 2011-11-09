@@ -5,6 +5,7 @@ import com.fitzgerald.simulator.ui.UI;
 
 public class Processor {
     
+    protected ALU alu;
     protected MemoryController memoryController;
     protected RegisterFile registerFile;
     protected Program program;
@@ -24,6 +25,7 @@ public class Processor {
     public Processor(Program program, Memory memory, UI ui) {
         this.program = program;
         this.registerFile = new RegisterFile(ui);
+        this.alu = new ALU();
         this.memoryController = new MemoryController(memory);
         this.ui = ui;
         
@@ -46,7 +48,7 @@ public class Processor {
         ui.setCycleCount(++cycleCount);
         registerFile.updateUI();
 
-        fetchStage.step(program, registerFile, memoryController);
+        fetchStage.step(program, registerFile, alu, memoryController);
         
         if (fetchStage.containsArtificialNop() &&
             decodeStage.containsArtificialNop() &&
@@ -63,8 +65,8 @@ public class Processor {
             return false;
         }
         
-        decodeStage.step(program, registerFile, memoryController);
-        executeStage.step(program, registerFile, memoryController);
+        decodeStage.step(program, registerFile, alu, memoryController);
+        executeStage.step(program, registerFile, alu, memoryController);
         
         if (executeStage.isCompleted()) {
             /*
