@@ -20,6 +20,9 @@ public class ExecuteStage extends PipelineStage {
 
     @Override
     public void step(Program program, RegisterFile registerFile, MemoryController memoryController) {
+        // Update the UI
+        updateUI();
+        
         /*
          * Only perform the step if it's not been completed on
          * a previous cycle
@@ -27,9 +30,6 @@ public class ExecuteStage extends PipelineStage {
         if (!isCompleted) {
             // Call the instruction's individual execute method
             boolean executeResult = instruction.execute(registerFile, memoryController, this);
-            
-            // Update the UI
-            updateUI();
             
             if (executeResult == true) {
                 // No more cycles required, mark as completed

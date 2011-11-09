@@ -57,7 +57,7 @@ public abstract class PipelineStage {
     /**
      * Updates the UI for this stage
      */
-    protected void updateUI() {
+    public void updateUI() {
         ui.setStageInstruction(STAGE_NUM, instruction);
     }
     

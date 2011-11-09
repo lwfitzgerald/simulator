@@ -20,13 +20,13 @@ public class DecodeStage extends PipelineStage {
 
     @Override
     public void step(Program program, RegisterFile registerFile, MemoryController memoryController) {
+        // Update the UI
+        updateUI();
+        
         // Only perform the step if it has not been done already
         if (isCompleted == false) {
             // Call the instruction's individual decode method
             instruction.decode(registerFile, this);
-            
-            // Update the UI
-            updateUI();
             
             // Decode only ever takes 1 cycle so mark as completed
             setCompleted(true);
