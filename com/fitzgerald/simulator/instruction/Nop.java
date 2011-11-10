@@ -4,6 +4,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
+import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public class Nop extends Instruction {
@@ -45,8 +46,8 @@ public class Nop extends Instruction {
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {}
 
     @Override
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
         
         return true;
     }

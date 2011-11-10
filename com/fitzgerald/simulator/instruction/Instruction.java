@@ -6,6 +6,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
+import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 
 public abstract class Instruction implements Serializable {
@@ -48,14 +49,15 @@ public abstract class Instruction implements Serializable {
     /**
      * Perform the individual execute operations for this
      * instruction.
+     * @param processor Processor object reference
      * @param registerFile Register file reference
      * @param memoryController Memory controller object reference
      * @param executeStage Execute stage reference
      * @return True if execution completed, false if
      * more cycles required
      */
-    public abstract boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage);
+    public abstract boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage);
     
     /**
      * Called by the ALU

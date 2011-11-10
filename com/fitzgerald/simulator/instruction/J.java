@@ -36,13 +36,16 @@ public class J extends Instruction {
     }
 
     @Override
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
         
         int currentPC = Util.bytesToInt(executeStage.getSourceData1());
         int newPC = currentPC + Util.bytesToInt(executeStage.getSourceData2());
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(newPC));
+        
+        // Flush the pipeline
+        processor.flushPipeline();
         
         return true;
     }

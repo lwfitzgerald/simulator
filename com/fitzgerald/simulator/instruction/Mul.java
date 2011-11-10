@@ -4,6 +4,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
+import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
@@ -35,8 +36,8 @@ public class Mul extends Instruction {
     }
 
     @Override
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
         byte[] result = alu.performOperation(executeStage);
         
         if (result == null) {

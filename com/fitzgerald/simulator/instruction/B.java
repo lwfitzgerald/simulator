@@ -27,10 +27,13 @@ public class B extends Instruction {
     }
 
     @Override
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(operand1);
+        
+        // Flush the pipeline
+        processor.flushPipeline();
         
         return true;
     }

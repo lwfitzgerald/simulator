@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.processor;
 
+import com.fitzgerald.simulator.instruction.Nop;
 import com.fitzgerald.simulator.pipeline.*;
 import com.fitzgerald.simulator.ui.UI;
 
@@ -48,7 +49,7 @@ public class Processor {
         ui.setCycleCount(++cycleCount);
         registerFile.updateUI();
 
-        fetchStage.step(program, registerFile, alu, memoryController);
+        fetchStage.step(program, this, registerFile, alu, memoryController);
         
         if (fetchStage.containsArtificialNop() &&
             decodeStage.containsArtificialNop() &&
@@ -65,8 +66,8 @@ public class Processor {
             return false;
         }
         
-        decodeStage.step(program, registerFile, alu, memoryController);
-        executeStage.step(program, registerFile, alu, memoryController);
+        decodeStage.step(program, this, registerFile, alu, memoryController);
+        executeStage.step(program, this, registerFile, alu, memoryController);
         
         if (executeStage.isCompleted()) {
             /*
@@ -91,6 +92,15 @@ public class Processor {
         
         // Copy register "next"'s to "current"'s
         registerFile.finishStep();
+    }
+    
+    /**
+     * Flushes the pipeline following a branch
+     */
+    public void flushPipeline() {
+        // Insert artificial Nops
+        fetchStage.setInstruction(new Nop(true));
+        decodeStage.setInstruction(new Nop(true));
     }
     
 }

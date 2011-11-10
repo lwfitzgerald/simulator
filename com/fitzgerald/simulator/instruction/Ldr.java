@@ -4,6 +4,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
 import com.fitzgerald.simulator.processor.MemoryController;
+import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
@@ -29,8 +30,8 @@ public class Ldr extends Instruction {
     }
 
     @Override
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
+    public boolean execute(Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
         
         registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(executeStage.getSourceData1());
         

@@ -21,8 +21,8 @@ public class FetchStage extends PipelineStage {
     }
     
     @Override
-    public void step(Program program, RegisterFile registerFile, ALU alu,
-            MemoryController memoryController) {
+    public void step(Program program, Processor processor, RegisterFile registerFile,
+            ALU alu, MemoryController memoryController) {
         
         // Only perform the step if it has not been done already
         if (isCompleted == false) {
