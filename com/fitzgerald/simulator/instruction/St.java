@@ -16,8 +16,8 @@ public class St extends Instruction {
 
     @Override
     public int getALUCyclesRequired() {
-        // 1 cycle required for calculating address
-        return 1;
+        // Not applicable
+        return -1;
     }
     
     @Override
@@ -37,41 +37,21 @@ public class St extends Instruction {
         // Deep copy of the register values to unlink
         decodeStage.setSourceData1(sourceData1.clone());
         decodeStage.setSourceData2(sourceData2.clone());
-        
-        decodeStage.setSourceData3(operand3);
     }
 
     @Override
     protected boolean executeOperation(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
-        if (executeStage.getBuffer() == null) {
-            // First calculate the address
-            executeStage.setBuffer(alu.performOperation(executeStage));
-            
-            // Return false to continue remaining cycles
-            return false;
-        }
-        
-        if (executeStage.getBuffer() == null) {
-            // First calculate the address
-            executeStage.setBuffer(alu.performOperation(executeStage));
-            
-            // Return false to continue remaining cycles
-            return false;
-        }
-
+        int memoryLocation = Util.bytesToInt(executeStage.getSourceData2()) + Util.bytesToInt(operand3);
         byte[] data = executeStage.getSourceData1();
-        int address = Util.bytesToInt(executeStage.getBuffer());
-        boolean storeResult = memoryController.store(address, data);
+        
+        boolean storeResult = memoryController.store(memoryLocation, data);
         
         if (!storeResult) {
             // Needs more cycles
             return false;
         }
-        
-        // Don't forget to set the buffer back to null!
-        executeStage.setBuffer(null);
         
         // Store completed successfully
         return true;
@@ -79,11 +59,8 @@ public class St extends Instruction {
 
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
-        int base = Util.bytesToInt(executeStage.getSourceData2());
-        int offset = Util.bytesToInt(operand3);
-        int result = base + offset;
-        
-        return Util.intToBytes(result);
+        // Not applicable
+        return null;
     }
     
     @Override

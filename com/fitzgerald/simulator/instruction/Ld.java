@@ -20,8 +20,8 @@ public class Ld extends Instruction {
 
     @Override
     public int getALUCyclesRequired() {
-        // 1 cycle required for calculating memory address
-        return 1;
+        // Not applicable
+        return -1;
     }
     
     @Override
@@ -36,25 +36,14 @@ public class Ld extends Instruction {
         
         // Deep copy of the register value to unlink
         decodeStage.setSourceData1(sourceData1.clone());
-        
-        // Immediate offset
-        decodeStage.setSourceData2(operand3);
     }
 
     @Override
     protected boolean executeOperation(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
+        int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand3);
         
-        if (executeStage.getBuffer() == null) {
-            // First calculate the address
-            executeStage.setBuffer(alu.performOperation(executeStage));
-            
-            // Return false to continue remaining cycles
-            return false;
-        }
-        
-        // Then do the actual load
-        byte[] loadResult = memoryController.load(Util.bytesToInt(executeStage.getBuffer()));
+        byte[] loadResult = memoryController.load(memoryLocation);
         
         if (loadResult == null) {
             // Needs more cycles
@@ -68,19 +57,13 @@ public class Ld extends Instruction {
          */
         registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(loadResult.clone());
         
-        // Don't forget to set the buffer back to null!
-        executeStage.setBuffer(null);
-        
         return true;
     }
     
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
-        int base = Util.bytesToInt(executeStage.getSourceData1());
-        int offset = Util.bytesToInt(executeStage.getSourceData2());
-        int result = base + offset;
-        
-        return Util.intToBytes(result);
+        // Not applicable
+        return null;
     }
     
     @Override

@@ -17,8 +17,8 @@ public class J extends Instruction {
 
     @Override
     public int getALUCyclesRequired() {
-        // 1 cycle needed to calculate branch address
-        return 1;
+        // Not applicable
+        return -1;
     }
     
     @Override
@@ -45,29 +45,18 @@ public class J extends Instruction {
     protected boolean executeOperation(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
-        if (executeStage.getBuffer() == null) {
-            // First calculate the branch address
-            executeStage.setBuffer(alu.performOperation(executeStage));
-            
-            // Return false to force second cycle
-            return false;
-        }
+        int currentPC = Util.bytesToInt(executeStage.getSourceData1());
+        int newPC = currentPC + Util.bytesToInt(executeStage.getSourceData2());
         
-        // Then return (simulating 2 cycle requirement)
-        registerFile.getRegister(Processor.PC_REG).setNextValue(executeStage.getBuffer());
-        
-        // Don't forget to set the buffer back to null!
-        executeStage.setBuffer(null);
+        registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(newPC));
         
         return true;
     }
 
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
-        int currentPC = Util.bytesToInt(executeStage.getSourceData1());
-        int newPC = currentPC + Util.bytesToInt(executeStage.getSourceData2());
-        
-        return Util.intToBytes(newPC);
+        // Not applicable
+        return null;
     }
     
     @Override
