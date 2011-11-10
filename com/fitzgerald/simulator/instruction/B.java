@@ -52,12 +52,6 @@ public class B extends Instruction {
     public byte[] branchCalculation(ExecuteStage executeStage) {
         return operand1;
     }
-    
-    @Override
-    public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Absolute jump
-        return labelAddr;
-    }
 
     @Override
     public String toString() {

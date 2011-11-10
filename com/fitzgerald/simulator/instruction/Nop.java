@@ -70,12 +70,6 @@ public class Nop extends Instruction {
         // Not applicable
         return null;
     }
-    
-    @Override
-    public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Not applicable
-        return -1;
-    }
 
     /**
      * Returns if this is a Nop inserted

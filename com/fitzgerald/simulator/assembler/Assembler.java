@@ -124,7 +124,7 @@ public class Assembler {
             String label = toReplace.getLabel();
             Instruction instruction = instructions[instructionAddr / 4];
             
-            byte[] value = Util.intToBytes(instruction.labelToAddress(labels.get(label), instructionAddr));
+            byte[] value = Util.intToBytes(labels.get(label));
             instruction.setOperand(toReplace.getOperandNo(), value);
         }
     }

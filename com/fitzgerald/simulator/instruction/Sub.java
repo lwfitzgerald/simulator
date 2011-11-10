@@ -68,12 +68,6 @@ public class Sub extends Instruction {
         // Not applicable
         return null;
     }
-    
-    @Override
-    public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Not applicable
-        return -1;
-    }
 
     @Override
     public String toString() {

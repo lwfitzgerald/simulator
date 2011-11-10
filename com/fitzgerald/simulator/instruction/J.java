@@ -70,12 +70,6 @@ public class J extends Instruction {
         // Apply the offset
         return Util.intToBytes(correctPC + offset);
     }
-    
-    @Override
-    public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Relative jump!
-        return labelAddr - instructionAddr;
-    }
 
     @Override
     public String toString() {

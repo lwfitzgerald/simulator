@@ -9,12 +9,12 @@ import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
-public class Blt extends Instruction {
+public class Bgt extends Instruction {
 
     /**
      * Serialisation ID
      */
-    private static final long serialVersionUID = 3403193745847502542L;
+    private static final long serialVersionUID = -2728221734072777955L;
 
     @Override
     public int getALUCyclesRequired() {
@@ -58,7 +58,7 @@ public class Blt extends Instruction {
         int src1 = Util.bytesToInt(executeStage.getSourceData1());
         int src2 = Util.bytesToInt(executeStage.getSourceData2());
         
-        return src1 < src2;
+        return src1 > src2;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Blt extends Instruction {
 
     @Override
     public String toString() {
-        return "BLT r" + Util.bytesToInt(operand1) +
+        return "BGT r" + Util.bytesToInt(operand1) +
                ", r" + Util.bytesToInt(operand2) +
                ", " + Util.bytesToInt(operand3);
     }

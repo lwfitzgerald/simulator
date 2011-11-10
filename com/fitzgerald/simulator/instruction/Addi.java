@@ -68,12 +68,6 @@ public class Addi extends Instruction {
         // Not applicable
         return null;
     }
-    
-    @Override
-    public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Absolute
-        return labelAddr;
-    }
 
     @Override
     public String toString() {

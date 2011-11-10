@@ -88,18 +88,6 @@ public abstract class Instruction implements Serializable {
     public abstract byte[] branchCalculation(ExecuteStage executeStage);
     
     /**
-     * Takes an address of a label and converts it
-     * to an immediate value according to the behaviour
-     * of the instruction (absolute or relative)
-     * 
-     * Used during assembly (for J / B)
-     * @param labelAddr Address of label
-     * @param instructionAddr Instruction address 
-     * @return Immediate value to use
-     */
-    public abstract int labelToAddress(int labelAddr, int instructionAddr);
-    
-    /**
      * Set the value of an operand for this instruction
      * @param operandNo Operand to set
      * @param value Value to set operand to
