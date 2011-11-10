@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
+import com.fitzgerald.simulator.processor.BranchUnit;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -51,13 +52,14 @@ public abstract class Instruction implements Serializable {
      * instruction.
      * @param processor Processor object reference
      * @param registerFile Register file reference
+     * @param branchUnit TODO
      * @param memoryController Memory controller object reference
      * @param executeStage Execute stage reference
      * @return True if execution completed, false if
      * more cycles required
      */
     public abstract boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, MemoryController memoryController, ExecuteStage executeStage);
+            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage);
     
     /**
      * Called by the ALU
@@ -67,6 +69,23 @@ public abstract class Instruction implements Serializable {
      * @return Result of operation
      */
     public abstract byte[] aluOperation(ExecuteStage executeStage);
+    
+    /**
+     * Called by the branch unit
+     * Checks whether the branch should be taken
+     * @param executeStage Execute stage reference
+     * @return True if branch should be taken, false
+     * otherwise
+     */
+    public abstract boolean branchCondition(ExecuteStage executeStage);
+    
+    /**
+     * Called by the branch unit
+     * Returns the calculated address to branch to
+     * @param executeStage Execute stage reference
+     * @return Address to branch to
+     */
+    public abstract byte[] branchCalculation(ExecuteStage executeStage);
     
     /**
      * Takes an address of a label and converts it

@@ -3,6 +3,7 @@ package com.fitzgerald.simulator.instruction;
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
+import com.fitzgerald.simulator.processor.BranchUnit;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -47,13 +48,25 @@ public class Nop extends Instruction {
 
     @Override
     public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
+            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
         
         return true;
     }
     
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
+        // Not applicable
+        return null;
+    }
+
+    @Override
+    public boolean branchCondition(ExecuteStage executeStage) {
+        // Not applicable
+        return false;
+    }
+    
+    @Override
+    public byte[] branchCalculation(ExecuteStage executeStage) {
         // Not applicable
         return null;
     }

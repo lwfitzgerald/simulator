@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.processor.ALU;
+import com.fitzgerald.simulator.processor.BranchUnit;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.Program;
@@ -20,7 +21,7 @@ public class DecodeStage extends PipelineStage {
 
     @Override
     public void step(Program program, Processor processor, RegisterFile registerFile,
-            ALU alu, MemoryController memoryController) {
+            ALU alu, BranchUnit branchUnit, MemoryController memoryController) {
         
         // Update the UI
         updateUI();

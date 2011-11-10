@@ -9,12 +9,12 @@ import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
-public class Ldr extends Instruction {
+public class Blt extends Instruction {
 
     /**
      * Serialisation ID
      */
-    private static final long serialVersionUID = -7013572713573792144L;
+    private static final long serialVersionUID = 3403193745847502542L;
 
     @Override
     public int getALUCyclesRequired() {
@@ -24,22 +24,24 @@ public class Ldr extends Instruction {
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
-        // Immediate value to load
-        byte[] sourceData1 = operand2;
+        byte[] sourceData1 = registerFile.getRegister(Util.bytesToInt(operand1)).getCurrentValue();
+        byte[] sourceData2 = registerFile.getRegister(Util.bytesToInt(operand2)).getCurrentValue();
         
-        decodeStage.setSourceData1(sourceData1);
+        // Do a deep copy to unlink from the register value
+        decodeStage.setSourceData1(sourceData1.clone());
+        decodeStage.setSourceData2(sourceData2.clone());
     }
 
     @Override
     public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
+            ALU alu, BranchUnit branchUnit,
+            MemoryController memoryController, ExecuteStage executeStage) {
         
-        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(executeStage.getSourceData1());
+        // TODO
         
-        // Load immediate always takes 1 cycle
-        return true;
+        return false;
     }
-    
+
     @Override
     public byte[] aluOperation(ExecuteStage executeStage) {
         // Not applicable
@@ -48,26 +50,28 @@ public class Ldr extends Instruction {
 
     @Override
     public boolean branchCondition(ExecuteStage executeStage) {
-        // Not applicable
-        return false;
+        int src1 = Util.bytesToInt(executeStage.getSourceData1());
+        int src2 = Util.bytesToInt(executeStage.getSourceData2());
+        
+        return src1 < src2;
     }
-    
+
     @Override
     public byte[] branchCalculation(ExecuteStage executeStage) {
-        // Not applicable
-        return null;
+        return operand3;
     }
     
     @Override
     public int labelToAddress(int labelAddr, int instructionAddr) {
-        // Absolute
+        // Absolute address
         return labelAddr;
     }
 
     @Override
     public String toString() {
-        return "LDR r" + Util.bytesToInt(operand1) + 
-               ", " + Util.bytesToInt(operand2);
+        return "BLT r" + Util.bytesToInt(operand1) +
+               ", r" + Util.bytesToInt(operand2) +
+               ", " + Util.bytesToInt(operand3);
     }
 
 }

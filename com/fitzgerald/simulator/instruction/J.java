@@ -3,6 +3,7 @@ package com.fitzgerald.simulator.instruction;
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.processor.ALU;
+import com.fitzgerald.simulator.processor.BranchUnit;
 import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -23,26 +24,27 @@ public class J extends Instruction {
     
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         /*
-         * We are now +1 down the pipeline!
+         * Load the PC register
          * 
          * Do a deep copy to unlink the value from the register value
          */
         int fetchPC = Util.bytesToInt(registerFile.getRegister(Processor.PC_REG).getCurrentValue());
-        int actualPC = fetchPC - 4;
-        decodeStage.setSourceData2(Util.intToBytes(actualPC));
+        decodeStage.setSourceData1(Util.intToBytes(fetchPC));
         
         // Offset
-        decodeStage.setSourceData1(operand1);
+        decodeStage.setSourceData2(operand1);
     }
 
     @Override
     public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, MemoryController memoryController, ExecuteStage executeStage) {
+            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
         
-        int currentPC = Util.bytesToInt(executeStage.getSourceData1());
-        int newPC = currentPC + Util.bytesToInt(executeStage.getSourceData2());
+        byte[] result = branchUnit.performBranch(executeStage);
         
-        registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(newPC));
+        if (result != null) {
+            // Branch unit has returned an address, set it
+            registerFile.getRegister(Processor.PC_REG).setNextValue(result);
+        }
         
         return true;
     }
@@ -51,6 +53,22 @@ public class J extends Instruction {
     public byte[] aluOperation(ExecuteStage executeStage) {
         // Not applicable
         return null;
+    }
+
+    @Override
+    public boolean branchCondition(ExecuteStage executeStage) {
+        // Unconditional jump
+        return true;
+    }
+    
+    @Override
+    public byte[] branchCalculation(ExecuteStage executeStage) {
+        // Calculate the correct PC due to pipelining
+        int correctPC = Util.bytesToInt(executeStage.getSourceData1()) - 4;
+        int offset = Util.bytesToInt(executeStage.getSourceData2());
+        
+        // Apply the offset
+        return Util.intToBytes(correctPC + offset);
     }
     
     @Override
