@@ -190,7 +190,7 @@ public class Assembler {
             if (operands.length >= 1) {
                 String operand1 = operands[0];
                 
-                if (!operand1.matches("r?[0-9]")) {
+                if (!operand1.matches("^r?[0-9]+")) {
                     // Label
                     labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 1, operand1));
                 } else {
@@ -201,7 +201,7 @@ public class Assembler {
                 if (operands.length >= 2) {
                     String operand2 = operands[1];
                     
-                    if (!operand2.matches("r?[0-9]")) {
+                    if (!operand2.matches("^r?[0-9]+")) {
                         // Label
                         labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 2, operand2));
                     } else {
@@ -212,7 +212,7 @@ public class Assembler {
                     if (operands.length >= 3) {
                         String operand3 = operands[2];
                         
-                        if (!operand3.matches("r?[0-9]")) {
+                        if (!operand3.matches("^r?[0-9]+")) {
                             // Label
                             labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 3, operand3));
                         } else {
