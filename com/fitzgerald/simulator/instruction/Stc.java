@@ -19,12 +19,6 @@ public class Stc extends Instruction {
         // Not applicable
         return -1;
     }
-    
-    @Override
-    protected boolean conditional() {
-        // Always execute
-        return true;
-    }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
@@ -35,7 +29,7 @@ public class Stc extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
         int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand2);

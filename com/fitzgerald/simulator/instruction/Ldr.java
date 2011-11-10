@@ -7,22 +7,17 @@ import com.fitzgerald.simulator.processor.MemoryController;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.Util;
 
-public class Ldc extends Instruction {
+public class Ldr extends Instruction {
 
     /**
      * Serialisation ID
      */
-    private static final long serialVersionUID = 8413348152180654390L;
+    private static final long serialVersionUID = -7013572713573792144L;
 
     @Override
     public int getALUCyclesRequired() {
         // Not applicable
         return -1;
-    }
-    
-    @Override
-    protected boolean conditional() {
-        return true;
     }
 
     @Override
@@ -34,8 +29,9 @@ public class Ldc extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
+        
         registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(executeStage.getSourceData1());
         
         // Load immediate always takes 1 cycle
@@ -56,7 +52,7 @@ public class Ldc extends Instruction {
 
     @Override
     public String toString() {
-        return "LDC r" + Util.bytesToInt(operand1) + 
+        return "LDR r" + Util.bytesToInt(operand1) + 
                ", " + Util.bytesToInt(operand2);
     }
 

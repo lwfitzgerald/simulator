@@ -40,18 +40,12 @@ public class Nop extends Instruction {
         // Not applicable
         return -1;
     }
-    
-    @Override
-    protected boolean conditional() {
-        // Never do anything!
-        return false;
-    }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {}
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
         return true;

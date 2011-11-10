@@ -23,11 +23,6 @@ public class Ld extends Instruction {
         // Not applicable
         return -1;
     }
-    
-    @Override
-    protected boolean conditional() {
-        return true;
-    }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
@@ -39,7 +34,7 @@ public class Ld extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand3);
         

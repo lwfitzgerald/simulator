@@ -79,13 +79,6 @@ public class Simulator implements ActionListener {
         
         return (Program) objectStream.readObject();
     }
-
-    /**
-     * Called when the UI is loaded and ready for data
-     */
-    public void uiLoaded() {
-        
-    }
     
     @Override
     public void actionPerformed(ActionEvent arg0) {

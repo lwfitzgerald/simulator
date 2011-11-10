@@ -20,12 +20,6 @@ public class B extends Instruction {
         // Not applicable
         return -1;
     }
-    
-    @Override
-    protected boolean conditional() {
-        // Always execute
-        return true;
-    }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
@@ -33,7 +27,7 @@ public class B extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(operand1);

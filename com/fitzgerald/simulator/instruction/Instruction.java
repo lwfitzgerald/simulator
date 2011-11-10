@@ -38,13 +38,6 @@ public abstract class Instruction implements Serializable {
     public abstract int getALUCyclesRequired();
     
     /**
-     * Called to decide whether to execute instruction
-     * (for conditional branches etc)
-     * @return True if instruction should be executed 
-     */
-    protected abstract boolean conditional();
-    
-    /**
      * Perform the individual decode operations for this
      * instruction
      * @param registerFile Register file reference
@@ -53,37 +46,15 @@ public abstract class Instruction implements Serializable {
     public abstract void decode(RegisterFile registerFile, DecodeStage decodeStage);
     
     /**
-     * Evaluate the conditional method for this instruction
-     * and execute if it evaluates to true
-     * @param registerFile Register file reference
-     * @param memoryController Memory controller object reference
-     * @param executeStage Execute stage reference
-     * @return True if execution completed, false if
-     * more cycles required
-     */
-    public boolean execute(RegisterFile registerFile, ALU alu,
-            MemoryController memoryController, ExecuteStage executeStage) {
-        if (conditional()) {
-            return executeOperation(registerFile, alu, memoryController, executeStage);
-        }
-        
-        return true;
-    }
-    
-    /**
      * Perform the individual execute operations for this
      * instruction.
-     * 
-     * This should never be called directly, only by the
-     * execute method which checks the conditional for the
-     * instruction
      * @param registerFile Register file reference
      * @param memoryController Memory controller object reference
      * @param executeStage Execute stage reference
      * @return True if execution completed, false if
      * more cycles required
      */
-    protected abstract boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public abstract boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage);
     
     /**

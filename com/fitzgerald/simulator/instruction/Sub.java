@@ -18,12 +18,6 @@ public class Sub extends Instruction {
     public int getALUCyclesRequired() {
         return 1;
     }
-    
-    @Override
-    protected boolean conditional() {
-        // Always execute
-        return true;
-    }
 
     @Override
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
@@ -40,7 +34,7 @@ public class Sub extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
         byte[] result = alu.performOperation(executeStage);

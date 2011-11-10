@@ -21,12 +21,6 @@ public class J extends Instruction {
         return -1;
     }
     
-    @Override
-    protected boolean conditional() {
-        // Unconditional jump, always execute!
-        return true;
-    }
-    
     public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
         /*
          * We are now +1 down the pipeline!
@@ -42,7 +36,7 @@ public class J extends Instruction {
     }
 
     @Override
-    protected boolean executeOperation(RegisterFile registerFile, ALU alu,
+    public boolean execute(RegisterFile registerFile, ALU alu,
             MemoryController memoryController, ExecuteStage executeStage) {
         
         int currentPC = Util.bytesToInt(executeStage.getSourceData1());
