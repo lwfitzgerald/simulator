@@ -44,9 +44,6 @@ public class J extends Instruction {
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(Util.intToBytes(newPC));
         
-        // Flush the pipeline
-        processor.flushPipeline();
-        
         return true;
     }
 

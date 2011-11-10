@@ -81,6 +81,10 @@ public class Processor {
     }
     
     protected void finishStep() {
+        if (!pcIncrementedNormally()) {
+            flushPipeline();
+        }
+        
         // In reverse order to maintain data correctness
         decodeStage.copyState(executeStage);
         fetchStage.copyState(decodeStage);
@@ -95,9 +99,22 @@ public class Processor {
     }
     
     /**
+     * Returns whether the PC has been incremented
+     * normally
+     * @return True if next PC = curr PC + 4, false
+     * otherwise
+     */
+    protected boolean pcIncrementedNormally() {
+        int curr = Util.bytesToInt(registerFile.getRegister(PC_REG).getCurrentValue());
+        int next = Util.bytesToInt(registerFile.getRegister(PC_REG).getNextValue());
+        
+        return next - curr == 4;
+    }
+    
+    /**
      * Flushes the pipeline following a branch
      */
-    public void flushPipeline() {
+    protected void flushPipeline() {
         // Insert artificial Nops
         fetchStage.setInstruction(new Nop(true));
         decodeStage.setInstruction(new Nop(true));

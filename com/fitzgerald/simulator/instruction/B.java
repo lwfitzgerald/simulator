@@ -32,9 +32,6 @@ public class B extends Instruction {
         
         registerFile.getRegister(Processor.PC_REG).setNextValue(operand1);
         
-        // Flush the pipeline
-        processor.flushPipeline();
-        
         return true;
     }
 
