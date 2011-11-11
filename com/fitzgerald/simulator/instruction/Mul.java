@@ -54,7 +54,7 @@ public class Mul extends Instruction {
     public byte[] aluOperation(ExecuteStage executeStage) {
         int srcInt1 = Util.bytesToInt(executeStage.getSourceData1());
         int srcInt2 = Util.bytesToInt(executeStage.getSourceData2());
-        int result = srcInt1 + srcInt2;
+        int result = srcInt1 * srcInt2;
         
         return Util.intToBytes(result);
     }
