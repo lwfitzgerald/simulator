@@ -7,6 +7,7 @@ javacode:
 
 benchmarks: javacode
 	$(ASSEMBLER) testPrograms/vectorAdd.asm testPrograms/vectorAdd.bin
+	$(ASSEMBLER) testPrograms/vectorMul.asm testPrograms/vectorMul.bin
 	$(ASSEMBLER) testPrograms/fibonacci.asm testPrograms/fibonacci.bin
 
 clean: cleanbenchmarks
@@ -14,4 +15,5 @@ clean: cleanbenchmarks
 
 cleanbenchmarks:
 	rm testPrograms/vectorAdd.bin
+	rm testPrograms/vectorMul.bin
 	rm testPrograms/fibonacci.bin
