@@ -6,6 +6,8 @@ javacode:
 benchmarks: javacode
 	java com.fitzgerald.simulator.assembler.Assembler testPrograms/vectorAdd.asm testPrograms/vectorAdd.bin
 
-clean:
+clean: cleanbenchmarks
 	rm `find . -name "*.class"`
-	rm testPrograms/*.bin
+
+cleanbenchmarks:
+	rm testPrograms/vectorAdd.bin
