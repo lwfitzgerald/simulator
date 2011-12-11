@@ -14,16 +14,37 @@ public class ReservationStation {
     protected Integer dest = null;
     
     protected Instruction instruction = null;
+    protected ROBEntry robEntry = null;    
     
     /**
      * Store an instruction in the reservation station
      * @param instruction Instruction
      */
-    public void issueInstruction(Instruction instruction) {
+    public void issueInstruction(Instruction instruction,
+            RegisterFile registerFile, Scoreboard scoreboard,
+            ReorderBuffer reorderBuffer) {
+        
         // Reset status
         reset();
         
+        // Create reorder buffer entry
+        robEntry = reorderBuffer.addEntry(instruction);
+
         this.instruction = instruction;
+
+        // Attempt operand fetch and claim destination register
+        update(registerFile, scoreboard);
+    }
+    
+    /**
+     * Attempt to fetch operands and claim destination register
+     * @param registerFile Register file reference
+     * @param scoreboard Scoreboard reference
+     */
+    public void update(RegisterFile registerFile, Scoreboard scoreboard) {
+        if (instruction != null) {
+            instruction.updateReservationStation(registerFile, scoreboard, this);
+        }
     }
     
     /**
@@ -32,7 +53,7 @@ public class ReservationStation {
      * @return True if instruction is ready for dispatch
      */
     public boolean isReadyForDispatch() {
-        return srcData1Ready && srcData2Ready;
+        return srcData1Ready && srcData2Ready && destReady;
     }
     
     /**
@@ -63,6 +84,22 @@ public class ReservationStation {
         this.srcData1 = null;
         this.srcData2 = null;
         this.dest = null;
+    }
+    
+    /**
+     * Get the instruction
+     * @return Instruction
+     */
+    public Instruction getInstruction() {
+        return instruction;
+    }
+    
+    /**
+     * Get the ROB Entry reference
+     * @return ROB Entry reference
+     */
+    public ROBEntry getRobEntry() {
+        return robEntry;
     }
     
     /**

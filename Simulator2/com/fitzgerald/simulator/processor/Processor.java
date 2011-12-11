@@ -3,6 +3,8 @@ package com.fitzgerald.simulator.processor;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
+
 public class Processor {
     
     // Constants
@@ -36,6 +38,7 @@ public class Processor {
     protected MemoryController memoryController;
     protected Scoreboard scoreboard;
     protected ReservationStation[] reservationStations;
+    protected ReorderBuffer reorderBuffer;
     
     protected int cycleCount = -1;
     
@@ -54,6 +57,8 @@ public class Processor {
         
         // Initialise reservation stations
         initReservationStations();
+        
+        this.reorderBuffer = new ReorderBuffer();
         
         // Initialise pipeline stages
         this.fetchStage = new FetchStage(ui);
@@ -145,6 +150,49 @@ public class Processor {
         for (int i=0; i < NUM_RESERVATION_STATIONS; i++) {
             this.reservationStations[i] = new ReservationStation();
         }
+    }
+    
+    /**
+     * Get a free reservation station
+     * @return A free reservation station or null if
+     * none are free
+     */
+    public ReservationStation getFreeReservationStation() {
+        for (ReservationStation rs : reservationStations) {
+            if (rs.isEmpty()) {
+                return rs;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Update all reservation stations
+     */
+    public void updateAllReservationStations() {
+        for (ReservationStation rs : reservationStations) {
+            rs.update(registerFile, scoreboard);
+        }
+    }
+    
+    /**
+     * Get a ready reservation station for the given
+     * instruction type
+     * @param instructionType Desired instruction type
+     * @return A ready reservation station or null if
+     * none are ready
+     */
+    public ReservationStation getReadyReservationStation(
+            InstructionType instructionType) {
+        for (ReservationStation rs : reservationStations) {
+            if (rs.isReadyForDispatch()
+                    && rs.getRequiredExecutionType() == instructionType) {
+                return rs;
+            }
+        }
+        
+        return null;
     }
     
 }

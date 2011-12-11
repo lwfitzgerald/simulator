@@ -1,19 +1,29 @@
 package com.fitzgerald.simulator.executionstage;
 
 import com.fitzgerald.simulator.instruction.BranchInstruction;
+import com.fitzgerald.simulator.instruction.LoadStoreInstruction;
 
-public class BranchUnit {
+public class BranchUnit extends ExecutionUnit {
+    
+    @Override
+    protected void performOperation() {
+        LoadStoreInstruction lsInstruction = (LoadStoreInstruction) instruction;
+        
+        if (instruction.branchCondition(srcData1, srcData2)) {
+            return instruction.branchCalculation(srcData1, srcData2);
+        }
+        
+        // Calculate result
+        int result = lsInstruction.aluOperation(srcData1, srcData2);
+        
+        // Update ROB
+        finishedExecuting(result);
+    }
     
     /**
      * Process a branch/jump instruction
-     * @param srcData1 Source data 1 or null if N/A
-     * @param srcData2 Source data 2 or null if N/A
-     * @return Address to write to program counter
-     * or null if branch is not taken
      */
-    public Integer performBranch(BranchInstruction instruction,
-            Integer srcData1, Integer srcData2) {
-        
+    public void performOperation() {
         if (instruction.branchCondition(srcData1, srcData2)) {
             return instruction.branchCalculation(srcData1, srcData2);
         }

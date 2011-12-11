@@ -31,6 +31,19 @@ public abstract class BranchInstruction extends Instruction {
     public abstract int branchCalculation(Integer srcData1, Integer srcData2);
     
     /**
+     * Return if the branch is unconditional
+     * @return True if unconditional
+     */
+    public abstract boolean isUnconditional();
+    
+    /**
+     * Get the branch address of this branch
+     * @param currentPC Current PC value
+     * @return Branch address of this branch
+     */
+    public abstract int getBranchAddress(int currentPC);
+    
+    /**
      * Update the reservation station for a
      * src1reg, src2reg, dstimm instruction
      * @param registerFile Register file reference

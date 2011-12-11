@@ -96,21 +96,6 @@ public abstract class Instruction implements Serializable {
     }
     
     /**
-     * Perform the individual execute operations for this
-     * instruction.
-     * @param processor Processor object reference
-     * @param registerFile Register file reference
-     * @param branchUnit TODO
-     * @param memoryController Memory controller object reference
-     * @param executeStage Execute stage reference
-     * @return True if execution completed, false if
-     * more cycles required
-     */
-    /*public abstract boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage);
-    */
-    
-    /**
      * Set the value of an operand for this instruction
      * @param operandNo Operand to set
      * @param value Value to set operand to

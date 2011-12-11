@@ -7,7 +7,7 @@ public class ROBEntry {
     /**
      * Enum describing the state of the instruction
      */
-    protected enum EntryState { ISSUED, EXECUTING, FINISHED };
+    public enum EntryState { ISSUED, EXECUTING, FINISHED };
     
     /**
      * Instruction entry is for
@@ -30,6 +30,14 @@ public class ROBEntry {
      */
     public ROBEntry(Instruction instruction) {
         this.state = EntryState.ISSUED;
+    }
+    
+    /**
+     * Set the state of this entry
+     * @param state State to set
+     */
+    public void setState(EntryState state) {
+        this.state = state;
     }
     
     /**

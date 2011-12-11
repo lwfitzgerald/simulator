@@ -180,6 +180,7 @@ public class Assembler {
             instruction = (Instruction) Class.forName("com.fitzgerald.simulator.instruction." + className).newInstance();
         } catch (Exception e) {
             System.err.println("Instruction instantiation failed");
+            e.printStackTrace();
             System.exit(1);
         }
         

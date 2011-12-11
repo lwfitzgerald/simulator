@@ -12,7 +12,6 @@ import java.util.LinkedList;
 
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.processor.Program;
-import com.fitzgerald.simulator.processor.Util;
 
 public class Assembler {
     
@@ -124,8 +123,7 @@ public class Assembler {
             String label = toReplace.getLabel();
             Instruction instruction = instructions[instructionAddr / 4];
             
-            byte[] value = Util.intToBytes(labels.get(label));
-            instruction.setOperand(toReplace.getOperandNo(), value);
+            instruction.setOperand(toReplace.getOperandNo(), labels.get(label));
         }
     }
     
@@ -195,7 +193,7 @@ public class Assembler {
                     labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 1, operand1));
                 } else {
                     operand1 = operand1.replace("r", "");
-                    instruction.setOperand(1, Util.intToBytes(Integer.parseInt(operand1)));
+                    instruction.setOperand(1, Integer.parseInt(operand1));
                 }
                 
                 if (operands.length >= 2) {
@@ -206,7 +204,7 @@ public class Assembler {
                         labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 2, operand2));
                     } else {
                         operand2 = operand2.replace("r", "");
-                        instruction.setOperand(2, Util.intToBytes(Integer.parseInt(operand2)));
+                        instruction.setOperand(2, Integer.parseInt(operand2));
                     }
                     
                     if (operands.length >= 3) {
@@ -217,20 +215,20 @@ public class Assembler {
                             labelsToReplace.addLast(new OperandLabelReplace(addressCounter, 3, operand3));
                         } else {
                             operand3 = operand3.replace("r", "");
-                            instruction.setOperand(3, Util.intToBytes(Integer.parseInt(operand3)));
+                            instruction.setOperand(3, Integer.parseInt(operand3));
                         }
                     } else {
-                        instruction.setOperand(3, Util.intToBytes(0));
+                        instruction.setOperand(3, 0);
                     }
                 } else {
-                    instruction.setOperand(2, Util.intToBytes(0));
-                    instruction.setOperand(3, Util.intToBytes(0));
+                    instruction.setOperand(2, 0);
+                    instruction.setOperand(3, 0);
                 }
             } else {
                 // No operands so set to 0
-                instruction.setOperand(1, Util.intToBytes(0));
-                instruction.setOperand(2, Util.intToBytes(0));
-                instruction.setOperand(3, Util.intToBytes(0));
+                instruction.setOperand(1, 0);
+                instruction.setOperand(2, 0);
+                instruction.setOperand(3, 0);
             }
         }
         

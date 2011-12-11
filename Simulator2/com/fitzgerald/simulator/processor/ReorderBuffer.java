@@ -15,9 +15,11 @@ public class ReorderBuffer {
     /**
      * Add an entry for a new instruction
      */
-    public void addEntry(Instruction instruction) {
+    public ROBEntry addEntry(Instruction instruction) {
         ROBEntry newEntry = new ROBEntry(instruction);
         buffer.add(newEntry);
+        
+        return newEntry;
     }
     
     /**

@@ -17,7 +17,7 @@ public class B extends BranchInstruction {
         
         // dstimm
         
-        updateReservationStationReg(registerFile, scoreboard, reservationStation);
+        updateReservationStationImm(registerFile, scoreboard, reservationStation);
     }
 
     /*@Override
@@ -38,6 +38,16 @@ public class B extends BranchInstruction {
     @Override
     public int branchCalculation(Integer srcData1, Integer srcData2) {
         return srcData1;
+    }
+    
+    @Override
+    public boolean isUnconditional() {
+        return true;
+    }
+    
+    @Override
+    public int getBranchAddress(int currentPC) {
+        return operand1;
     }
     
     @Override

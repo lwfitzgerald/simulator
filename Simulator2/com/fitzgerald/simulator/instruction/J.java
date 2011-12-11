@@ -17,7 +17,7 @@ public class J extends BranchInstruction {
         
         updateReservationStationImm(registerFile, scoreboard, reservationStation);
         
-        // TODO: We should be storing current PC here? 
+        // TODO: We should be storing current PC here?
     }
 
     @Override
@@ -36,6 +36,16 @@ public class J extends BranchInstruction {
         
         // Apply the offset
         return correctPC + offset;
+    }
+    
+    @Override
+    public boolean isUnconditional() {
+        return true;
+    }
+
+    @Override
+    public int getBranchAddress(int currentPC) {
+        return currentPC + operand1;
     }
     
     @Override

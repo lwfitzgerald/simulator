@@ -1,12 +1,13 @@
 package com.fitzgerald.simulator.executionstage;
 
 import com.fitzgerald.simulator.instruction.ALUInstruction;
+import com.fitzgerald.simulator.instruction.LoadStoreInstruction;
 
-public class ALU extends ExecutionUnit {
-    
+public class LoadStoreUnit extends ExecutionUnit {
+
     @Override
     protected void performOperation() {
-        ALUInstruction aluInstruction = (ALUInstruction) instruction;
+        LoadStoreInstruction lsInstruction = (LoadStoreInstruction) instruction;
         
         if (ticksRemaining > 1) {
             // More cycles required, decrement and return
@@ -15,7 +16,7 @@ public class ALU extends ExecutionUnit {
         }
         
         if (ticksRemaining == 0) {
-            if ((ticksRemaining = aluInstruction.getALUCyclesRequired()) != 1) {
+            if ((ticksRemaining = lsInstruction.getALUCyclesRequired()) != 1) {
                 // More cycles required, decrement and return
                 ticksRemaining--;
                 return;
@@ -26,10 +27,10 @@ public class ALU extends ExecutionUnit {
         }
         
         // Calculate result
-        int result = aluInstruction.aluOperation(srcData1, srcData2);
+        int result = lsInstruction.aluOperation(srcData1, srcData2);
         
         // Update ROB
         finishedExecuting(result);
     }
-    
+
 }
