@@ -3,7 +3,6 @@ package com.fitzgerald.simulator.pipeline;
 import com.fitzgerald.simulator.executionstage.ALU;
 import com.fitzgerald.simulator.executionstage.BranchUnit;
 import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
-import com.fitzgerald.simulator.instruction.ALUInstruction;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -23,20 +22,48 @@ public class ExecuteStage {
                 // Get ready instruction
                 rs = processor.getReadyReservationStation(InstructionType.ALU);
                 
-                // Dispatch to ALU
-                alu.startExecuting((ALUInstruction) rs.getInstruction(), rs.getSourceData1(),
-                        rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                if (rs != null) {
+                    // Dispatch to ALU
+                    alu.startExecuting(rs.getInstruction(), rs.getSourceData1(),
+                            rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                }
             } else {
                 alu.continueExecuting();
             }
         }
         
         for (LoadStoreUnit lsUnit : lsUnits) {
-            
+            if (lsUnit.isIdle()) {
+                // Idle so dispatch new instruction from reservation station
+                
+                // Get ready instruction
+                rs = processor.getReadyReservationStation(InstructionType.LOADSTORE);
+                
+                if (rs != null) {
+                    // Dispatch to load store unit
+                    lsUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
+                            rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                }
+            } else {
+                lsUnit.continueExecuting();
+            }
         }
         
         for (BranchUnit branchUnit : branchUnits) {
-            
+            if (branchUnit.isIdle()) {
+                // Idle so dispatch new instruction from reservation station
+                
+                // Get ready instruction
+                rs = processor.getReadyReservationStation(InstructionType.BRANCH);
+                
+                if (rs != null) {
+                    // Dispatch to branch unit
+                    branchUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
+                            rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                }
+            } else {
+                branchUnit.continueExecuting();
+            }
         }
     }
     

@@ -82,4 +82,11 @@ public class DecodeStage {
         this.instruction2BranchAddr = instruction2BranchAddr;
     }
     
+    /**
+     * Returns whether this pipeline stage is empty
+     * @return True if this stage is empty
+     */
+    public boolean isEmpty() {
+        return instruction1Free() && instruction2Free();
+    }
 }

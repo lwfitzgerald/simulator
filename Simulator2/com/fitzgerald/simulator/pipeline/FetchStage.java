@@ -33,6 +33,7 @@ public class FetchStage {
     
     public void finishStep(DecodeStage decodeStage) {
         // If decode slots are available, copy to them!
+        
         if (instruction1 != null) {
             // Attempt to pass instruction1 to decode
             if (decodeStage.instruction1Free()) {
@@ -137,6 +138,14 @@ public class FetchStage {
         } else if (instructionNo == 2) {
             instruction2 = instruction;
         }
+    }
+    
+    /**
+     * Returns whether this pipeline stage is empty
+     * @return True if this stage is empty
+     */
+    public boolean isEmpty() {
+        return instruction1 == null && instruction2 == null;
     }
     
 }

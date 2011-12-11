@@ -3,7 +3,13 @@ package com.fitzgerald.simulator.processor;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fitzgerald.simulator.executionstage.ALU;
+import com.fitzgerald.simulator.executionstage.BranchUnit;
+import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
+import com.fitzgerald.simulator.pipeline.DecodeStage;
+import com.fitzgerald.simulator.pipeline.ExecuteStage;
+import com.fitzgerald.simulator.pipeline.FetchStage;
 
 public class Processor {
     
@@ -25,6 +31,13 @@ public class Processor {
      * TODO: Is this needed?
      */
     public static final int MAX_REORDER_BUFFER_SIZE = 16;
+    
+    /**
+     * Number of each type of execution unit
+     */
+    public static final int NUM_ALUS = 3;
+    public static final int NUM_LOAD_STORE_UNITS = 2;
+    public static final int NUM_BRANCH_UNITS = 1;
     
     /**
      * Program counter register
@@ -49,6 +62,13 @@ public class Processor {
     protected DecodeStage decodeStage;
     protected ExecuteStage executeStage;
     
+    /*
+     * Execution units
+     */
+    protected ALU[] alus;
+    protected LoadStoreUnit[] lsUnits;
+    protected BranchUnit[] branchUnits;
+    
     public Processor(Program program, Memory memory) {
         this.program = program;
         this.registerFile = new RegisterFile();
@@ -61,12 +81,15 @@ public class Processor {
         this.reorderBuffer = new ReorderBuffer();
         
         // Initialise pipeline stages
-        this.fetchStage = new FetchStage(ui);
-        this.decodeStage = new DecodeStage(ui);
-        this.executeStage = new ExecuteStage(ui);
+        this.fetchStage = new FetchStage();
+        this.decodeStage = new DecodeStage();
+        this.executeStage = new ExecuteStage();
+        
+        // Initialise execution units
+        initExecutionUnits();
         
         // Set program counter to 0
-        registerFile.getRegister(PC_REG).setCurrentValue(Util.intToBytes(0));
+        registerFile.getRegister(PC_REG).setCurrentValue(0);
     }
     
     /**
@@ -75,11 +98,9 @@ public class Processor {
      * of the program has been reached
      */
     public boolean step() {
-        // Update cycle count and register UIs
-        ui.setCycleCount(++cycleCount);
-        registerFile.updateUI();
-
-        fetchStage.step(program, this, registerFile, alu, branchUnit, memoryController);
+        fetchStage.step(program, this, registerFile);
+        decodeStage.step(this, registerFile, scoreboard, reorderBuffer);
+        executeStage.step(this, registerFile, alus, lsUnits, branchUnits);
         
         if (fetchStage.containsArtificialNop() &&
             decodeStage.containsArtificialNop() &&
@@ -111,6 +132,8 @@ public class Processor {
     }
     
     protected void finishStep() {
+        fetchStage.finishStep(decodeStage);
+        
         if (!pcIncrementedNormally()) {
             flushPipeline();
         }
@@ -193,6 +216,26 @@ public class Processor {
         }
         
         return null;
+    }
+    
+    protected void initExecutionUnits() {
+        alus = new ALU[NUM_ALUS];
+        
+        for (int i=0; i < NUM_ALUS; i++) {
+            alus[i] = new ALU();
+        }
+        
+        lsUnits = new LoadStoreUnit[NUM_LOAD_STORE_UNITS];
+        
+        for (int i=0; i < NUM_LOAD_STORE_UNITS; i++) {
+            lsUnits[i] = new LoadStoreUnit();
+        }
+        
+        branchUnits = new BranchUnit[NUM_BRANCH_UNITS];
+        
+        for (int i=0; i < NUM_BRANCH_UNITS; i++) {
+            branchUnits[i] = new BranchUnit();
+        }
     }
     
 }

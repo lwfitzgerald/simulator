@@ -1,19 +1,16 @@
-package com.fitzgerald.simulator.assembler;
+package com.fitzgerald.simulator.processor;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.fitzgerald.simulator.instruction.Instruction;
-import com.fitzgerald.simulator.processor.Program;
 
-public class Assembler {
+public class Parser {
     
     /**
      * Stores the line number, operand number and label
@@ -73,22 +70,11 @@ public class Assembler {
      */
     protected int addressCounter = 0;
     
-    public static void main(String[] args) {
-        if (args.length < 2) {
-            System.err.println("Error: Assembler requires two arguments.");
-            System.err.println("Usage: ");
-            System.err.println("\tjava com.fitzgerald.simulator.assembler.Assembler INPUTFILENAME OUTPUTFILENAME");
-        }
-        // args[0] = Filename to assemble
-        // args[1] = Filename to output assembled program to
-        new Assembler(args[0], args[1]);
-    }
-    
-    protected Assembler(String inputFilename, String outputFilename) {
-        firstPass(inputFilename);
+    public Program parseProgram(String filename) {
+        firstPass(filename);
         secondPass();
         
-        writeOutput(outputFilename);
+        return new Program(instructions);
     }
     
     protected void firstPass(String inputFilename) {
@@ -124,19 +110,6 @@ public class Assembler {
             Instruction instruction = instructions[instructionAddr / 4];
             
             instruction.setOperand(toReplace.getOperandNo(), labels.get(label));
-        }
-    }
-    
-    protected void writeOutput(String outputFilename) {
-        FileOutputStream outputStream;
-        ObjectOutputStream objectOutput;
-        try {
-            outputStream = new FileOutputStream(outputFilename);
-            objectOutput = new ObjectOutputStream(outputStream);
-            objectOutput.writeObject(new Program(instructions));
-        } catch (IOException e) {
-            System.err.println("Program object output failed");
-            System.exit(1);
         }
     }
     
