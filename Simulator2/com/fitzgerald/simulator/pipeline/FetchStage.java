@@ -15,8 +15,6 @@ public class FetchStage extends PipelineStage {
     protected Instruction instruction2 = null;
     protected Integer instruction2BranchAddr = null;
     
-    protected Processor processor;
-    
     /**
      * Create new Fetch stage
      * @param processor Processor reference
@@ -162,7 +160,7 @@ public class FetchStage extends PipelineStage {
             }
             
             // Instruction 1 decoding so move instruction 2 -> 1
-            if (instruction1 == null) {
+            if (instruction1 == null && instruction2 != null) {
                 instruction1 = instruction2;
                 instruction1BranchAddr = instruction2BranchAddr;
                 instruction2 = null;

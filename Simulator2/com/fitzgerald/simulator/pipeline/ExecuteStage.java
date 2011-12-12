@@ -35,6 +35,9 @@ public class ExecuteStage extends PipelineStage {
                     // Dispatch to ALU
                     alu.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                    
+                    // Clear reservation station
+                    rs.flush();
                 }
             } else {
                 alu.continueExecuting();
@@ -52,6 +55,9 @@ public class ExecuteStage extends PipelineStage {
                     // Dispatch to load store unit
                     lsUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                    
+                    // Clear reservation station
+                    rs.flush();
                 }
             } else {
                 lsUnit.continueExecuting();
@@ -69,6 +75,9 @@ public class ExecuteStage extends PipelineStage {
                     // Dispatch to branch unit
                     branchUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                    
+                    // Clear reservation station
+                    rs.flush();
                 }
             } else {
                 branchUnit.continueExecuting();

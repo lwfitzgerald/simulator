@@ -53,6 +53,7 @@ public abstract class ExecutionUnit {
     public void startExecuting(Instruction instruction, Integer srcData1,
             Integer srcData2, Integer dest, ROBEntry robEntry) {
         
+        this.instruction = instruction;
         this.srcData1 = srcData1;
         this.srcData2 = srcData2;
         this.dest = dest;

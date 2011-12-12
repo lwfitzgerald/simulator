@@ -112,23 +112,34 @@ public class Processor {
     
     /**
      * Performs one simulation step
-     * @return True if program has finished executing
+     * @return false if program has finished executing
      */
     public boolean step() {
+        /*
+         * Perform writeback first to ensure
+         * instructions completing are not
+         * written back in the same cycle
+         */
+        writebackStage.step();
+        
         fetchStage.step(program);
         
         // Check if the program has finished
         if (checkProgramFinished()) {
-            return true;
+            return false;
         }
-        
-        decodeStage.step();
+
+        /*
+         * Execute and decode in reverse order
+         * to ensure instructions issued are not
+         * executed in the same cycle 
+         */
         executeStage.step();
-        writebackStage.step();
+        decodeStage.step();
         
         finishStep();
         
-        return false;
+        return true;
     }
     
     /**
@@ -166,15 +177,6 @@ public class Processor {
         }
         
         return null;
-    }
-    
-    /**
-     * Update all reservation stations
-     */
-    public void updateAllReservationStations() {
-        for (ReservationStation rs : reservationStations) {
-            rs.update();
-        }
     }
     
     /**

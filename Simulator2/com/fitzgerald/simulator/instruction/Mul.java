@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.instruction;
 
+import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReservationStation;
 import com.fitzgerald.simulator.processor.Scoreboard;
@@ -18,25 +19,12 @@ public class Mul extends ALUInstruction {
     }
 
     @Override
-    public void updateReservationStation(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    public void initialSetup(RegisterFile registerFile, Scoreboard scoreboard,
+            ROBEntry robEntry, Integer branchAddr,
+            ReservationStation reservationStation) {
         
-        updateReservationStationReg(registerFile, scoreboard, reservationStation);
+        initialSetupReg(registerFile, scoreboard, robEntry, reservationStation);
     }
-    
-    /*@Override
-    public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
-        byte[] result = alu.performOperation(executeStage);
-        
-        if (result == null) {
-            // More cycles required
-            return false;
-        }
-        
-        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(result);
-        return true;
-    }*/
     
     @Override
     public int aluOperation(Integer srcData1, Integer srcData2) {

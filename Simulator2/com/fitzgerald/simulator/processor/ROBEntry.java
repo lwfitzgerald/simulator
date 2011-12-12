@@ -50,6 +50,7 @@ public class ROBEntry {
     public ROBEntry(Instruction instruction,
             ReservationStation reservationStation) {
         
+        this.instruction = instruction;
         this.state = EntryState.ISSUED;
         this.result = null;
         this.destRegister = null;
@@ -130,11 +131,12 @@ public class ROBEntry {
     
     /**
      * Forward the result in this entry to instructions
-     * waiting in the reservation stations
+     * waiting in the reservation stations and update
+     * scoreboard bits
      * @param reorderBuffer Reorder buffer reference
-     * @param reservationStations Reservation stations reference
+     * @param scoreboard Scoreboard reference
      */
-    public void forwardResult(ReorderBuffer reorderBuffer) {
+    public void handleFinish(ReorderBuffer reorderBuffer, Scoreboard scoreboard) {
         // Only forward if there is a result
         if (result != null) {
             for (ROBEntry entry : reorderBuffer) {
@@ -144,13 +146,16 @@ public class ROBEntry {
                      * Only forward to instruction which
                      * aren't already executing/finished
                      */
-                    if (entry.state == EntryState.ISSUED){
+                    if (entry.state == EntryState.ISSUED) {
                         if (entry.destRegister == this.destRegister) {
                             /*
                              * We've reached the next write to the register
                              * so cannot forward to any more instructions
                              */
-                            break;
+                            entry.reservationStation.setDestinationReady();
+                            
+                            // Return without unsetting scoreboard bit
+                            return;
                         }
                         
                         // Update reservation station for the entry!
@@ -159,8 +164,12 @@ public class ROBEntry {
                     }
                 }
             }
+            
+            // Unset scoreboard bit as no later writes in reservation stations
+            scoreboard.setAvailablity(this.destRegister, true);
         }
     }
+    
     
     /**
      * Perform writing of result to register
@@ -180,4 +189,9 @@ public class ROBEntry {
             reservationStation.flush();
         }
     }
+    
+    public String toString() {
+        return "[[" + instruction + "], " + state + "]";
+    }
+    
 }

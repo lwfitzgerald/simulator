@@ -2,6 +2,7 @@ package com.fitzgerald.simulator.instruction;
 
 import java.io.Serializable;
 
+import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReservationStation;
 import com.fitzgerald.simulator.processor.Scoreboard;
@@ -34,24 +35,27 @@ public abstract class Instruction implements Serializable {
     protected int operand3;
     
     /**
-     * Attempt to fetch required register values
-     * and update scoreboard
+     * Attempt to fetch required register values, claim
+     * destination register and update scoreboard
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param robEntry Reorder buffer entry reference
+     * @param branchAddr Calculated branch address if applicable
      * @param reservationStation Reservation station reference
      */
-    public abstract void updateReservationStation(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation);
+    public abstract void initialSetup(RegisterFile registerFile,
+            Scoreboard scoreboard, ROBEntry robEntry, Integer branchAddr,
+            ReservationStation reservationStation);
     
     /**
-     * Update the source 1 register data for the
+     * Attempt to fetch the source 1 register data for the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      * @param registerNum Register number
      */
-    protected void updateReservationStationSource1Reg(RegisterFile registerFile,
+    protected void initialFetchSource1Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation, int registerNum) {
         
         // Attempt to fetch source data 1
@@ -70,14 +74,14 @@ public abstract class Instruction implements Serializable {
     }
     
     /**
-     * Update the source 2 register data for the
+     * Attempt to fetch the source 2 register data for the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      * @param registerNum Register number
      */
-    protected void updateReservationStationSource2Reg(RegisterFile registerFile,
+    protected void initialFetchSource2Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation, int registerNum) {
         
         // Attempt to fetch source data 1
@@ -96,19 +100,25 @@ public abstract class Instruction implements Serializable {
     }
     
     /**
-     * Update the destination register data for the
-     * reservation station
+     * Attempt to claim the destination register
+     * from the scoreboard
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param robEntry Reorder buffer entry reference
      * @param reservationStation Reservation station reference
      */
-    protected void updateReservationStationDestination(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    protected void initialClaimDestination(RegisterFile registerFile,
+            Scoreboard scoreboard, ROBEntry robEntry,
+            ReservationStation reservationStation) {
+        
+        // Set the destination register in the RS
+        reservationStation.setDestination(operand1);
+        
+        // Set the destination register in the ROB
+        robEntry.setDestRegister(operand1);
         
         // Attempt to claim destination register
-        if (reservationStation.getDestination() == null
-                && scoreboard.isAvailable(operand1)) {
-
+        if (scoreboard.isAvailable(operand1)) {
             // Claim in scoreboard
             scoreboard.setAvailablity(operand1, false);
             

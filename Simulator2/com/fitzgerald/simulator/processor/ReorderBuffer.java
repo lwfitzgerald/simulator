@@ -36,10 +36,12 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
     public ROBEntry attemptRetire() {
         ROBEntry entry = buffer.peek();
         
-        if (entry.isFinished() && !entry.isSpeculative()) {
-            // Front of queue finished and non-speculative,
-            // so remove
-            return buffer.remove();
+        if (entry != null) {
+            if (entry.isFinished() && !entry.isSpeculative()) {
+                // Front of queue finished and non-speculative,
+                // so remove
+                return buffer.remove();
+            }
         }
         
         return null;
@@ -75,4 +77,15 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
     public Iterator<ROBEntry> iterator() {
         return buffer.iterator();
     }
+    
+    public String toString() {
+        StringBuffer strBuffer = new StringBuffer();
+        
+        for (ROBEntry entry : buffer) {
+            strBuffer.append(entry);
+        }
+        
+        return strBuffer.toString();
+    }
+    
 }

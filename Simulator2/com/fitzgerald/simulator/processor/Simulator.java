@@ -44,19 +44,14 @@ public class Simulator {
             System.exit(1);
         }
         
-        /*try {
+        try {
             Thread.sleep(1000);
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
         
         while (processor.step()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
+        }
         
         //System.out.println("Halting");
     }

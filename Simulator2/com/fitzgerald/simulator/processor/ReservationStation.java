@@ -41,25 +41,20 @@ public class ReservationStation {
         robEntry = reorderBuffer.addEntry(instruction, this);
 
         this.instruction = instruction;
-        
-        // Branch address provided so must be destination
-        if (branchAddr != null) {
-            dest = branchAddr;
-            destReady = true;
-        }
 
         // Attempt operand fetch and claim destination register
-        update();
+        initialSetup(branchAddr);
     }
     
     /**
      * Attempt to fetch operands and claim destination register
      */
-    public void update() {
+    protected void initialSetup(Integer branchAddr) {
         RegisterFile registerFile = processor.getRegisterFile();
         Scoreboard scoreboard = processor.getScoreboard();
         
-        instruction.updateReservationStation(registerFile, scoreboard, this);
+        instruction.initialSetup(registerFile, scoreboard, robEntry,
+                branchAddr, this);
     }
     
     /**

@@ -1,15 +1,11 @@
 package com.fitzgerald.simulator.instruction;
 
-import com.fitzgerald.simulator.pipeline.DecodeStage;
-import com.fitzgerald.simulator.pipeline.ExecuteStage;
-import com.fitzgerald.simulator.processor.ALU;
-import com.fitzgerald.simulator.processor.BranchUnit;
-import com.fitzgerald.simulator.processor.MemoryController;
-import com.fitzgerald.simulator.processor.Processor;
+import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
-import com.fitzgerald.simulator.processor.Util;
+import com.fitzgerald.simulator.processor.ReservationStation;
+import com.fitzgerald.simulator.processor.Scoreboard;
 
-public class Ldr extends Instruction {
+public class Ldr extends ALUInstruction {
 
     /**
      * Serialisation ID
@@ -18,50 +14,44 @@ public class Ldr extends Instruction {
 
     @Override
     public int getALUCyclesRequired() {
-        // Not applicable
-        return -1;
-    }
-
-    @Override
-    public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
-        // Immediate value to load
-        byte[] sourceData1 = operand2;
-        
-        decodeStage.setSourceData1(sourceData1);
-    }
-
-    @Override
-    public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
-        
-        registerFile.getRegister(Util.bytesToInt(operand1)).setNextValue(executeStage.getSourceData1());
-        
-        // Load immediate always takes 1 cycle
-        return true;
+        return 1;
     }
     
     @Override
-    public byte[] aluOperation(ExecuteStage executeStage) {
-        // Not applicable
-        return null;
-    }
-
-    @Override
-    public boolean branchCondition(ExecuteStage executeStage) {
-        // Not applicable
-        return false;
+    public int aluOperation(Integer srcData1, Integer srcData2) {
+        return srcData1;
     }
     
     @Override
-    public byte[] branchCalculation(ExecuteStage executeStage) {
-        // Not applicable
-        return null;
+    public void initialSetup(RegisterFile registerFile, Scoreboard scoreboard,
+            ROBEntry robEntry, Integer branchAddr,
+            ReservationStation reservationStation) {
+        
+        initialClaimDestination(registerFile, scoreboard, robEntry,
+                reservationStation);
+        
+        // Store immediate operand
+        // Store in reservation station
+        reservationStation.setSourceData1(operand2);
+        
+        // Set as ready
+        reservationStation.setSourceData1Ready();
+        
+        // No second src operand
+        reservationStation.setSourceData2Ready();
     }
 
+    @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {
+        
+        // Source is immediate so nothing to do here
+    }
+    
     @Override
     public String toString() {
-        return "LDR r" + Util.bytesToInt(operand1) + 
-               ", " + Util.bytesToInt(operand2);
+        return "LDR r" + operand1 + 
+               ", " + operand2;
     }
 
 }

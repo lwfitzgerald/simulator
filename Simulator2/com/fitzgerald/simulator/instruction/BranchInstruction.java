@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.instruction;
 
+import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReservationStation;
 import com.fitzgerald.simulator.processor.Scoreboard;
@@ -35,66 +36,75 @@ public abstract class BranchInstruction extends Instruction {
     public abstract int getBranchAddress(int currentPC);
     
     @Override
-    public void updateReservationStation(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    public void initialSetup(RegisterFile registerFile,
+            Scoreboard scoreboard, ROBEntry robEntry, Integer branchAddr, ReservationStation reservationStation) {
         
         if (isUnconditional()) {
             // dstimm
-            updateReservationStationImm(registerFile, scoreboard, reservationStation);
+            initialSetupImm(registerFile, scoreboard, branchAddr, reservationStation);
         } else {
-            updateReservationStationReg(registerFile, scoreboard, reservationStation);
+            initialSetupReg(registerFile, scoreboard, branchAddr, reservationStation);
         }
     }
     
     /**
-     * Update the reservation station for a
+     * Initial setup for a reservation station for a
      * src1reg, src2reg, dstimm instruction
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param branchAddr Calculated branch address
      * @param reservationStation Reservation station reference
      */
-    protected void updateReservationStationReg(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    protected void initialSetupReg(RegisterFile registerFile,
+            Scoreboard scoreboard, Integer branchAddr,
+            ReservationStation reservationStation) {
         
         // src1reg, src2reg, dstimm
         
-        updateReservationStationSource1Reg(registerFile, scoreboard, reservationStation, operand1);
-        updateReservationStationSource2Reg(registerFile, scoreboard, reservationStation, operand2);
-        updateReservationStationDestination(registerFile, scoreboard, reservationStation, operand3);
+        initialFetchSource1Reg(registerFile, scoreboard, reservationStation, operand1);
+        initialFetchSource2Reg(registerFile, scoreboard, reservationStation, operand2);
+        initialSetDestination(registerFile, scoreboard, branchAddr, reservationStation);
     }
     
     /**
-     * Update the reservation station for a
+     * Initial setup for a reservation station for a
      * dstimm instruction
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param branchAddr Calculated branch address
      * @param reservationStation Reservation station reference
      */
-    protected void updateReservationStationImm(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    protected void initialSetupImm(RegisterFile registerFile,
+            Scoreboard scoreboard, Integer branchAddr,
+            ReservationStation reservationStation) {
         
         // dstimm
         
-        updateReservationStationDestination(registerFile, scoreboard, reservationStation, operand1);
+        initialSetDestination(registerFile, scoreboard, branchAddr,
+                reservationStation);
         reservationStation.setSourceData1Ready();
         reservationStation.setSourceData2Ready();
     }
     
     /**
-     * Update the destination register data for the
+     * Set the destination of the branch in the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
-     * @param reservationStation Reservation station reference
-     * @param immediateValue Immediate value to store
+     * @param branchAddr Calculated branch address
      */
-    private void updateReservationStationDestination(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation,
-            int immediateValue) {
+    private void initialSetDestination(RegisterFile registerFile,
+            Scoreboard scoreboard, Integer branchAddr,
+            ReservationStation reservationStation) {
+        
+        /*
+         * Don't set ROB entry destRegister as it's a
+         * branch address not a register!
+         */
         
         if (reservationStation.getDestination() == null) {
             // Store in reservation station
-            reservationStation.setDestination(immediateValue);
+            reservationStation.setDestination(branchAddr);
             
             // Set as ready
             reservationStation.setDestinationReady();
@@ -110,6 +120,8 @@ public abstract class BranchInstruction extends Instruction {
             return;
         }
         
+        // src1reg, src2reg, dstimm
+        
         if (destRegister == operand1) {
             reservationStation.setSourceData1(result);
             reservationStation.setSourceData1Ready();
@@ -124,10 +136,10 @@ public abstract class BranchInstruction extends Instruction {
     @Override
     public String toString() {
         if (isUnconditional()) {
-            return this.getClass().getName().toUpperCase() + " " + operand1;
+            return this.getClass().getSimpleName().toUpperCase() + " " + operand1;
         }
         
-        return this.getClass().getName().toUpperCase() + " r" + operand1 +
+        return this.getClass().getSimpleName().toUpperCase() + " r" + operand1 +
                 ", r"  + operand2 + 
                 ", " + operand3;
     }

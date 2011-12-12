@@ -1,5 +1,6 @@
 package com.fitzgerald.simulator.instruction;
 
+import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReservationStation;
 import com.fitzgerald.simulator.processor.Scoreboard;
@@ -29,75 +30,81 @@ public abstract class ALUInstruction extends Instruction {
     public abstract int aluOperation(Integer srcData1, Integer srcData2);
 
     /**
-     * Update the reservation station for a
+     * Initial setup for a reservation station for a
      * dstreg, src1reg, src2reg instruction
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param robEntry Reorder buffer entry reference
      * @param reservationStation Reservation station reference
      */
-    protected void updateReservationStationReg(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    protected void initialSetupReg(RegisterFile registerFile,
+            Scoreboard scoreboard, ROBEntry robEntry,
+            ReservationStation reservationStation) {
         
         // dstreg, src1reg, src2reg
         
-        updateReservationStationDestination(registerFile, scoreboard, reservationStation);
-        updateReservationStationSource1Reg(registerFile, scoreboard, reservationStation);
-        updateReservationStationSource2Reg(registerFile, scoreboard, reservationStation);
+        initialClaimDestination(registerFile, scoreboard, robEntry,
+                reservationStation);
+        initialFetchSource1Reg(registerFile, scoreboard, reservationStation);
+        initialFetchSource2Reg(registerFile, scoreboard, reservationStation);
     }
     
     /**
-     * Update the reservation station for a
+     * Initial fetch for a reservation station for a
      * dstreg, src1reg, src2imm instruction
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
+     * @param robEntry Reorder buffer entry reference
      * @param reservationStation Reservation station reference
      */
-    protected void updateReservationStationImm(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
+    protected void initialSetupImm(RegisterFile registerFile,
+            Scoreboard scoreboard, ROBEntry robEntry,
+            ReservationStation reservationStation) {
         
         // dstreg, src1reg, src2imm
         
-        updateReservationStationDestination(registerFile, scoreboard, reservationStation);
-        updateReservationStationSource1Reg(registerFile, scoreboard, reservationStation);
-        updateReservationStationSource2Imm(scoreboard, reservationStation);
+        initialClaimDestination(registerFile, scoreboard, robEntry,
+                reservationStation);
+        initialFetchSource1Reg(registerFile, scoreboard, reservationStation);
+        initialRSSetSource2Imm(scoreboard, reservationStation);
     }
     
     /**
-     * Update the source 1 register data for the
+     * Initial fetch for source 1 register data for the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      */
-    private void updateReservationStationSource1Reg(RegisterFile registerFile,
+    private void initialFetchSource1Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation) {
         
-        updateReservationStationSource1Reg(registerFile, scoreboard,
+        initialFetchSource1Reg(registerFile, scoreboard,
                 reservationStation, operand2);
     }
     
     /**
-     * Update the source 2 register data for the
+     * Initial fetch for source 2 register data for the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      */
-    private void updateReservationStationSource2Reg(RegisterFile registerFile,
+    private void initialFetchSource2Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation) {
         
-        updateReservationStationSource2Reg(registerFile, scoreboard,
+        initialFetchSource2Reg(registerFile, scoreboard,
                 reservationStation, operand3);
     }
     
     /**
-     * Update the source 1 immediate data for the
+     * Set the source 2 immediate data for the
      * reservation station
      * @param registerFile Register file reference
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      */
-    private void updateReservationStationSource2Imm(Scoreboard scoreboard,
+    private void initialRSSetSource2Imm(Scoreboard scoreboard,
             ReservationStation reservationStation) {
         
         // Store immediate operand

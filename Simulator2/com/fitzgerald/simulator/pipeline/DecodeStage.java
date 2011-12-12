@@ -20,33 +20,34 @@ public class DecodeStage extends PipelineStage {
     }
     
     public void step() {
-        ReservationStation rs = processor.getFreeReservationStation();
-        
-        if (rs != null) {
-            // Free reservation station
-            rs.issueInstruction(instruction1, instruction1BranchAddr);
-            instruction1 = null;
-            instruction1BranchAddr = null;
-            
-            // Now attempt to issue instruction 2
-            
-            rs = processor.getFreeReservationStation();
+        if (instruction1 != null) {
+            ReservationStation rs = processor.getFreeReservationStation();
             
             if (rs != null) {
-                rs.issueInstruction(instruction2, instruction2BranchAddr);
-                instruction2 = null;
-                instruction2BranchAddr = null;
-            } else {
-                // Move instruction 2 to 1
-                instruction1 = instruction2;
-                instruction1BranchAddr = instruction2BranchAddr;
-                instruction2 = null;
-                instruction2BranchAddr = null;
+                // Free reservation station
+                rs.issueInstruction(instruction1, instruction1BranchAddr);
+                instruction1 = null;
+                instruction1BranchAddr = null;
+                
+                if (instruction2 != null) {
+                    // Now attempt to issue instruction 2
+                    
+                    rs = processor.getFreeReservationStation();
+                    
+                    if (rs != null) {
+                        rs.issueInstruction(instruction2, instruction2BranchAddr);
+                        instruction2 = null;
+                        instruction2BranchAddr = null;
+                    } else {
+                        // Move instruction 2 to 1
+                        instruction1 = instruction2;
+                        instruction1BranchAddr = instruction2BranchAddr;
+                        instruction2 = null;
+                        instruction2BranchAddr = null;
+                    }
+                }
             }
         }
-        
-        // Attempt to get all reservation stations ready
-        processor.updateAllReservationStations();
     }
     
     /**
