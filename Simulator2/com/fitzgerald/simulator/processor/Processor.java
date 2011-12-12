@@ -7,6 +7,7 @@ import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.pipeline.FetchStage;
+import com.fitzgerald.simulator.pipeline.WritebackStage;
 
 public class Processor {
     
@@ -57,6 +58,7 @@ public class Processor {
     protected FetchStage fetchStage;
     protected DecodeStage decodeStage;
     protected ExecuteStage executeStage;
+    protected WritebackStage writebackStage;
     
     /*
      * Execution units
@@ -99,6 +101,7 @@ public class Processor {
         this.fetchStage = new FetchStage(this);
         this.decodeStage = new DecodeStage(this);
         this.executeStage = new ExecuteStage(this);
+        this.writebackStage = new WritebackStage(this);
         
         // Initialise execution units
         initExecutionUnits();
@@ -121,6 +124,7 @@ public class Processor {
         
         decodeStage.step();
         executeStage.step();
+        writebackStage.step();
         
         finishStep();
         

@@ -18,14 +18,6 @@ public abstract class ExecutionUnit {
     protected Processor processor;
     
     /**
-     * Constructor
-     * @param processor Processor reference
-     */
-    protected ExecutionUnit(Processor processor) {
-        this.processor = processor;
-    }
-    
-    /**
      * Ticks remaining until operation completes
      * 
      * Only one operation at once so we only need
@@ -34,6 +26,14 @@ public abstract class ExecutionUnit {
      * 0 when there is no operation in progress
      */
     protected int ticksRemaining = 0;
+    
+    /**
+     * Constructor
+     * @param processor Processor reference
+     */
+    protected ExecutionUnit(Processor processor) {
+        this.processor = processor;
+    }
     
     /**
      * Return whether this execution unit is idle
@@ -108,6 +108,7 @@ public abstract class ExecutionUnit {
         dest = null;
         instruction = null;
         robEntry = null;
+        ticksRemaining = 0;
     }
     
 }

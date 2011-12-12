@@ -27,7 +27,7 @@ public class BranchUnit extends ExecutionUnit {
         // Mark as no longer speculating
         processor.stopSpeculating();
         
-        if (branchInstruction.branchCondition(srcData1, srcData2)) {    
+        if (branchInstruction.branchCondition(srcData1, srcData2)) {
             if (failAddr != dest) {
                 // Approve all speculative ROB entries
                 reorderBuffer.approveSpeculative();

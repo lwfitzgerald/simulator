@@ -57,7 +57,7 @@ public class ROBEntry {
     }
     
     /**
-     * Creates a ROBEntry with given speculativitiy
+     * Creates a ROBEntry with given speculativity
      * @param instruction Instruction entry is for
      * @param reservationStation Reservation station
      * containing issued instruction
@@ -135,7 +135,6 @@ public class ROBEntry {
      * @param reservationStations Reservation stations reference
      */
     public void forwardResult(ReorderBuffer reorderBuffer) {
-        
         // Only forward if there is a result
         if (result != null) {
             for (ROBEntry entry : reorderBuffer) {
@@ -160,6 +159,25 @@ public class ROBEntry {
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * Perform writing of result to register
+     */
+    public void writeBack(RegisterFile registerFile) {
+        registerFile.getRegister(destRegister).setNextValue(result);
+    }
+    
+    /**
+     * Abort execution of this instruction
+     * 
+     * Called if aborting speculative
+     * instruction
+     */
+    public void abort() {
+        if (reservationStation != null) {
+            reservationStation.flush();
         }
     }
 }

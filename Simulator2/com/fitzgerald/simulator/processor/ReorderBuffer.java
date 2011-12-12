@@ -60,7 +60,13 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
      * Remove all speculative instructions
      */
     public void removeSpeculative() {
-        while (buffer.peek().isSpeculative()) {
+        ROBEntry entry;
+        
+        while ((entry = buffer.peek()).isSpeculative()) {
+            // Remove from reservation station if necessary
+            entry.abort();
+            
+            // Remove from ROB
             buffer.remove();
         }
     }

@@ -5,22 +5,29 @@ import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReorderBuffer;
 
-public class Writeback extends PipelineStage {
+public class WritebackStage extends PipelineStage {
     
-    /*
-     * Createa a new Writeback stage
+    /**
+     * Create a new Writeback stage
+     * @param processor Processor reference
      */
-    protected Writeback(Processor processor) {
+    public WritebackStage(Processor processor) {
         super(processor);
     }
 
-    public void step(Processor processor, RegisterFile registerFile, ReorderBuffer reorderBuffer) {
+    public void step() {
+        ReorderBuffer reorderBuffer = processor.getReorderBuffer();
+        
         ROBEntry entry;
         
         while ((entry = reorderBuffer.attemptRetire()) != null) {
+            RegisterFile registerFile = processor.getRegisterFile();
+            
+            // Forward result to reservation stations
             entry.forwardResult(reorderBuffer);
             
-            entry.writeBack();
+            // Perform write to registers
+            entry.writeBack(registerFile);
         }
     }
 

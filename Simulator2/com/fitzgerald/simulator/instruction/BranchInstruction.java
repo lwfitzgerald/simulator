@@ -92,7 +92,6 @@ public abstract class BranchInstruction extends Instruction {
             Scoreboard scoreboard, ReservationStation reservationStation,
             int immediateValue) {
         
-        // Attempt to claim destination register
         if (reservationStation.getDestination() == null) {
             // Store in reservation station
             reservationStation.setDestination(immediateValue);

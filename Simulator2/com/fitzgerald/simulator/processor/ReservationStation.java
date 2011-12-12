@@ -29,17 +29,24 @@ public class ReservationStation {
     /**
      * Store an instruction in the reservation station
      * @param instruction Instruction
+     * @param branchAddr Calculated branch address
      */
-    public void issueInstruction(Instruction instruction) {
+    public void issueInstruction(Instruction instruction, Integer branchAddr) {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
         
         // Reset status
-        reset();
+        flush();
         
         // Create reorder buffer entry
         robEntry = reorderBuffer.addEntry(instruction, this);
 
         this.instruction = instruction;
+        
+        // Branch address provided so must be destination
+        if (branchAddr != null) {
+            dest = branchAddr;
+            destReady = true;
+        }
 
         // Attempt operand fetch and claim destination register
         update();
@@ -84,7 +91,7 @@ public class ReservationStation {
     /**
      * Reset this reservation station (to empty)
      */
-    protected void reset() {
+    public void flush() {
         this.instruction = null;
         this.srcData1Ready = false;
         this.srcData2Ready = false;
