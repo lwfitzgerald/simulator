@@ -38,7 +38,7 @@ public abstract class LogicalInstruction extends ALUInstruction {
     
     @Override
     public String toString() {
-        return this.getClass().getName() + " r" + operand1 +
+        return this.getClass().getName().toUpperCase() + " r" + operand1 +
                 ", r" + operand2 +
                 ", r" + operand3;
     }

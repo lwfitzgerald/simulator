@@ -1,10 +1,8 @@
 package com.fitzgerald.simulator.instruction;
 
-import com.fitzgerald.simulator.pipeline.DecodeStage;
-import com.fitzgerald.simulator.pipeline.ExecuteStage;
-import com.fitzgerald.simulator.processor.MemoryController;
-import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.RegisterFile;
+import com.fitzgerald.simulator.processor.ReservationStation;
+import com.fitzgerald.simulator.processor.Scoreboard;
 
 public class Nop extends Instruction {
 
@@ -13,72 +11,19 @@ public class Nop extends Instruction {
      */
     private static final long serialVersionUID = -5850254084069555927L;
 
-    protected boolean endOfProgramNop;
-    
-    /**
-     * Default constructor for a Nop
-     * 
-     * This is called by reflection when assembling
-     * a program so endOfProgramNop should be set to
-     * false
-     */
-    public Nop() {
-        this.endOfProgramNop = false;
-    }
-    
-    /**
-     * Called when creating a fake Nop used after there
-     * are no more instructions in the program to fetch
-     * @param endOfProgramNop
-     */
-    public Nop(boolean endOfProgramNop) {
-        this.endOfProgramNop = endOfProgramNop;
-    }
-    
     @Override
-    public int getALUCyclesRequired() {
-        // Not applicable
-        return -1;
-    }
-
-    @Override
-    public void decode(RegisterFile registerFile, DecodeStage decodeStage) {}
-
-    @Override
-    public boolean execute(Processor processor, RegisterFile registerFile,
-            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
+    public void updateReservationStation(RegisterFile registerFile,
+            Scoreboard scoreboard, ReservationStation reservationStation) {
         
-        return true;
+        reservationStation.setSourceData1Ready();
+        reservationStation.setSourceData2Ready();
+        reservationStation.setDestinationReady();
     }
+
+    @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {}
     
-    @Override
-    public byte[] aluOperation(ExecuteStage executeStage) {
-        // Not applicable
-        return null;
-    }
-
-    @Override
-    public boolean branchCondition(ExecuteStage executeStage) {
-        // Not applicable
-        return false;
-    }
-    
-    @Override
-    public byte[] branchCalculation(ExecuteStage executeStage) {
-        // Not applicable
-        return null;
-    }
-
-    /**
-     * Returns if this is a Nop inserted
-     * when there are no more instructions in the
-     * program to execute
-     * @return True if Nop is artificial
-     */
-    public boolean isEndOfProgramNop() {
-        return endOfProgramNop;
-    }
-
     @Override
     public String toString() {
         return "NOP";

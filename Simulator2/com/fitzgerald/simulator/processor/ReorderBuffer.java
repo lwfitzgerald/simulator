@@ -1,11 +1,12 @@
 package com.fitzgerald.simulator.processor;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import com.fitzgerald.simulator.instruction.Instruction;
 
-public class ReorderBuffer {
+public class ReorderBuffer implements Iterable<ROBEntry> {
     
     /**
      * Queue holding entries
@@ -14,9 +15,15 @@ public class ReorderBuffer {
     
     /**
      * Add an entry for a new instruction
+     * @param instruction Instruction to create entry
+     * for
+     * @param reservartionStation Reservation station
+     * holding issued instruction
      */
-    public ROBEntry addEntry(Instruction instruction) {
-        ROBEntry newEntry = new ROBEntry(instruction);
+    public ROBEntry addEntry(Instruction instruction,
+            ReservationStation reservationStation) {
+        
+        ROBEntry newEntry = new ROBEntry(instruction, reservationStation);
         buffer.add(newEntry);
         
         return newEntry;
@@ -27,11 +34,39 @@ public class ReorderBuffer {
      * @return A ROBEntry or null if none can be retired
      */
     public ROBEntry attemptRetire() {
-        if (buffer.peek().isFinished()) {
-            // Front of queue finished so remove
+        ROBEntry entry = buffer.peek();
+        
+        if (entry.isFinished() && !entry.isSpeculative()) {
+            // Front of queue finished and non-speculative,
+            // so remove
             return buffer.remove();
         }
         
         return null;
+    }
+    
+    /**
+     * Mark all speculative entries as
+     * non-speculative so they can be
+     * retired
+     */
+    public void approveSpeculative() {
+        for (ROBEntry entry : buffer) {
+            entry.setSpeculativity(false);
+        }
+    }
+    
+    /**
+     * Remove all speculative instructions
+     */
+    public void removeSpeculative() {
+        while (buffer.peek().isSpeculative()) {
+            buffer.remove();
+        }
+    }
+
+    @Override
+    public Iterator<ROBEntry> iterator() {
+        return buffer.iterator();
     }
 }

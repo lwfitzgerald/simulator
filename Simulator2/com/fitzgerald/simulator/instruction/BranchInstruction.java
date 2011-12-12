@@ -22,15 +22,6 @@ public abstract class BranchInstruction extends Instruction {
     public abstract boolean branchCondition(Integer srcData1, Integer srcData2);
     
     /**
-     * Called by the branch unit
-     * Returns the calculated address to branch to
-     * @param srcData1 Source data 1 or null if N/A
-     * @param srcData1 Source data 2 or null if N/A
-     * @return Address to branch to
-     */
-    public abstract int branchCalculation(Integer srcData1, Integer srcData2);
-    
-    /**
      * Return if the branch is unconditional
      * @return True if unconditional
      */
@@ -42,6 +33,18 @@ public abstract class BranchInstruction extends Instruction {
      * @return Branch address of this branch
      */
     public abstract int getBranchAddress(int currentPC);
+    
+    @Override
+    public void updateReservationStation(RegisterFile registerFile,
+            Scoreboard scoreboard, ReservationStation reservationStation) {
+        
+        if (isUnconditional()) {
+            // dstimm
+            updateReservationStationImm(registerFile, scoreboard, reservationStation);
+        } else {
+            updateReservationStationReg(registerFile, scoreboard, reservationStation);
+        }
+    }
     
     /**
      * Update the reservation station for a
@@ -98,4 +101,36 @@ public abstract class BranchInstruction extends Instruction {
             reservationStation.setDestinationReady();
         }
     }
+    
+    @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {
+        
+        if (isUnconditional()) {
+            // No register reads for unconditional branches
+            return;
+        }
+        
+        if (destRegister == operand1) {
+            reservationStation.setSourceData1(result);
+            reservationStation.setSourceData1Ready();
+        }
+        
+        if (destRegister == operand2) {
+            reservationStation.setSourceData2(result);
+            reservationStation.setSourceData2Ready();
+        }
+    }
+    
+    @Override
+    public String toString() {
+        if (isUnconditional()) {
+            return this.getClass().getName().toUpperCase() + " " + operand1;
+        }
+        
+        return this.getClass().getName().toUpperCase() + " r" + operand1 +
+                ", r"  + operand2 + 
+                ", " + operand3;
+    }
+    
 }

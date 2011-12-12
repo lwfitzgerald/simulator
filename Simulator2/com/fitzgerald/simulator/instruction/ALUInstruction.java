@@ -63,28 +63,6 @@ public abstract class ALUInstruction extends Instruction {
     }
     
     /**
-     * Update the destination register data for the
-     * reservation station
-     * @param registerFile Register file reference
-     * @param scoreboard Scoreboard reference
-     * @param reservationStation Reservation station reference
-     */
-    private void updateReservationStationDestination(RegisterFile registerFile,
-            Scoreboard scoreboard, ReservationStation reservationStation) {
-        
-        // Attempt to claim destination register
-        if (reservationStation.getDestination() == null
-                && scoreboard.isAvailable(operand1)) {
-
-            // Claim in scoreboard
-            scoreboard.setAvailablity(operand1, false);
-            
-            // Set as ready
-            reservationStation.setDestinationReady();
-        }
-    }
-    
-    /**
      * Update the source 1 register data for the
      * reservation station
      * @param registerFile Register file reference
@@ -131,4 +109,20 @@ public abstract class ALUInstruction extends Instruction {
             reservationStation.setSourceData2Ready();
         }
     }
+    
+    @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {
+        
+        if (destRegister == operand2) {
+            reservationStation.setSourceData1(result);
+            reservationStation.setSourceData1Ready();
+        }
+        
+        if (destRegister == operand3) {
+            reservationStation.setSourceData2(result);
+            reservationStation.setSourceData2Ready();
+        }
+    }
+    
 }

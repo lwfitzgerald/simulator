@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.executionstage;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.ROBEntry.EntryState;
 
@@ -13,6 +14,16 @@ public abstract class ExecutionUnit {
     protected Instruction instruction = null;
     
     protected ROBEntry robEntry = null;
+    
+    protected Processor processor;
+    
+    /**
+     * Constructor
+     * @param processor Processor reference
+     */
+    protected ExecutionUnit(Processor processor) {
+        this.processor = processor;
+    }
     
     /**
      * Ticks remaining until operation completes
@@ -85,6 +96,13 @@ public abstract class ExecutionUnit {
     protected void finishedExecuting() {
         robEntry.setState(EntryState.FINISHED);
         
+        flush();
+    }
+    
+    /**
+     * Flush this execution unit
+     */
+    public void flush() {
         srcData1 = null;
         srcData2 = null;
         dest = null;

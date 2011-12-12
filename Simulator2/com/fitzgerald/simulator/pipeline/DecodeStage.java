@@ -2,26 +2,29 @@ package com.fitzgerald.simulator.pipeline;
 
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.processor.Processor;
-import com.fitzgerald.simulator.processor.RegisterFile;
-import com.fitzgerald.simulator.processor.ReorderBuffer;
 import com.fitzgerald.simulator.processor.ReservationStation;
-import com.fitzgerald.simulator.processor.Scoreboard;
 
-public class DecodeStage {
+public class DecodeStage extends PipelineStage {
 
     protected Instruction instruction1 = null;
     protected Integer instruction1BranchAddr = null;
     protected Instruction instruction2 = null;
     protected Integer instruction2BranchAddr = null;
     
-    public void step(Processor processor, RegisterFile registerFile,
-            Scoreboard scoreboard, ReorderBuffer reorderBuffer) {
-        
+    /**
+     * Create a new decode stage
+     * @param processor Processor reference
+     */
+    public DecodeStage(Processor processor) {
+        super(processor);
+    }
+    
+    public void step() {
         ReservationStation rs = processor.getFreeReservationStation();
         
         if (rs != null) {
             // Free reservation station
-            rs.issueInstruction(instruction1, registerFile, scoreboard, reorderBuffer);
+            rs.issueInstruction(instruction1);
             instruction1 = null;
             instruction1BranchAddr = null;
             
@@ -30,7 +33,7 @@ public class DecodeStage {
             rs = processor.getFreeReservationStation();
             
             if (rs != null) {
-                rs.issueInstruction(instruction2, registerFile, scoreboard, reorderBuffer);
+                rs.issueInstruction(instruction2);
                 instruction2 = null;
                 instruction2BranchAddr = null;
             } else {
@@ -88,5 +91,13 @@ public class DecodeStage {
      */
     public boolean isEmpty() {
         return instruction1Free() && instruction2Free();
+    }
+
+    @Override
+    public void flush() {
+        instruction1 = null;
+        instruction1BranchAddr = null;
+        instruction2 = null;
+        instruction2BranchAddr = null;
     }
 }

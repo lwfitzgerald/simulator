@@ -1,9 +1,18 @@
 package com.fitzgerald.simulator.executionstage;
 
 import com.fitzgerald.simulator.instruction.ALUInstruction;
+import com.fitzgerald.simulator.processor.Processor;
 
 public class ALU extends ExecutionUnit {
     
+    /**
+     * Create a new ALU
+     * @param processor Processor reference
+     */
+    public ALU(Processor processor) {
+        super(processor);
+    }
+
     @Override
     protected void performOperation() {
         ALUInstruction aluInstruction = (ALUInstruction) instruction;

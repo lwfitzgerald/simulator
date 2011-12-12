@@ -1,8 +1,5 @@
 package com.fitzgerald.simulator.processor;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.fitzgerald.simulator.executionstage.ALU;
 import com.fitzgerald.simulator.executionstage.BranchUnit;
 import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
@@ -52,8 +49,7 @@ public class Processor {
     protected Scoreboard scoreboard;
     protected ReservationStation[] reservationStations;
     protected ReorderBuffer reorderBuffer;
-    
-    protected int cycleCount = -1;
+    protected BranchPredictor branchPredictor;
     
     /*
      * Pipeline stages
@@ -69,6 +65,24 @@ public class Processor {
     protected LoadStoreUnit[] lsUnits;
     protected BranchUnit[] branchUnits;
     
+    protected int cycleCount = -1;
+    
+    /*
+     * Speculation status
+     */
+    protected boolean speculating = false;
+    
+    /**
+     * Holds the address to set the PC to if
+     * speculation was incorrect
+     */
+    protected Integer speculateFailAddr;
+    
+    /**
+     * Create a new processor
+     * @param program Program to execute
+     * @param memory Memory space to use
+     */
     public Processor(Program program, Memory memory) {
         this.program = program;
         this.registerFile = new RegisterFile();
@@ -79,11 +93,12 @@ public class Processor {
         initReservationStations();
         
         this.reorderBuffer = new ReorderBuffer();
+        this.branchPredictor = new BranchPredictor();
         
         // Initialise pipeline stages
-        this.fetchStage = new FetchStage();
-        this.decodeStage = new DecodeStage();
-        this.executeStage = new ExecuteStage();
+        this.fetchStage = new FetchStage(this);
+        this.decodeStage = new DecodeStage(this);
+        this.executeStage = new ExecuteStage(this);
         
         // Initialise execution units
         initExecutionUnits();
@@ -94,74 +109,33 @@ public class Processor {
     
     /**
      * Performs one simulation step
-     * @return Boolean representing whether the end
-     * of the program has been reached
+     * @return True if program has finished executing
      */
     public boolean step() {
-        fetchStage.step(program, this, registerFile);
-        decodeStage.step(this, registerFile, scoreboard, reorderBuffer);
-        executeStage.step(this, registerFile, alus, lsUnits, branchUnits);
+        fetchStage.step(program);
         
-        if (fetchStage.containsArtificialNop() &&
-            decodeStage.containsArtificialNop() &&
-            executeStage.containsArtificialNop()) {
-            
-            /*
-             * All stages contain artificial Nops so we can halt
-             * but first we need to update the UI one last time to
-             * clear the last instruction
-             */
-            decodeStage.updateUI();
-            executeStage.updateUI();
-            
-            return false;
+        // Check if the program has finished
+        if (checkProgramFinished()) {
+            return true;
         }
         
-        decodeStage.step(program, this, registerFile, alu, branchUnit, memoryController);
-        executeStage.step(program, this, registerFile, alu, branchUnit, memoryController);
+        decodeStage.step();
+        executeStage.step();
         
-        if (executeStage.isCompleted()) {
-            /*
-             * Execute stage has completed (require no more cycles)
-             * so copy register nexts to currents etc
-             */
-            finishStep();
-        }
+        finishStep();
         
-        return true;
-    }
-    
-    protected void finishStep() {
-        fetchStage.finishStep(decodeStage);
-        
-        if (!pcIncrementedNormally()) {
-            flushPipeline();
-        }
-        
-        // In reverse order to maintain data correctness
-        decodeStage.copyState(executeStage);
-        fetchStage.copyState(decodeStage);
-        
-        // Set completed to false on all stages
-        fetchStage.setCompleted(false);
-        decodeStage.setCompleted(false);
-        executeStage.setCompleted(false);
-        
-        // Copy register "next"'s to "current"'s
-        registerFile.finishStep();
+        return false;
     }
     
     /**
-     * Returns whether the PC has been incremented
-     * normally
-     * @return True if next PC = curr PC + 4, false
-     * otherwise
+     * Perform end of step operations
      */
-    protected boolean pcIncrementedNormally() {
-        int curr = Util.bytesToInt(registerFile.getRegister(PC_REG).getCurrentValue());
-        int next = Util.bytesToInt(registerFile.getRegister(PC_REG).getNextValue());
+    protected void finishStep() {
+        // Copy instructions from fetch to decode if needed
+        fetchStage.finishStep(decodeStage);
         
-        return next - curr == 4;
+        // Copy register "next"'s to "current"'s
+        registerFile.finishStep();
     }
     
     /**
@@ -171,7 +145,7 @@ public class Processor {
         this.reservationStations = new ReservationStation[NUM_RESERVATION_STATIONS];
         
         for (int i=0; i < NUM_RESERVATION_STATIONS; i++) {
-            this.reservationStations[i] = new ReservationStation();
+            this.reservationStations[i] = new ReservationStation(this);
         }
     }
     
@@ -195,7 +169,7 @@ public class Processor {
      */
     public void updateAllReservationStations() {
         for (ReservationStation rs : reservationStations) {
-            rs.update(registerFile, scoreboard);
+            rs.update();
         }
     }
     
@@ -218,24 +192,172 @@ public class Processor {
         return null;
     }
     
+    /**
+     * Initialise execution units
+     */
     protected void initExecutionUnits() {
         alus = new ALU[NUM_ALUS];
         
         for (int i=0; i < NUM_ALUS; i++) {
-            alus[i] = new ALU();
+            alus[i] = new ALU(this);
         }
         
         lsUnits = new LoadStoreUnit[NUM_LOAD_STORE_UNITS];
         
         for (int i=0; i < NUM_LOAD_STORE_UNITS; i++) {
-            lsUnits[i] = new LoadStoreUnit();
+            lsUnits[i] = new LoadStoreUnit(this);
         }
         
         branchUnits = new BranchUnit[NUM_BRANCH_UNITS];
         
         for (int i=0; i < NUM_BRANCH_UNITS; i++) {
-            branchUnits[i] = new BranchUnit();
+            branchUnits[i] = new BranchUnit(this);
         }
+    }
+    
+    /**
+     * Flush all pipeline stages
+     */
+    public void flushPipeline() {
+        fetchStage.flush();
+        decodeStage.flush();
+        
+        for (ALU alu : alus) {
+            alu.flush();
+        }
+        
+        for (LoadStoreUnit lsUnit : lsUnits) {
+            lsUnit.flush();
+        }
+        
+        for (BranchUnit branchUnit : branchUnits) {
+            branchUnit.flush();
+        }
+    }
+    
+    /**
+     * Check if the program has finished
+     * executing (all stages empty)
+     * @return True if finished
+     */
+    protected boolean checkProgramFinished() {
+        if (!fetchStage.isEmpty()) {
+            return false;
+        }
+        
+        if (!decodeStage.isEmpty()) {
+            return false;
+        }
+        
+        for (ALU alu : alus) {
+            if (!alu.isIdle()) {
+                return false;
+            }
+        }
+        
+        for (LoadStoreUnit lsUnit : lsUnits) {
+            if (!lsUnit.isIdle()) {
+                return false;
+            }
+        }
+        
+        for (BranchUnit branchUnit : branchUnits) {
+            if (!branchUnit.isIdle()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Get whether speculating
+     * @return True if speculating
+     */
+    public boolean getSpeculating() {
+        return speculating;
+    }
+    
+    /**
+     * Start speculating
+     * @param speculateFailAddr Fail address to branch
+     * to if speculation incorrect
+     */
+    public void startSpeculating(int speculateFailAddr) {
+        this.speculating = true;
+        this.speculateFailAddr = speculateFailAddr;
+    }
+    
+    /**
+     * Stop speculating
+     */
+    public void stopSpeculating() {
+        this.speculating = false;
+        this.speculateFailAddr = null;
+    }
+    
+    /**
+     * Return speculate fail address
+     * @return Speculate fail address
+     */
+    public int getSpeculateFailAddress() {
+        return speculateFailAddr;
+    }
+    
+    /**
+     * Get a reference to the register file
+     * @return Reference to register file
+     */
+    public RegisterFile getRegisterFile() {
+        return registerFile;
+    }
+    
+    /**
+     * Get a reference to the scoreboard
+     * @return Reference to scoreboard
+     */
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+    
+    /**
+     * Get a reference to the reorder buffer
+     * @return Reference to reorder buffer
+     */
+    public ReorderBuffer getReorderBuffer() {
+        return reorderBuffer;
+    }
+    
+    /**
+     * Get a reference to the branch predictor
+     * @return Reference to branch predictor
+     */
+    public BranchPredictor getBranchPredictor() {
+        return branchPredictor;
+    }
+    
+    /**
+     * Get a reference to the ALUs
+     * @return Reference to ALUs
+     */
+    public ALU[] getALUs() {
+        return alus;
+    }
+    
+    /**
+     * Get a reference to the Load store units
+     * @return Reference to Load store units
+     */
+    public LoadStoreUnit[] getLoadStoreUnits() {
+        return lsUnits;
+    }
+    
+    /**
+     * Get a reference to the Branch units
+     * @return Reference to branch units
+     */
+    public BranchUnit[] getBranchUnits() {
+        return branchUnits;
     }
     
 }

@@ -96,6 +96,40 @@ public abstract class Instruction implements Serializable {
     }
     
     /**
+     * Update the destination register data for the
+     * reservation station
+     * @param registerFile Register file reference
+     * @param scoreboard Scoreboard reference
+     * @param reservationStation Reservation station reference
+     */
+    protected void updateReservationStationDestination(RegisterFile registerFile,
+            Scoreboard scoreboard, ReservationStation reservationStation) {
+        
+        // Attempt to claim destination register
+        if (reservationStation.getDestination() == null
+                && scoreboard.isAvailable(operand1)) {
+
+            // Claim in scoreboard
+            scoreboard.setAvailablity(operand1, false);
+            
+            // Set as ready
+            reservationStation.setDestinationReady();
+        }
+    }
+    
+    /**
+     * Forward the result of an instruction to an
+     * instruction of this type in the given reservation
+     * station
+     * @param result Result to forward
+     * @param destRegister Destination register
+     * @param reservationStation Reservation station holding
+     * this instruction
+     */
+    public abstract void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation);
+    
+    /**
      * Set the value of an operand for this instruction
      * @param operandNo Operand to set
      * @param value Value to set operand to

@@ -16,35 +16,43 @@ public class ReservationStation {
     protected Instruction instruction = null;
     protected ROBEntry robEntry = null;    
     
+    protected Processor processor;
+    
+    /**
+     * Create new reservation station
+     * @param processor Processor reference
+     */
+    public ReservationStation(Processor processor) {
+        this.processor = processor;
+    }
+    
     /**
      * Store an instruction in the reservation station
      * @param instruction Instruction
      */
-    public void issueInstruction(Instruction instruction,
-            RegisterFile registerFile, Scoreboard scoreboard,
-            ReorderBuffer reorderBuffer) {
+    public void issueInstruction(Instruction instruction) {
+        ReorderBuffer reorderBuffer = processor.getReorderBuffer();
         
         // Reset status
         reset();
         
         // Create reorder buffer entry
-        robEntry = reorderBuffer.addEntry(instruction);
+        robEntry = reorderBuffer.addEntry(instruction, this);
 
         this.instruction = instruction;
 
         // Attempt operand fetch and claim destination register
-        update(registerFile, scoreboard);
+        update();
     }
     
     /**
      * Attempt to fetch operands and claim destination register
-     * @param registerFile Register file reference
-     * @param scoreboard Scoreboard reference
      */
-    public void update(RegisterFile registerFile, Scoreboard scoreboard) {
-        if (instruction != null) {
-            instruction.updateReservationStation(registerFile, scoreboard, this);
-        }
+    public void update() {
+        RegisterFile registerFile = processor.getRegisterFile();
+        Scoreboard scoreboard = processor.getScoreboard();
+        
+        instruction.updateReservationStation(registerFile, scoreboard, this);
     }
     
     /**
