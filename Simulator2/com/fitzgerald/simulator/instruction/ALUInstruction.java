@@ -86,7 +86,7 @@ public abstract class ALUInstruction extends Instruction {
     private void updateReservationStationSource2Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation) {
         
-        updateReservationStationSource1Reg(registerFile, scoreboard,
+        updateReservationStationSource2Reg(registerFile, scoreboard,
                 reservationStation, operand3);
     }
     

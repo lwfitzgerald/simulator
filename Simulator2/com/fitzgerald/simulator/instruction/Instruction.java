@@ -85,10 +85,10 @@ public abstract class Instruction implements Serializable {
                 && scoreboard.isAvailable(registerNum)) {
             
             // Get value
-            int sourceData1 = registerFile.getRegister(registerNum).getCurrentValue();
+            int sourceData2 = registerFile.getRegister(registerNum).getCurrentValue();
             
             // Store in reservation station
-            reservationStation.setSourceData2(sourceData1);
+            reservationStation.setSourceData2(sourceData2);
             
             // Set as ready
             reservationStation.setSourceData2Ready();
