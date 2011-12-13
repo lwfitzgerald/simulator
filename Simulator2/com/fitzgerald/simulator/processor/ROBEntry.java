@@ -174,6 +174,10 @@ public class ROBEntry {
                          * aren't already executing/finished
                          */
                         if (entry.state == EntryState.ISSUED) {
+                            // Update reservation station for the entry!
+                            entry.instruction.forwardResult(result, destRegister,
+                                    entry.reservationStation);
+                            
                             if (entry.destRegister == this.destRegister) {
                                 /*
                                  * We've reached the next write to the register
@@ -184,10 +188,6 @@ public class ROBEntry {
                                 // Return without unsetting scoreboard bit
                                 return;
                             }
-                            
-                            // Update reservation station for the entry!
-                            entry.instruction.forwardResult(result, destRegister,
-                                    entry.reservationStation);
                         }
                     }
                 }
