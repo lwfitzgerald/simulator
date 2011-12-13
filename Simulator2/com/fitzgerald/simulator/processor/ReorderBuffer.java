@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 
 public class ReorderBuffer implements Iterable<ROBEntry> {
     
@@ -17,13 +18,22 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
      * Add an entry for a new instruction
      * @param instruction Instruction to create entry
      * for
-     * @param reservartionStation Reservation station
+     * @param reservationStation Reservation station
      * holding issued instruction
+     * @param speculating Whether currently speculating
      */
     public ROBEntry addEntry(Instruction instruction,
-            ReservationStation reservationStation) {
+            ReservationStation reservationStation, boolean speculating) {
         
-        ROBEntry newEntry = new ROBEntry(instruction, reservationStation);
+        if (instruction.getType() == InstructionType.BRANCH) {
+            /*
+             * Only one level of speculating so branches are
+             * never speculative
+             */
+            speculating = false;
+        }
+        
+        ROBEntry newEntry = new ROBEntry(instruction, reservationStation, speculating);
         buffer.add(newEntry);
         
         return newEntry;
@@ -64,13 +74,23 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
     public void removeSpeculative() {
         ROBEntry entry;
         
-        while ((entry = buffer.peek()).isSpeculative()) {
-            // Remove from reservation station if necessary
-            entry.abort();
-            
-            // Remove from ROB
-            buffer.remove();
+        while ((entry = buffer.peek()) != null) {
+            if (entry.isSpeculative()) {
+                // Remove from reservation station if necessary
+                entry.abort();
+                
+                // Remove from ROB
+                buffer.remove();
+            }
         }
+    }
+    
+    /**
+     * Return if the ROB is empty or not
+     * @return True if empty
+     */
+    public boolean isEmpty() {
+        return buffer.isEmpty();
     }
 
     @Override

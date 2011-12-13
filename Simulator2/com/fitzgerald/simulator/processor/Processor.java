@@ -218,6 +218,17 @@ public class Processor {
     }
     
     /**
+     * Approve all speculative instructions
+     * in the pipeline
+     */
+    public void approveSpeculative() {
+        fetchStage.approveSpeculative();
+        decodeStage.approveSpeculative();
+        
+        reorderBuffer.approveSpeculative();
+    }
+    
+    /**
      * Flush all pipeline stages
      */
     public void flushPipeline() {
@@ -252,22 +263,8 @@ public class Processor {
             return false;
         }
         
-        for (ALU alu : alus) {
-            if (!alu.isIdle()) {
-                return false;
-            }
-        }
-        
-        for (LoadStoreUnit lsUnit : lsUnits) {
-            if (!lsUnit.isIdle()) {
-                return false;
-            }
-        }
-        
-        for (BranchUnit branchUnit : branchUnits) {
-            if (!branchUnit.isIdle()) {
-                return false;
-            }
+        if (!reorderBuffer.isEmpty()) {
+            return false;
         }
         
         return true;

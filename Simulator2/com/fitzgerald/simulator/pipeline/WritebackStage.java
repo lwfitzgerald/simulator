@@ -4,7 +4,6 @@ import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
 import com.fitzgerald.simulator.processor.ReorderBuffer;
-import com.fitzgerald.simulator.processor.Scoreboard;
 
 public class WritebackStage extends PipelineStage {
     
@@ -18,7 +17,6 @@ public class WritebackStage extends PipelineStage {
 
     public void step() {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
-        Scoreboard scoreboard = processor.getScoreboard();
         
         ROBEntry entry;
         
@@ -29,7 +27,7 @@ public class WritebackStage extends PipelineStage {
              * Forward result to reservation stations
              * and update scoreboard
              */
-            entry.handleFinish(reorderBuffer, scoreboard);
+            entry.handleFinish(processor);
             
             // Perform write to registers
             entry.writeBack(registerFile);

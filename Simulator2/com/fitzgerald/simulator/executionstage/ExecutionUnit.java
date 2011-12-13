@@ -62,7 +62,7 @@ public abstract class ExecutionUnit {
         // Set ROB state to executing
         robEntry.setState(EntryState.EXECUTING);
         
-        System.out.println("Executing " + instruction);
+        //System.out.println("Executing " + instruction);
         
         performOperation();
     }

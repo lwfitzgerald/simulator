@@ -30,15 +30,16 @@ public class ReservationStation {
      * Store an instruction in the reservation station
      * @param instruction Instruction
      * @param branchAddr Calculated branch address
+     * @param speculating Whether currently speculating
      */
-    public void issueInstruction(Instruction instruction, Integer branchAddr) {
+    public void issueInstruction(Instruction instruction, Integer branchAddr, boolean speculating) {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
         
         // Reset status
         flush();
         
         // Create reorder buffer entry
-        robEntry = reorderBuffer.addEntry(instruction, this);
+        robEntry = reorderBuffer.addEntry(instruction, this, speculating);
 
         this.instruction = instruction;
 

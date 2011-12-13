@@ -1,6 +1,8 @@
 package com.fitzgerald.simulator.processor;
 
+import com.fitzgerald.simulator.instruction.BranchInstruction;
 import com.fitzgerald.simulator.instruction.Instruction;
+import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 
 public class ROBEntry {
     
@@ -133,41 +135,86 @@ public class ROBEntry {
      * Forward the result in this entry to instructions
      * waiting in the reservation stations and update
      * scoreboard bits
-     * @param reorderBuffer Reorder buffer reference
-     * @param scoreboard Scoreboard reference
+     * @param processor Processor reference
      */
-    public void handleFinish(ReorderBuffer reorderBuffer, Scoreboard scoreboard) {
-        // Only forward if there is a result
-        if (result != null) {
-            for (ROBEntry entry : reorderBuffer) {
-                // Do not forward to own entry
-                if (entry != this) {
-                    /*
-                     * Only forward to instruction which
-                     * aren't already executing/finished
-                     */
-                    if (entry.state == EntryState.ISSUED) {
-                        if (entry.destRegister == this.destRegister) {
-                            /*
-                             * We've reached the next write to the register
-                             * so cannot forward to any more instructions
-                             */
-                            entry.reservationStation.setDestinationReady();
-                            
-                            // Return without unsetting scoreboard bit
-                            return;
-                        }
-                        
-                        // Update reservation station for the entry!
-                        entry.instruction.forwardResult(result, destRegister,
-                                entry.reservationStation);
-                    }
+    public void handleFinish(Processor processor) {
+        ReorderBuffer reorderBuffer = processor.getReorderBuffer();
+        
+        if (instruction.getType() == InstructionType.BRANCH) {
+            BranchInstruction branchInstruction = (BranchInstruction) instruction;
+            
+            if (!branchInstruction.isUnconditional()) {
+                // Get the address to branch to if incorrect
+                int failAddr = processor.getSpeculateFailAddress();
+                
+                // Mark as no longer speculating
+                processor.stopSpeculating();
+                
+                if (result == 1) {
+                    // Correct
+                    
+                    // Approve all speculative instructions
+                    processor.approveSpeculative();
+                } else {
+                    // Incorrect
+                    
+                    recoverWrongDirection(processor, reorderBuffer, failAddr);
                 }
             }
+        } else {
+            Scoreboard scoreboard = processor.getScoreboard();
             
-            // Unset scoreboard bit as no later writes in reservation stations
-            scoreboard.setAvailablity(this.destRegister, true);
+            // Only forward if there is a result
+            if (result != null) {
+                for (ROBEntry entry : reorderBuffer) {
+                    // Do not forward to own entry
+                    if (entry != this) {
+                        /*
+                         * Only forward to instruction which
+                         * aren't already executing/finished
+                         */
+                        if (entry.state == EntryState.ISSUED) {
+                            if (entry.destRegister == this.destRegister) {
+                                /*
+                                 * We've reached the next write to the register
+                                 * so cannot forward to any more instructions
+                                 */
+                                entry.reservationStation.setDestinationReady();
+                                
+                                // Return without unsetting scoreboard bit
+                                return;
+                            }
+                            
+                            // Update reservation station for the entry!
+                            entry.instruction.forwardResult(result, destRegister,
+                                    entry.reservationStation);
+                        }
+                    }
+                }
+                
+                // Unset scoreboard bit as no later writes in reservation stations
+                scoreboard.setAvailablity(this.destRegister, true);
+            }
         }
+    }
+    
+    /**
+     * Recover from going the wrong direction on
+     * a branch
+     * @param processor Processor reference
+     * @param reorderBuffer Reorder buffer reference
+     * @param failAddr Correct instruction address
+     */
+    protected void recoverWrongDirection(Processor processor, ReorderBuffer reorderBuffer, int failAddr) {
+        // Remove speculative instructions
+        reorderBuffer.removeSpeculative();
+        
+        // Update PC
+        RegisterFile registerFile = processor.getRegisterFile();
+        registerFile.getRegister(Processor.PC_REG).setValue(failAddr);
+        
+        // Flush pipeline
+        processor.flushPipeline();
     }
     
     
@@ -193,7 +240,7 @@ public class ROBEntry {
     }
     
     public String toString() {
-        return "[[" + instruction + "], " + state + "]";
+        return "[[" + instruction + "], " + state + ", " + (speculative ? "SP" : "NONSP") + "]";
     }
     
 }

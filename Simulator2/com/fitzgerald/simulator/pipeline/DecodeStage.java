@@ -7,8 +7,10 @@ import com.fitzgerald.simulator.processor.ReservationStation;
 public class DecodeStage extends PipelineStage {
 
     protected Instruction instruction1 = null;
+    protected boolean instruction1Speculative;
     protected Integer instruction1BranchAddr = null;
     protected Instruction instruction2 = null;
+    protected boolean instruction2Speculative;
     protected Integer instruction2BranchAddr = null;
     
     /**
@@ -25,7 +27,7 @@ public class DecodeStage extends PipelineStage {
             
             if (rs != null) {
                 // Free reservation station
-                rs.issueInstruction(instruction1, instruction1BranchAddr);
+                rs.issueInstruction(instruction1, instruction1BranchAddr, instruction1Speculative);
                 instruction1 = null;
                 instruction1BranchAddr = null;
                 
@@ -35,12 +37,13 @@ public class DecodeStage extends PipelineStage {
                     rs = processor.getFreeReservationStation();
                     
                     if (rs != null) {
-                        rs.issueInstruction(instruction2, instruction2BranchAddr);
+                        rs.issueInstruction(instruction2, instruction2BranchAddr, instruction2Speculative);
                         instruction2 = null;
                         instruction2BranchAddr = null;
                     } else {
                         // Move instruction 2 to 1
                         instruction1 = instruction2;
+                        instruction1Speculative = instruction2Speculative;
                         instruction1BranchAddr = instruction2BranchAddr;
                         instruction2 = null;
                         instruction2BranchAddr = null;
@@ -69,21 +72,25 @@ public class DecodeStage extends PipelineStage {
     /**
      * Set instruction 1 and calculated branch address
      * @param instruction1 Instruction to set
-     * @param instruction1BranchAddr Calculated branch address
+     * @param speculative Whether instruction is speculative
+     * @param branchAddr Calculated branch address
      */
-    public void setInstruction1(Instruction instruction1, Integer instruction1BranchAddr) {
+    public void setInstruction1(Instruction instruction1, boolean speculative, Integer branchAddr) {
         this.instruction1 = instruction1;
-        this.instruction1BranchAddr = instruction1BranchAddr;
+        this.instruction1Speculative = speculative;
+        this.instruction1BranchAddr = branchAddr;
     }
     
     /**
      * Set instruction 2 and calculated branch address
      * @param instruction2 Instruction to set
-     * @param instruction2BranchAddr Calculated branch address
+     * @param speculative Whether instruction is speculative
+     * @param branchAddr Calculated branch address
      */
-    public void setInstruction2(Instruction instruction2, Integer instruction2BranchAddr) {
+    public void setInstruction2(Instruction instruction2, boolean speculative, Integer branchAddr) {
         this.instruction2 = instruction2;
-        this.instruction2BranchAddr = instruction2BranchAddr;
+        this.instruction2Speculative = speculative;
+        this.instruction2BranchAddr = branchAddr;
     }
     
     /**
@@ -94,6 +101,38 @@ public class DecodeStage extends PipelineStage {
         return instruction1Free() && instruction2Free();
     }
 
+    /**
+     * Mark speculative instructions
+     * as no longer speculative
+     */
+    public void approveSpeculative() {
+        instruction1Speculative = false;
+        instruction2Speculative = false;
+    }
+    
+    /**
+     * Remove speculative instructions
+     */
+    public void flushSpeculative() {
+        if (instruction1Speculative) {
+            instruction1 = null;
+            instruction1BranchAddr = null;
+        }
+        
+        if (instruction2Speculative) {
+            instruction2 = null;
+            instruction2BranchAddr = null;
+        }
+        
+        if (instruction1 == null && instruction2 != null) {
+            // Copy 2 -> 1
+            instruction1 = instruction2;
+            instruction1BranchAddr = instruction2BranchAddr;
+            instruction2 = null;
+            instruction2BranchAddr = null;
+        }
+    }
+    
     @Override
     public void flush() {
         instruction1 = null;
