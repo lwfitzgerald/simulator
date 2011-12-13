@@ -63,7 +63,7 @@ public abstract class Instruction implements Serializable {
                 && scoreboard.isAvailable(registerNum)) {
             
             // Get value
-            int sourceData1 = registerFile.getRegister(registerNum).getCurrentValue();
+            int sourceData1 = registerFile.getRegister(registerNum).getValue();
             
             // Store in reservation station
             reservationStation.setSourceData1(sourceData1);
@@ -89,7 +89,7 @@ public abstract class Instruction implements Serializable {
                 && scoreboard.isAvailable(registerNum)) {
             
             // Get value
-            int sourceData2 = registerFile.getRegister(registerNum).getCurrentValue();
+            int sourceData2 = registerFile.getRegister(registerNum).getValue();
             
             // Store in reservation station
             reservationStation.setSourceData2(sourceData2);

@@ -11,7 +11,7 @@ public class Idiv extends ALUInstruction {
      * Serialisation ID
      */
     private static final long serialVersionUID = -8837315849558287407L;
-
+    
     @Override
     public int getALUCyclesRequired() {
         // Integer divide requires 2 cycles
@@ -27,7 +27,7 @@ public class Idiv extends ALUInstruction {
     }
 
     @Override
-    public int aluOperation(Integer srcData1, Integer srcData2) {
+    public Integer aluOperation(Integer srcData1, Integer srcData2) {
         return srcData1 / srcData2;
     }
 

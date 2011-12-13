@@ -107,7 +107,7 @@ public class Processor {
         initExecutionUnits();
         
         // Set program counter to 0
-        registerFile.getRegister(PC_REG).setCurrentValue(0);
+        registerFile.getRegister(PC_REG).setValue(0);
     }
     
     /**
@@ -121,13 +121,6 @@ public class Processor {
          * written back in the same cycle
          */
         writebackStage.step();
-        
-        fetchStage.step(program);
-        
-        // Check if the program has finished
-        if (checkProgramFinished()) {
-            return false;
-        }
 
         /*
          * Execute and decode in reverse order
@@ -137,20 +130,17 @@ public class Processor {
         executeStage.step();
         decodeStage.step();
         
-        finishStep();
+        fetchStage.step(program);
         
-        return true;
-    }
-    
-    /**
-     * Perform end of step operations
-     */
-    protected void finishStep() {
+        // Check if the program has finished
+        if (checkProgramFinished()) {
+            return false;
+        }
+        
         // Copy instructions from fetch to decode if needed
         fetchStage.finishStep(decodeStage);
         
-        // Copy register "next"'s to "current"'s
-        registerFile.finishStep();
+        return true;
     }
     
     /**

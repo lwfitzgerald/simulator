@@ -7,8 +7,7 @@ public class Register {
      */
     protected int registerNum;
     
-    protected int currentValue;
-    protected Integer nextValue;
+    protected int value;
     
     /**
      * Create a register with the given number
@@ -16,51 +15,26 @@ public class Register {
     public Register(int registerNum) {
         this.registerNum = registerNum;
         
-        this.currentValue = 0;
-        this.nextValue = null;
+        this.value = 0;
     }
     
     /**
-     * Get the current value of the register
-     * @return The current value of the register
+     * Get the value of the register
+     * @return The value of the register
      */
-    public int getCurrentValue() {
-        return currentValue;
+    public int getValue() {
+        return value;
     }
 
     /**
-     * Set the current value of the register
+     * Set the value of the register
      * @param newValue New value to set
      */
-    public void setCurrentValue(int newValue) {
-        currentValue = newValue;
-    }
-
-    /**
-     * Get the next value of the register
-     * @return The next value of the register
-     */
-    public int getNextValue() {
-        return nextValue;
-    }
-    
-    /**
-     * Set the next value of the register
-     * @param newValue New value to set
-     */
-    public void setNextValue(int newValue) {
-        nextValue = newValue;
-    }
-    
-    /**
-     * Copy the next value to the current value
-     * of the register
-     */
-    public void finishStep() {
-        if (nextValue != null) {
-            currentValue = nextValue;
-            nextValue = null;
-        }
+    public void setValue(int newValue) {
+        value = newValue;
+        
+        if (registerNum == 2)
+            System.out.println("Value of register " + registerNum + " set to " + newValue);
     }
     
 }

@@ -35,10 +35,14 @@ public class ALU extends ExecutionUnit {
         }
         
         // Calculate result
-        int result = aluInstruction.aluOperation(srcData1, srcData2);
+        Integer result = aluInstruction.aluOperation(srcData1, srcData2);
         
         // Update ROB
-        finishedExecuting(result);
+        if (result != null) {
+            finishedExecuting(result);
+        } else {
+            finishedExecuting();
+        }
     }
     
 }

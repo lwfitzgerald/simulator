@@ -175,7 +175,9 @@ public class ROBEntry {
      * Perform writing of result to register
      */
     public void writeBack(RegisterFile registerFile) {
-        registerFile.getRegister(destRegister).setNextValue(result);
+        if (destRegister != null) {
+            registerFile.getRegister(destRegister).setValue(result);
+        }
     }
     
     /**

@@ -27,7 +27,7 @@ public class Mul extends ALUInstruction {
     }
     
     @Override
-    public int aluOperation(Integer srcData1, Integer srcData2) {
+    public Integer aluOperation(Integer srcData1, Integer srcData2) {
         return srcData1 * srcData2;
     }
 

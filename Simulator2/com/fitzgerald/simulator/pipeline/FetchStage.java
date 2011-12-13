@@ -47,7 +47,7 @@ public class FetchStage extends PipelineStage {
     protected void fetchInstruction1(Program program) {
         RegisterFile registerFile = processor.getRegisterFile();
         
-        int currentPC = registerFile.getRegister(Processor.PC_REG).getCurrentValue();
+        int currentPC = registerFile.getRegister(Processor.PC_REG).getValue();
 
         fetchInstruction(program, currentPC, 1);
     }
@@ -60,7 +60,7 @@ public class FetchStage extends PipelineStage {
         RegisterFile registerFile = processor.getRegisterFile();
         
         // Use next value as it's been set by fetch of first instruction
-        int currentPC = registerFile.getRegister(Processor.PC_REG).getNextValue();
+        int currentPC = registerFile.getRegister(Processor.PC_REG).getValue();
 
         fetchInstruction(program, currentPC, 2);
     }
@@ -117,7 +117,7 @@ public class FetchStage extends PipelineStage {
             newPC += 4;
         }
         
-        registerFile.getRegister(Processor.PC_REG).setNextValue(newPC);
+        registerFile.getRegister(Processor.PC_REG).setValue(newPC);
         
         if (instructionNo == 1) {
             instruction1 = instruction;

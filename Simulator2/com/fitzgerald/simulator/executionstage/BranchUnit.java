@@ -33,6 +33,7 @@ public class BranchUnit extends ExecutionUnit {
                 reorderBuffer.approveSpeculative();
             } else {
                 recoverWrongDirection(reorderBuffer, failAddr);
+                return;
             }
         } else {
             if (failAddr == dest) {
@@ -40,6 +41,7 @@ public class BranchUnit extends ExecutionUnit {
                 reorderBuffer.approveSpeculative();
             } else {
                 recoverWrongDirection(reorderBuffer, failAddr);
+                return;
             }
         }
         
@@ -59,7 +61,7 @@ public class BranchUnit extends ExecutionUnit {
         
         // Update PC
         RegisterFile registerFile = processor.getRegisterFile();
-        registerFile.getRegister(Processor.PC_REG).setNextValue(failAddr);
+        registerFile.getRegister(Processor.PC_REG).setValue(failAddr);
         
         // Flush pipeline
         processor.flushPipeline();

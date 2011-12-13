@@ -80,10 +80,10 @@ public abstract class BranchInstruction extends Instruction {
         
         // dstimm
         
-        initialSetDestination(registerFile, scoreboard, branchAddr,
-                reservationStation);
         reservationStation.setSourceData1Ready();
         reservationStation.setSourceData2Ready();
+        initialSetDestination(registerFile, scoreboard, branchAddr,
+                reservationStation);
     }
     
     /**

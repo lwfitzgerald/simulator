@@ -13,6 +13,16 @@ public class Subi extends Sub {
     private static final long serialVersionUID = -7082676089212708779L;
     
     @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {
+        
+        if (destRegister == operand2) {
+            reservationStation.setSourceData1(result);
+            reservationStation.setSourceData1Ready();
+        }
+    }
+    
+    @Override
     public void initialSetup(RegisterFile registerFile, Scoreboard scoreboard,
             ROBEntry robEntry, Integer branchAddr,
             ReservationStation reservationStation) {

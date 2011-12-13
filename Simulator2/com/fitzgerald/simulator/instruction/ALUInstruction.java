@@ -27,7 +27,7 @@ public abstract class ALUInstruction extends Instruction {
      * @param srcData2 Source data 2 or null if N/A
      * @return Result of operation
      */
-    public abstract int aluOperation(Integer srcData1, Integer srcData2);
+    public abstract Integer aluOperation(Integer srcData1, Integer srcData2);
 
     /**
      * Initial setup for a reservation station for a
@@ -43,10 +43,10 @@ public abstract class ALUInstruction extends Instruction {
         
         // dstreg, src1reg, src2reg
         
-        initialClaimDestination(registerFile, scoreboard, robEntry,
-                reservationStation);
         initialFetchSource1Reg(registerFile, scoreboard, reservationStation);
         initialFetchSource2Reg(registerFile, scoreboard, reservationStation);
+        initialClaimDestination(registerFile, scoreboard, robEntry,
+                reservationStation);
     }
     
     /**
@@ -63,10 +63,10 @@ public abstract class ALUInstruction extends Instruction {
         
         // dstreg, src1reg, src2imm
         
+        initialFetchSource1Reg(registerFile, scoreboard, reservationStation);
+        initialSetSource2Imm(scoreboard, reservationStation);
         initialClaimDestination(registerFile, scoreboard, robEntry,
                 reservationStation);
-        initialFetchSource1Reg(registerFile, scoreboard, reservationStation);
-        initialRSSetSource2Imm(scoreboard, reservationStation);
     }
     
     /**
@@ -104,7 +104,7 @@ public abstract class ALUInstruction extends Instruction {
      * @param scoreboard Scoreboard reference
      * @param reservationStation Reservation station reference
      */
-    private void initialRSSetSource2Imm(Scoreboard scoreboard,
+    private void initialSetSource2Imm(Scoreboard scoreboard,
             ReservationStation reservationStation) {
         
         // Store immediate operand

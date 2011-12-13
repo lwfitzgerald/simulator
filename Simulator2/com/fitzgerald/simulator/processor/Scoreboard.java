@@ -34,4 +34,15 @@ public class Scoreboard {
     public void setAvailablity(int registerNo, boolean availability) {
         availabilityArray[registerNo] = availability;
     }
+    
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        
+        for (int i=0; i < Processor.NUM_REGISTERS; i++) {
+            buffer.append("r" + i + ": " + (availabilityArray[i] ? "Available" : "Unavailable") + "\n");
+        }
+        
+        return buffer.toString();
+    }
+    
 }

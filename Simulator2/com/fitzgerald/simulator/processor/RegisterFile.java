@@ -22,14 +22,4 @@ public class RegisterFile {
         return registerArray[regNumber];
     }
     
-    /**
-     * Called at the end of a simulation step
-     * to update the "current" values of the registers
-     */
-    public void finishStep() {
-        for (Register reg : registerArray) {
-            reg.finishStep();
-        }
-    }
-    
 }
