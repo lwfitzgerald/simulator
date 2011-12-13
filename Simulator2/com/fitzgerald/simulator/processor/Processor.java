@@ -46,8 +46,9 @@ public class Processor {
 
     protected Program program;
     protected RegisterFile registerFile;
-    protected MemoryController memoryController;
+    protected Memory memory;
     protected Scoreboard scoreboard;
+    protected MemoryScoreboard memSB;
     protected ReservationStation[] reservationStations;
     protected ReorderBuffer reorderBuffer;
     protected BranchPredictor branchPredictor;
@@ -89,13 +90,13 @@ public class Processor {
     /**
      * Create a new processor
      * @param program Program to execute
-     * @param memory Memory space to use
      */
-    public Processor(Program program, Memory memory) {
+    public Processor(Program program) {
         this.program = program;
         this.registerFile = new RegisterFile();
-        this.memoryController = new MemoryController(memory);
+        this.memory = new Memory();
         this.scoreboard = new Scoreboard();
+        this.memSB = new MemoryScoreboard();
         
         // Initialise reservation stations
         initReservationStations();
@@ -320,6 +321,14 @@ public class Processor {
      */
     public RegisterFile getRegisterFile() {
         return registerFile;
+    }
+    
+    /**
+     * Get a reference to memory
+     * @return Reference to memory
+     */
+    public Memory getMemory() {
+        return memory;
     }
     
     /**

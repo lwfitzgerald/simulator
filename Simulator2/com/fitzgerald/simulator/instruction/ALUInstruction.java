@@ -97,26 +97,6 @@ public abstract class ALUInstruction extends Instruction {
                 reservationStation, operand3);
     }
     
-    /**
-     * Set the source 2 immediate data for the
-     * reservation station
-     * @param registerFile Register file reference
-     * @param scoreboard Scoreboard reference
-     * @param reservationStation Reservation station reference
-     */
-    private void initialSetSource2Imm(Scoreboard scoreboard,
-            ReservationStation reservationStation) {
-        
-        // Store immediate operand
-        if (reservationStation.getSourceData2() == null) {
-            // Store in reservation station
-            reservationStation.setSourceData2(operand3);
-            
-            // Set as ready
-            reservationStation.setSourceData2Ready();
-        }
-    }
-    
     @Override
     public void forwardResult(Integer result, Integer destRegister,
             ReservationStation reservationStation) {

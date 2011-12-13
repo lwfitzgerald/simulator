@@ -37,7 +37,7 @@ public class Simulator {
         
         try {
             program = parser.parseProgram(programFile);
-            processor = new Processor(program, new Memory());
+            processor = new Processor(program);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Could not load supplied program file");

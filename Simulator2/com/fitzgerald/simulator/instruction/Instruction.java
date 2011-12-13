@@ -100,6 +100,26 @@ public abstract class Instruction implements Serializable {
     }
     
     /**
+     * Set the source 2 immediate data for the
+     * reservation station
+     * @param registerFile Register file reference
+     * @param scoreboard Scoreboard reference
+     * @param reservationStation Reservation station reference
+     */
+    protected void initialSetSource2Imm(Scoreboard scoreboard,
+            ReservationStation reservationStation) {
+        
+        // Store immediate operand
+        if (reservationStation.getSourceData2() == null) {
+            // Store in reservation station
+            reservationStation.setSourceData2(operand3);
+            
+            // Set as ready
+            reservationStation.setSourceData2Ready();
+        }
+    }
+    
+    /**
      * Attempt to claim the destination register
      * from the scoreboard
      * @param registerFile Register file reference

@@ -30,6 +30,12 @@ public class ROBEntry {
     protected Integer destRegister;
     
     /**
+     * If this instruction accesses memory
+     * (read or write) it is to this address
+     */
+    protected Integer memAddr;
+    
+    /**
      * Reference to reservation station holding
      * instruction before executing state
      */
@@ -58,6 +64,7 @@ public class ROBEntry {
         this.state = EntryState.ISSUED;
         this.result = null;
         this.destRegister = null;
+        this.memAddr = null;
         this.reservationStation = reservationStation;
     }
     
@@ -132,6 +139,15 @@ public class ROBEntry {
      */
     public void setDestRegister(int registerNum) {
         this.destRegister = registerNum;
+    }
+    
+    /**
+     * Set the mem address for the instruction
+     * in this entry
+     * @param addr Address
+     */
+    public void setMemAddr(int addr) {
+        this.memAddr = addr;
     }
     
     /**
