@@ -105,11 +105,11 @@ public class FetchStage extends PipelineStage {
                 if (branchPredictor.predictBranch(currentPC)) {
                     newPC = branchAddress;
                     // Set fail address to next instruction
-                    processor.startSpeculating(currentPC + 4);
+                    processor.startSpeculating(currentPC + 4, currentPC);
                 } else {
                     newPC += 4;
                     // Set fail address to branch address
-                    processor.startSpeculating(branchAddress);
+                    processor.startSpeculating(branchAddress, currentPC);
                 }
             }
         } else {

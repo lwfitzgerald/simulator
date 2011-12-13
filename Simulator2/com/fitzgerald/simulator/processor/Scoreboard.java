@@ -11,10 +11,8 @@ public class Scoreboard {
      * Create a scoreboard
      */
     public Scoreboard() {
-        // Mark all registers as initially available
-        for (int i=0; i < Processor.NUM_REGISTERS; i++) {
-            availabilityArray[i] = true;
-        }
+        // Initially mark all registers as available
+        flush();
     }
     
     /**
@@ -33,6 +31,15 @@ public class Scoreboard {
      */
     public void setAvailablity(int registerNo, boolean availability) {
         availabilityArray[registerNo] = availability;
+    }
+    
+    /**
+     * Mark all registers as available
+     */
+    public void flush() {
+        for (int i=0; i < Processor.NUM_REGISTERS; i++) {
+            availabilityArray[i] = true;
+        }
     }
     
     public String toString() {

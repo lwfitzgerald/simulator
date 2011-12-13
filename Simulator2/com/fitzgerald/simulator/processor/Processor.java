@@ -81,6 +81,12 @@ public class Processor {
     protected Integer speculateFailAddr;
     
     /**
+     * Holds the address of the branch
+     * we're speculating over
+     */
+    protected Integer speculateBranchAddr;
+    
+    /**
      * Create a new processor
      * @param program Program to execute
      * @param memory Memory space to use
@@ -217,6 +223,7 @@ public class Processor {
     public void flushPipeline() {
         fetchStage.flush();
         decodeStage.flush();
+        scoreboard.flush();
         
         for (ALU alu : alus) {
             alu.flush();
@@ -279,9 +286,10 @@ public class Processor {
      * @param speculateFailAddr Fail address to branch
      * to if speculation incorrect
      */
-    public void startSpeculating(int speculateFailAddr) {
+    public void startSpeculating(int speculateFailAddr, int speculateBranchAddr) {
         this.speculating = true;
         this.speculateFailAddr = speculateFailAddr;
+        this.speculateBranchAddr = speculateBranchAddr;
     }
     
     /**
@@ -290,6 +298,7 @@ public class Processor {
     public void stopSpeculating() {
         this.speculating = false;
         this.speculateFailAddr = null;
+        this.speculateBranchAddr = null;
     }
     
     /**
@@ -298,6 +307,14 @@ public class Processor {
      */
     public int getSpeculateFailAddress() {
         return speculateFailAddr;
+    }
+    
+    /**
+     * Return speculate branch address
+     * @return Speculate branch address
+     */
+    public int getSpeculateBranchAddr() {
+        return speculateBranchAddr;
     }
     
     /**
