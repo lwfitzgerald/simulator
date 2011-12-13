@@ -1,5 +1,7 @@
 package com.fitzgerald.simulator.processor;
 
+import java.util.Iterator;
+
 import com.fitzgerald.simulator.instruction.BranchInstruction;
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
@@ -98,6 +100,15 @@ public class ROBEntry {
     }
     
     /**
+     * Returns whether the instruction is ready
+     * to retire
+     * @return True if read
+     */
+    public boolean isReadyToRetire() {
+        return state == EntryState.FINISHED && !speculative;
+    }
+    
+    /**
      * Returns whether execution of this instruction
      * is speculative
      * @return True if speculative
@@ -133,14 +144,30 @@ public class ROBEntry {
     
     /**
      * Forward the result in this entry to instructions
-     * waiting in the reservation stations and update
-     * scoreboard bits
+     * waiting in the reservation stations
      * @param processor Processor reference
      */
     public void handleFinish(Processor processor) {
+        // Mark as finished
+        state = EntryState.FINISHED;
+        
+        forwardResult(processor);
+    }
+    
+    /**
+     * Update speculation state and update
+     * scoreboard
+     * 
+     * @param processor Processor reference
+     * @param itr ROB iterator
+     */
+    public void handleRetire(Processor processor, Iterator<ROBEntry> itr) {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
+        Scoreboard scoreboard = processor.getScoreboard();
         
         if (instruction.getType() == InstructionType.BRANCH) {
+            // Branch so deal with speculation if necessary
+            
             BranchInstruction branchInstruction = (BranchInstruction) instruction;
             
             if (!branchInstruction.isUnconditional()) {
@@ -149,6 +176,9 @@ public class ROBEntry {
                 
                 // Mark as no longer speculating
                 processor.stopSpeculating();
+                
+                // Remove this entry from the ROB
+                itr.remove();
                 
                 if (result == 1) {
                     // Correct
@@ -162,13 +192,53 @@ public class ROBEntry {
                 }
             }
         } else {
-            Scoreboard scoreboard = processor.getScoreboard();
+            // Non branch so sort out scoreboard
             
+            boolean afterThisEntry = false;
+            boolean laterWrite = false;
+            
+            for (ROBEntry entry : reorderBuffer) {
+                if (!afterThisEntry) {
+                    if (entry == this) {
+                        afterThisEntry = true;
+                        continue;
+                    }
+                } else {
+                    if (entry.state == EntryState.ISSUED) {
+                        if (entry.destRegister == this.destRegister) {
+                            laterWrite = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (!laterWrite) {
+                if (destRegister != null) {
+                    // Unset scoreboard bit as no later writes in reservation stations
+                    scoreboard.setAvailablity(this.destRegister, true);
+                }
+            }
+            
+            itr.remove();
+        }
+    }
+    
+    public void forwardResult(Processor processor) {
+        ReorderBuffer reorderBuffer = processor.getReorderBuffer();
+        
+        if (instruction.getType() != InstructionType.BRANCH) {
             // Only forward if there is a result
             if (result != null) {
+                boolean afterThisEntry = false;
+                
                 for (ROBEntry entry : reorderBuffer) {
-                    // Do not forward to own entry
-                    if (entry != this) {
+                    if (!afterThisEntry) {
+                        if (entry == this) {
+                            afterThisEntry = true;
+                            continue;
+                        }
+                    } else {
                         /*
                          * Only forward to instruction which
                          * aren't already executing/finished
@@ -185,15 +255,11 @@ public class ROBEntry {
                                  */
                                 entry.reservationStation.setDestinationReady();
                                 
-                                // Return without unsetting scoreboard bit
                                 return;
                             }
                         }
                     }
                 }
-                
-                // Unset scoreboard bit as no later writes in reservation stations
-                scoreboard.setAvailablity(this.destRegister, true);
             }
         }
     }

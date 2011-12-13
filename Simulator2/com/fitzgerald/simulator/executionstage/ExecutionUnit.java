@@ -97,7 +97,7 @@ public abstract class ExecutionUnit {
      * Called when the instruction finishes executing
      */
     protected void finishedExecuting() {
-        robEntry.setState(EntryState.FINISHED);
+        robEntry.handleFinish(processor);
         
         flush();
     }

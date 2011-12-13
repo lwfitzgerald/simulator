@@ -1,5 +1,7 @@
 package com.fitzgerald.simulator.pipeline;
 
+import java.util.Iterator;
+
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.ROBEntry;
 import com.fitzgerald.simulator.processor.RegisterFile;
@@ -17,20 +19,33 @@ public class WritebackStage extends PipelineStage {
 
     public void step() {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
+        RegisterFile registerFile = processor.getRegisterFile();
         
-        ROBEntry entry;
+        boolean ready = true;
         
-        while ((entry = reorderBuffer.attemptRetire()) != null) {
-            RegisterFile registerFile = processor.getRegisterFile();
+        Iterator<ROBEntry> itr = reorderBuffer.iterator();
+        
+        while (itr.hasNext()) {
+            ROBEntry entry = itr.next();
             
-            /*
-             * Forward result to reservation stations
-             * and update scoreboard
-             */
-            entry.handleFinish(processor);
-            
-            // Perform write to registers
-            entry.writeBack(registerFile);
+            if (entry.isFinished()) {
+                entry.forwardResult(processor);
+                
+                if (ready && entry.isReadyToRetire()) {
+                    /*
+                     * Do speculation update or
+                     * update scoreboard
+                     */
+                    entry.handleRetire(processor, itr);
+                    
+                    // Perform write to registers
+                    entry.writeBack(registerFile);
+                } else {
+                    ready = false;
+                }
+            } else {
+                ready = false;
+            }
         }
     }
 

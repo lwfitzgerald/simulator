@@ -40,24 +40,6 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
     }
     
     /**
-     * Attempts to retire an entry
-     * @return A ROBEntry or null if none can be retired
-     */
-    public ROBEntry attemptRetire() {
-        ROBEntry entry = buffer.peek();
-        
-        if (entry != null) {
-            if (entry.isFinished() && !entry.isSpeculative()) {
-                // Front of queue finished and non-speculative,
-                // so remove
-                return buffer.remove();
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
      * Mark all speculative entries as
      * non-speculative so they can be
      * retired
