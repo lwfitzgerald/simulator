@@ -435,8 +435,8 @@ public class Processor {
     }
     
     protected void printSummary() {
-        System.out.println("\nSummary: ");
-        System.out.println("-------");
+        System.out.println("\nSummary:");
+        System.out.println("--------");
         System.out.println("Cycles: " + cycleCount);
         System.out.println("Executed instructions: " + executedCount);
         System.out.println("Branches incorrectly predicted: " + incorrectDirectionCount);
