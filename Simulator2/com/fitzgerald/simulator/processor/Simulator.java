@@ -22,8 +22,6 @@ public class Simulator {
             System.exit(0);
         }
         
-        boolean branchTable = true;
-        
         if (args.length > 1) {
             // We have a flag
             if (args[1].equals("--no-branch-table")) {
@@ -34,8 +32,6 @@ public class Simulator {
                
         new Simulator(args[0], branchTable);
     }
-    
-    
     
     protected static void printHelp() {
         System.out.println("Run as:");

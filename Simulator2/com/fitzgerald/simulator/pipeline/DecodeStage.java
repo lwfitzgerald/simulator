@@ -1,17 +1,15 @@
 package com.fitzgerald.simulator.pipeline;
 
-import com.fitzgerald.simulator.instruction.Instruction;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.ReservationStation;
 
 public class DecodeStage extends PipelineStage {
 
-    protected Instruction instruction1 = null;
-    protected boolean instruction1Speculative;
-    protected Integer instruction1BranchAddr = null;
-    protected Instruction instruction2 = null;
-    protected boolean instruction2Speculative;
-    protected Integer instruction2BranchAddr = null;
+    protected Queue<PipelineBuffer> buffers = new LinkedList<PipelineBuffer>();
     
     /**
      * Create a new decode stage
@@ -22,75 +20,29 @@ public class DecodeStage extends PipelineStage {
     }
     
     public void step() {
-        if (instruction1 != null) {
+        Iterator<PipelineBuffer> itr = buffers.iterator();
+        
+        while (itr.hasNext()) {
             ReservationStation rs = processor.getFreeReservationStation();
+            PipelineBuffer buffer = itr.next();
             
             if (rs != null) {
                 // Free reservation station
-                rs.issueInstruction(instruction1, instruction1BranchAddr, instruction1Speculative);
-                instruction1 = null;
-                instruction1BranchAddr = null;
+                rs.issueInstruction(buffer.instruction, buffer.branchAddr,
+                        buffer.speculative);
                 
-                if (instruction2 != null) {
-                    // Now attempt to issue instruction 2
-                    
-                    rs = processor.getFreeReservationStation();
-                    
-                    if (rs != null) {
-                        rs.issueInstruction(instruction2, instruction2BranchAddr, instruction2Speculative);
-                        instruction2 = null;
-                        instruction2BranchAddr = null;
-                    } else {
-                        // Move instruction 2 to 1
-                        instruction1 = instruction2;
-                        instruction1Speculative = instruction2Speculative;
-                        instruction1BranchAddr = instruction2BranchAddr;
-                        instruction2 = null;
-                        instruction2BranchAddr = null;
-                    }
-                }
+                // Issued so remove from buffer
+                itr.remove();
             }
         }
     }
     
     /**
-     * Return whether instruction slot 1 is free
-     * @return True if free
+     * Get the filled buffers of this pipeline stage
+     * @return filled Buffers
      */
-    public boolean instruction1Free() {
-        return instruction1 == null;
-    }
-    
-    /**
-     * Return whether instruction slot 2 is free
-     * @return True if free
-     */
-    public boolean instruction2Free() {
-        return instruction2 == null;
-    }
-    
-    /**
-     * Set instruction 1 and calculated branch address
-     * @param instruction1 Instruction to set
-     * @param speculative Whether instruction is speculative
-     * @param branchAddr Calculated branch address
-     */
-    public void setInstruction1(Instruction instruction1, boolean speculative, Integer branchAddr) {
-        this.instruction1 = instruction1;
-        this.instruction1Speculative = speculative;
-        this.instruction1BranchAddr = branchAddr;
-    }
-    
-    /**
-     * Set instruction 2 and calculated branch address
-     * @param instruction2 Instruction to set
-     * @param speculative Whether instruction is speculative
-     * @param branchAddr Calculated branch address
-     */
-    public void setInstruction2(Instruction instruction2, boolean speculative, Integer branchAddr) {
-        this.instruction2 = instruction2;
-        this.instruction2Speculative = speculative;
-        this.instruction2BranchAddr = branchAddr;
+    public Queue<PipelineBuffer> getBuffers() {
+        return buffers;
     }
     
     /**
@@ -98,7 +50,7 @@ public class DecodeStage extends PipelineStage {
      * @return True if this stage is empty
      */
     public boolean isEmpty() {
-        return instruction1Free() && instruction2Free();
+        return buffers.isEmpty();
     }
 
     /**
@@ -106,57 +58,48 @@ public class DecodeStage extends PipelineStage {
      * as no longer speculative
      */
     public void approveSpeculative() {
-        instruction1Speculative = false;
-        instruction2Speculative = false;
+        for (PipelineBuffer buffer : buffers) {
+            buffer.speculative = false;
+        }
     }
     
     /**
      * Remove speculative instructions
      */
     public void flushSpeculative() {
-        if (instruction1Speculative) {
-            instruction1 = null;
-            instruction1BranchAddr = null;
-        }
+        Iterator<PipelineBuffer> itr = buffers.iterator();
         
-        if (instruction2Speculative) {
-            instruction2 = null;
-            instruction2BranchAddr = null;
-        }
-        
-        if (instruction1 == null && instruction2 != null) {
-            // Copy 2 -> 1
-            instruction1 = instruction2;
-            instruction1BranchAddr = instruction2BranchAddr;
-            instruction2 = null;
-            instruction2BranchAddr = null;
+        while (itr.hasNext()) {
+            if (itr.next().speculative) {
+                itr.remove();
+            }
         }
     }
     
     @Override
     public void flush() {
-        instruction1 = null;
-        instruction1BranchAddr = null;
-        instruction2 = null;
-        instruction2BranchAddr = null;
+        buffers.clear();
     }
     
     public String toString() {
-        if (instruction1 == null) {
+        if (buffers.isEmpty()) {
             return "EMPTY";
         }
         
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer strBuffer = new StringBuffer();
         
-        buffer.append("1: [[" + instruction1 + "]," + (instruction1Speculative ? "SP" : "NONSP") + "]\n");
+        Iterator<PipelineBuffer> itr = buffers.iterator();
         
-        if (instruction2 == null) {
-            buffer.append("2: [EMPTY]\n");
-        } else {
-            buffer.append("2: [[" + instruction2 + "]," + (instruction2Speculative ? "SP" : "NONSP") + "]\n");
+        for (int i=0; i < Processor.FETCH_DECODE_WIDTH; i++) {
+            if (itr.hasNext()) {
+                PipelineBuffer buffer = itr.next();
+                strBuffer.append(i + ": [[" + buffer.instruction + "]," + (buffer.speculative ? "SP" : "NONSP") + "]\n");
+            } else {
+                strBuffer.append(i + ": [EMPTY]\n");
+            }
         }
         
-        return buffer.substring(0, buffer.length()-1);
+        return strBuffer.substring(0, strBuffer.length()-1);
     }
     
 }

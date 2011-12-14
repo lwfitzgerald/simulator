@@ -31,6 +31,12 @@ public class Processor {
     public static final int MAX_REORDER_BUFFER_SIZE = 16;
     
     /**
+     * Number of instructions fetched/decoded
+     * per cycle
+     */
+    public static final int FETCH_DECODE_WIDTH = 3;
+    
+    /**
      * Number of each type of execution unit
      */
     public static final int NUM_ALUS = 3;
