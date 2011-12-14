@@ -14,6 +14,16 @@ public class St extends LoadStoreInstruction {
     private static final long serialVersionUID = 7554310606728502465L;
 
     @Override
+    public LoadStoreType getLSType() {
+        return LoadStoreType.STORE;
+    }
+
+    @Override
+    public int getLSAddress(Integer srcData1, Integer srcData2, Integer dest) {
+        return srcData2 + dest;
+    }
+    
+    @Override
     public void initialSetup(RegisterFile registerFile, Scoreboard scoreboard,
             ROBEntry robEntry, Integer branchAddr,
             ReservationStation reservationStation) {
@@ -27,7 +37,7 @@ public class St extends LoadStoreInstruction {
     public Integer memoryOperation(Integer srcData1, Integer srcData2,
             Integer dest, Memory memory) {
         
-        memory.store(srcData2 + dest, srcData1);
+        memory.store(getLSAddress(srcData1, srcData2, dest), srcData1);
         
         return null;
     }

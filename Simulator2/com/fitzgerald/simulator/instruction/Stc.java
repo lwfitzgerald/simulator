@@ -1,76 +1,64 @@
-//package com.fitzgerald.simulator.instruction;
-//
-//import com.fitzgerald.simulator.pipeline.DecodeStage;
-//import com.fitzgerald.simulator.pipeline.ExecuteStage;
-//import com.fitzgerald.simulator.processor.ALU;
-//import com.fitzgerald.simulator.processor.BranchUnit;
-//import com.fitzgerald.simulator.processor.MemoryController;
-//import com.fitzgerald.simulator.processor.Processor;
-//import com.fitzgerald.simulator.processor.RegisterFile;
-//import com.fitzgerald.simulator.processor.Util;
-//
-//public class Stc extends Instruction {
-//
-//    /**
-//     * Serialisation ID
-//     */
-//    private static final long serialVersionUID = 7387641905906737577L;
-//
-//    @Override
-//    public int getALUCyclesRequired() {
-//        // Not applicable
-//        return -1;
-//    }
-//
-//    @Override
-//    public void decode(RegisterFile registerFile, DecodeStage decodeStage) {
-//        byte[] sourceData1 = registerFile.getRegister(Util.bytesToInt(operand1)).getCurrentValue();
-//        
-//        // Deep copy of the register value to unlink
-//        decodeStage.setSourceData1(sourceData1.clone());
-//    }
-//
-//    @Override
-//    public boolean execute(Processor processor, RegisterFile registerFile,
-//            ALU alu, BranchUnit branchUnit, MemoryController memoryController, ExecuteStage executeStage) {
-//        
-//        int memoryLocation = Util.bytesToInt(executeStage.getSourceData1()) + Util.bytesToInt(operand2);
-//        byte[] data = operand3;
-//        
-//        boolean storeResult = memoryController.store(memoryLocation, data);
-//        
-//        if (!storeResult) {
-//            // Needs more cycles
-//            return false;
-//        }
-//        
-//        // Store completed successfully
-//        return true;
-//    }
-//    
-//    @Override
-//    public byte[] aluOperation(ExecuteStage executeStage) {
-//        // Not applicable
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean branchCondition(ExecuteStage executeStage) {
-//        // Not applicable
-//        return false;
-//    }
-//    
-//    @Override
-//    public byte[] branchCalculation(ExecuteStage executeStage) {
-//        // Not applicable
-//        return null;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "STC r" + Util.bytesToInt(operand1) +
-//               ", " + Util.bytesToInt(operand2) +
-//               ", " + Util.bytesToInt(operand3);
-//    }
-//
-//}
+package com.fitzgerald.simulator.instruction;
+
+import com.fitzgerald.simulator.processor.Memory;
+import com.fitzgerald.simulator.processor.ROBEntry;
+import com.fitzgerald.simulator.processor.RegisterFile;
+import com.fitzgerald.simulator.processor.ReservationStation;
+import com.fitzgerald.simulator.processor.Scoreboard;
+
+public class Stc extends LoadStoreInstruction {
+
+    /**
+     * Serialisation ID
+     */
+    private static final long serialVersionUID = 7387641905906737577L;
+
+    @Override
+    public LoadStoreType getLSType() {
+        return LoadStoreType.STORE;
+    }
+
+    @Override
+    public int getLSAddress(Integer srcData1, Integer srcData2, Integer dest) {
+        return srcData1 + dest;
+    }
+    
+    @Override
+    public void initialSetup(RegisterFile registerFile, Scoreboard scoreboard,
+            ROBEntry robEntry, Integer branchAddr,
+            ReservationStation reservationStation) {
+        
+        initialFetchSource1Reg(registerFile, scoreboard, reservationStation, operand1);
+        initialSetSource2Imm(scoreboard, reservationStation);
+        
+        reservationStation.setDestination(operand2);
+        reservationStation.setDestinationReady();
+    }
+
+    @Override
+    public void forwardResult(Integer result, Integer destRegister,
+            ReservationStation reservationStation) {
+        
+        if (destRegister == operand1) {
+            reservationStation.setSourceData1(result);
+            reservationStation.setSourceData1Ready();
+        }
+    }
+    
+    @Override
+    public Integer memoryOperation(Integer srcData1, Integer srcData2,
+            Integer dest, Memory memory) {
+        
+        memory.store(getLSAddress(srcData1, srcData2, dest), srcData2);
+        
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "STC r" + operand1 +
+               ", " + operand2 +
+               ", " + operand3;
+    }
+
+}

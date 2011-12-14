@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.fitzgerald.simulator.instruction.BranchInstruction;
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
+import com.fitzgerald.simulator.instruction.LoadStoreInstruction;
 
 public class ROBEntry {
     
@@ -116,6 +117,27 @@ public class ROBEntry {
     }
     
     /**
+     * Return if the instruction is ready to be dispatched
+     * from the reservation station
+     * @return True if ready to be dispatched
+     */
+    public boolean isReadyForDispatch() {
+        if (reservationStation != null) {
+            return reservationStation.isReadyForDispatch();
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Get the instruction in this entry
+     * @return Instruction
+     */
+    public Instruction getInstruction() {
+        return instruction;
+    }
+    
+    /**
      * Returns whether execution of this instruction
      * is speculative
      * @return True if speculative
@@ -148,6 +170,24 @@ public class ROBEntry {
      */
     public void setMemAddr(int addr) {
         this.memAddr = addr;
+    }
+    
+    /**
+     * Get the mem address for the instruction
+     * in this entry
+     * @return Mem address
+     */
+    public int getMemAddr() {
+        if (memAddr == null) {
+            LoadStoreInstruction lsInstruction = (LoadStoreInstruction) instruction;
+            Integer srcData1 = reservationStation.getSourceData1();
+            Integer srcData2 = reservationStation.getSourceData2();
+            Integer dest = reservationStation.getDestination();
+            
+            memAddr = lsInstruction.getLSAddress(srcData1, srcData2, dest); 
+        }
+        
+        return memAddr;
     }
     
     /**
@@ -240,6 +280,11 @@ public class ROBEntry {
         }
     }
     
+    /**
+     * Forwards the result of this instruction
+     * to applicable later instructions
+     * @param processor Processor reference
+     */
     public void forwardResult(Processor processor) {
         ReorderBuffer reorderBuffer = processor.getReorderBuffer();
         
@@ -298,7 +343,6 @@ public class ROBEntry {
         // Flush pipeline
         processor.flushPipeline();
     }
-    
     
     /**
      * Perform writing of result to register

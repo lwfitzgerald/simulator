@@ -56,7 +56,7 @@ public class Ld extends LoadStoreInstruction {
             reservationStation.setSourceData1Ready();
         }
     }
-
+    
     @Override
     public String toString() {
         return "LD r" + operand1 + 

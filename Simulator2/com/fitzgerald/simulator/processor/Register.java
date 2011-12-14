@@ -33,8 +33,8 @@ public class Register {
     public void setValue(int newValue) {
         value = newValue;
         
-        if (registerNum == 2) {
-            System.out.println("r2 = " + newValue);
+        if (registerNum == 4) {
+            System.out.println("r4 = " + newValue);
         }
     }
     

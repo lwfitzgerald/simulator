@@ -2,6 +2,8 @@ package com.fitzgerald.simulator.processor;
 
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
+import com.fitzgerald.simulator.instruction.LoadStoreInstruction;
+import com.fitzgerald.simulator.instruction.LoadStoreInstruction.LoadStoreType;
 
 public class ReservationStation {
     
@@ -65,6 +67,78 @@ public class ReservationStation {
      */
     public boolean isReadyForDispatch() {
         return srcData1Ready && srcData2Ready && destReady;
+    }
+    
+    /**
+     * Return whether the load store instruction
+     * in this reservation station is ready for
+     * dispatch
+     * @param reorderBuffer ROB reference
+     * @return True if OK to dispatch
+     */
+    public boolean isLoadStoreReady(ReorderBuffer reorderBuffer) {
+        LoadStoreInstruction lsInstruction = (LoadStoreInstruction) instruction;
+        
+        if (robEntry.isSpeculative()) {
+            if (lsInstruction.getLSType() == LoadStoreType.STORE) {
+                // NO stores when speculating!
+                return false;
+            }
+            
+            /*
+             * Otherwise it's a load...
+             * 
+             * Loads are allowed until there is a write
+             * and that will be handled by the regular code below
+             */
+        }
+        
+        int addr = lsInstruction.getLSAddress(srcData1, srcData2, dest);
+        
+        for (ROBEntry entry : reorderBuffer) {
+            if (entry == robEntry) {
+                // Stop once we hit the current entry
+                break;
+            }
+            
+            Instruction entryInstr = entry.getInstruction();
+            
+            if (entryInstr.getType() == InstructionType.LOADSTORE
+                    && !entry.isFinished()) {
+                
+                /*
+                 * There is a loadstore ahead of us which we can't
+                 * calculate the address for yet so we don't know
+                 * if we can execute
+                 */
+                if (!entry.isReadyForDispatch()) {
+                    return false;
+                }
+                
+                // If it's a memory operation, and it hasn't completed...
+                
+                LoadStoreInstruction lsEntryInstr = (LoadStoreInstruction) entryInstr;
+                
+                if (entry.getMemAddr() == addr) {
+                    // If it's a memory operation on the same address
+                    if (lsEntryInstr.getLSType() == LoadStoreType.STORE) {
+                        // Earlier store not completed so we can't read or write
+                        return false;
+                    }
+                    
+                    // Otherwise it's a load so only block writes
+                    if (lsInstruction.getLSType() == LoadStoreType.STORE) {
+                        /*
+                         * We're trying to store and there is an earlier
+                         * read so we can't store yet
+                         */
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        return true;
     }
     
     /**

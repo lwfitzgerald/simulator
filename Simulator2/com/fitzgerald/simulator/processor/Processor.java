@@ -1,5 +1,7 @@
 package com.fitzgerald.simulator.processor;
 
+import java.util.Queue;
+
 import com.fitzgerald.simulator.executionstage.ALU;
 import com.fitzgerald.simulator.executionstage.BranchUnit;
 import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
@@ -180,15 +182,33 @@ public class Processor {
      * Get a ready reservation station for the given
      * instruction type
      * @param instructionType Desired instruction type
+     * @param previousFetches Set of already fetched RSs
      * @return A ready reservation station or null if
      * none are ready
      */
     public ReservationStation getReadyReservationStation(
-            InstructionType instructionType) {
+            InstructionType instructionType, Queue<ReservationStation> previousFetches) {
+        
+        outerLoop:
         for (ReservationStation rs : reservationStations) {
             if (rs.isReadyForDispatch()
                     && rs.getRequiredExecutionType() == instructionType) {
-                return rs;
+                
+                for (ReservationStation previousFetch : previousFetches) {
+                    // Don't return previously fetched RSs
+                    if (rs == previousFetch) {
+                        continue outerLoop;
+                    }
+                }
+                
+                if (instructionType != InstructionType.LOADSTORE) {
+                    return rs;
+                }
+                
+                // Special behaviour for load stores
+                if (rs.isLoadStoreReady(reorderBuffer)) {
+                    return rs;
+                }
             }
         }
         

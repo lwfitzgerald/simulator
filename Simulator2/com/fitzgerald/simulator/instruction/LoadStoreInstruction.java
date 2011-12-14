@@ -1,8 +1,6 @@
 package com.fitzgerald.simulator.instruction;
 
 import com.fitzgerald.simulator.processor.Memory;
-import com.fitzgerald.simulator.processor.MemoryScoreboard;
-import com.fitzgerald.simulator.processor.ReservationStation;
 
 public abstract class LoadStoreInstruction extends Instruction {
 
@@ -26,7 +24,8 @@ public abstract class LoadStoreInstruction extends Instruction {
      * Get the address this instruction loads
      * or stores from
      * @param reservationStation RS holding instruction
-     * @return 
+     * @return address this instruction loads
+     * or stores from
      */
     public abstract int getLSAddress(Integer srcData1, Integer srcData2, Integer dest);
     
@@ -40,27 +39,4 @@ public abstract class LoadStoreInstruction extends Instruction {
      */
     public abstract Integer memoryOperation(Integer srcData1, Integer srcData2,
             Integer dest, Memory memory);
-    
-    /**
-     * Forward the completion of a LS to this instruction
-     * in the given RS
-     * @param addr Memory access address of completed instruction
-     * @param reservationStation RS reference
-     * @param memSB Memory SB reference
-     */
-    public void forwardLSComplete(int addr,
-            ReservationStation reservationStation, MemoryScoreboard memSB) {
-        
-        // TODO: forwardLSComplete...
-        
-        /*
-         * The plan here is to update the reservation station
-         * and scoreboard
-         */
-        
-        if (getLSType() == LoadStoreType.LOAD) {
-            
-        }
-    }
-    
 }
