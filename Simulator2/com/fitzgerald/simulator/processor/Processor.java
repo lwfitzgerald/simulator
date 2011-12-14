@@ -403,6 +403,8 @@ public class Processor {
     protected void printState() {
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
         printRegisters();
+        printFetchAndDecode();
+        printExecutionUnits();
         printReservationStations();
         printROB();
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
@@ -426,14 +428,54 @@ public class Processor {
     }
     
     /**
+     * Print output for fetch and decode stages
+     */
+    protected void printFetchAndDecode() {
+        System.out.println("Fetch:");
+        
+        System.out.println(fetchStage);
+        
+        System.out.println();
+        
+        System.out.println("Decode:");
+        
+        System.out.println(decodeStage);
+        
+        System.out.println();
+    }
+    
+    protected void printExecutionUnits() {
+        System.out.println("ALUs:");
+        
+        for (int i=0; i < NUM_ALUS; i++) {
+            System.out.println((i+1) + ": " + alus[i]);
+        }
+        
+        System.out.println("\nLoad Store units:");
+        
+        for (int i=0; i < NUM_LOAD_STORE_UNITS; i++) {
+            System.out.println((i+1) + ": " + lsUnits[i]);
+        }
+        
+        System.out.println("\nBranch units");
+        
+        for (int i=0; i < NUM_BRANCH_UNITS; i++) {
+            System.out.println((i+1) + ": " + branchUnits[i]);
+        }
+        
+        System.out.println();
+        
+    }
+    
+    /**
      * Print output for reservation stations
      */
     protected void printReservationStations() {
         System.out.println("Reservation stations:");
         
         for (int i=0; i < NUM_RESERVATION_STATIONS / 2; i++) {
-            System.out.print(String.valueOf(i+1) + ": " + reservationStations[i]);
-            System.out.println("\t" + String.valueOf(i+1 + Processor.NUM_RESERVATION_STATIONS / 2) + ": " + reservationStations[i + Processor.NUM_RESERVATION_STATIONS / 2]);
+            System.out.print((i+1) + ": " + reservationStations[i]);
+            System.out.println("\t" + (i+1 + Processor.NUM_RESERVATION_STATIONS / 2) + ": " + reservationStations[i + Processor.NUM_RESERVATION_STATIONS / 2]);
         }
         
         System.out.println();

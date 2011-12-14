@@ -260,7 +260,7 @@ public class ReservationStation {
         if (instruction != null) {
             String src1String = srcData1Ready ? "S1READY" : "S1NOTREADY";
             String src2String = srcData2Ready ? "S2READY" : "S2NOTREADY";
-            String destString = destReady ? "DESTREADY" : "DESTNOTREADY";
+            String destString = destReady ? "DSTREADY" : "DSTNOTREADY";
             return "[[" + instruction + "]," + src1String + "," + src2String + "," + destString + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
         } else {
             return "[EMPTY]";

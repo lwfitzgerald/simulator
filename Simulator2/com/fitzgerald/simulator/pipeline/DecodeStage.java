@@ -140,4 +140,23 @@ public class DecodeStage extends PipelineStage {
         instruction2 = null;
         instruction2BranchAddr = null;
     }
+    
+    public String toString() {
+        if (instruction1 == null) {
+            return "EMPTY";
+        }
+        
+        StringBuffer buffer = new StringBuffer();
+        
+        buffer.append("1: [[" + instruction1 + "]," + (instruction1Speculative ? "SP" : "NONSP") + "]\n");
+        
+        if (instruction2 == null) {
+            buffer.append("2: [EMPTY]\n");
+        } else {
+            buffer.append("2: [[" + instruction2 + "]," + (instruction2Speculative ? "SP" : "NONSP") + "]\n");
+        }
+        
+        return buffer.substring(0, buffer.length()-1);
+    }
+    
 }

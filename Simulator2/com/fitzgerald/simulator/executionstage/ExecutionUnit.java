@@ -115,4 +115,12 @@ public abstract class ExecutionUnit {
         ticksRemaining = 0;
     }
     
+    public String toString() {
+        if (instruction == null) {
+            return "[EMPTY]";
+        }
+        
+        return "[[" + instruction + "]," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
+    }
+    
 }
