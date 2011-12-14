@@ -44,7 +44,6 @@ public class Ld extends LoadStoreInstruction {
     public Integer memoryOperation(Integer srcData1, Integer srcData2,
             Integer dest, Memory memory) {
         
-        System.out.println("Loading from address " + getLSAddress(srcData1, srcData2, dest));
         return memory.load(getLSAddress(srcData1, srcData2, dest));
     }
     

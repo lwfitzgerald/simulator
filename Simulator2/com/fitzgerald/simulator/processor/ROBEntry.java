@@ -6,6 +6,7 @@ import com.fitzgerald.simulator.instruction.BranchInstruction;
 import com.fitzgerald.simulator.instruction.Instruction;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 import com.fitzgerald.simulator.instruction.LoadStoreInstruction;
+import com.fitzgerald.simulator.instruction.Print;
 
 public class ROBEntry {
     
@@ -290,7 +291,7 @@ public class ROBEntry {
         
         if (instruction.getType() != InstructionType.BRANCH) {
             // Only forward if there is a result
-            if (result != null) {
+            if (destRegister != null) {
                 boolean afterThisEntry = false;
                 
                 for (ROBEntry entry : reorderBuffer) {
@@ -348,6 +349,10 @@ public class ROBEntry {
      * Perform writing of result to register
      */
     public void writeBack(RegisterFile registerFile) {
+        if (instruction instanceof Print) {
+            System.out.println("Program print: " + result);
+        }
+        
         if (destRegister != null) {
             registerFile.getRegister(destRegister).setValue(result);
         }
