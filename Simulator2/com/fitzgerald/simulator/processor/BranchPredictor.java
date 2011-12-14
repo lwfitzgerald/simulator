@@ -9,25 +9,34 @@ public class BranchPredictor {
     /**
      * Predict whether a branch is taken
      * @param address Address of branch
+     * @param targetAddress Target address of branch
      * @return True if taken
      */
-    public boolean predictBranch(int address) {
-        return getPreviousDirection(address);
-    }
-    
-    /**
-     * Return the previous direction of this branch
-     * @param address Address of branch
-     * @return True if taken
-     */
-    protected boolean getPreviousDirection(int address) {
+    public boolean predictBranch(int address, int targetAddress) {
         Boolean takeBranch;
         
         if ((takeBranch = previousBranches.get(address)) == null) {
-            takeBranch = true;
+            takeBranch = predictUnknown(address, targetAddress);
         }
         
         return takeBranch;
+    }
+    
+    /**
+     * Use the branch direction to predict
+     * whether it is taken or not
+     * @param address Address of branch
+     * @param targetAddress Target address of branch
+     * @return True if taken
+     */
+    protected boolean predictUnknown(int address, int targetAddress) {
+        if (targetAddress <= address) {
+            // Backwards branches are normally taken
+            return true;
+        } else {
+            // Forward branches are normally not taken
+            return false;
+        }
     }
     
     /**
