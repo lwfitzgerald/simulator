@@ -27,8 +27,6 @@ public class Processor {
     
     /**
      * Maximum number of reorder buffer entries
-     * 
-     * TODO: Is this needed?
      */
     public static final int MAX_REORDER_BUFFER_SIZE = 16;
     
@@ -50,7 +48,6 @@ public class Processor {
     protected RegisterFile registerFile;
     protected Memory memory;
     protected Scoreboard scoreboard;
-    protected MemoryScoreboard memSB;
     protected ReservationStation[] reservationStations;
     protected ReorderBuffer reorderBuffer;
     protected BranchPredictor branchPredictor;
@@ -98,7 +95,6 @@ public class Processor {
         this.registerFile = new RegisterFile();
         this.memory = new Memory();
         this.scoreboard = new Scoreboard();
-        this.memSB = new MemoryScoreboard();
         
         // Initialise reservation stations
         initReservationStations();
