@@ -21,7 +21,7 @@ LoopB:  ST r3, r0, 0
         # Perform the vector add
         LDR r1, 10 # Loop counter
         LDR r3, 0 # A mem counter
-        LDR r4, 36 # B mem counter
+        LDR r4, 40 # B mem counter
 VectorL:LD r5, r3, 0 # Load A[i]
         LD r6, r4, 0 # Load B[i]
         NOP
