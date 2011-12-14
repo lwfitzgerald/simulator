@@ -426,6 +426,8 @@ public class Processor {
      */
     protected void printState() {
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("Cycle " + cycleCount);
+        System.out.println("-----------\n");
         printRegisters();
         printFetchAndDecode();
         printExecutionUnits();
