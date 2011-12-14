@@ -4,7 +4,13 @@ import java.util.HashMap;
 
 public class BranchPredictor {
     
-    protected HashMap<Integer, Boolean> previousBranches = new HashMap<Integer, Boolean>(); 
+    protected HashMap<Integer, Boolean> previousBranches = new HashMap<Integer, Boolean>();
+    
+    protected boolean useBranchTable;
+    
+    public BranchPredictor(boolean useBranchTable) {
+        this.useBranchTable = useBranchTable;
+    }
     
     /**
      * Predict whether a branch is taken
@@ -15,7 +21,11 @@ public class BranchPredictor {
     public boolean predictBranch(int address, int targetAddress) {
         Boolean takeBranch;
         
-        if ((takeBranch = previousBranches.get(address)) == null) {
+        if (useBranchTable) {
+            if ((takeBranch = previousBranches.get(address)) == null) {
+                takeBranch = predictUnknown(address, targetAddress);
+            }
+        } else {
             takeBranch = predictUnknown(address, targetAddress);
         }
         

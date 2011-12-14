@@ -94,8 +94,10 @@ public class Processor {
     /**
      * Create a new processor
      * @param program Program to execute
+     * @param branchTable Whether or not to use the branch
+     * table prediction mechanism
      */
-    public Processor(Program program) {
+    public Processor(Program program, boolean branchTable) {
         this.program = program;
         this.registerFile = new RegisterFile();
         this.memory = new Memory();
@@ -105,7 +107,7 @@ public class Processor {
         initReservationStations();
         
         this.reorderBuffer = new ReorderBuffer();
-        this.branchPredictor = new BranchPredictor();
+        this.branchPredictor = new BranchPredictor(branchTable);
         
         // Initialise pipeline stages
         this.fetchStage = new FetchStage(this);
@@ -144,10 +146,10 @@ public class Processor {
         
         fetchStage.step(program);
         
+        printState();
+        
         // Copy instructions from fetch to decode if needed
         fetchStage.finishStep(decodeStage);
-        
-        printState();
         
         // Check if the program has finished
         if (checkProgramFinished()) {

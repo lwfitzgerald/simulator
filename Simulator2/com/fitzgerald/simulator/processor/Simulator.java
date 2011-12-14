@@ -7,64 +7,63 @@ public class Simulator {
      */
     protected Processor processor;
     
+    protected static boolean branchTable = true;
+    protected static boolean stepping = false;
+    
     public static void main(String[] args) {
-        /*RegisterFile registerFile = RegisterFile.getSingleton();
-        Register intReg0 = registerFile.getRegister(0);
-        intReg0.setCurrentValue(0);
-        intReg0.setNextValue(5);
-        intReg0.finishCycle();
-        System.out.println(intReg0.getCurrentValue());*/
-        
-        //test();
-        
-        // args[0] = "Compiled" program path
-        
         if (args.length < 1) {
-            System.err.println("No program argument given!");
+            System.err.println("No program argument given!\n");
+            printHelp();
             System.exit(1);
         }
         
-        new Simulator(args[0]);
+        if (args[0].equals("--help") || args[0].equals("-h")) {
+            printHelp();
+            System.exit(0);
+        }
+        
+        boolean branchTable = true;
+        
+        if (args.length > 1) {
+            // We have a flag
+            if (args[1].equals("--no-branch-table")) {
+                System.out.println("Disabling branch table\n");
+                branchTable = false;
+            }
+        }
+               
+        new Simulator(args[0], branchTable);
+    }
+    
+    
+    
+    protected static void printHelp() {
+        System.out.println("Run as:");
+        System.out.println("\tjava com.fitzgerald.simulator.processor.Simulator ASMFILE [--no-branch-table]");
+        System.out.println("\n\t--no-branch-table\t Optional argument disabling the branch result table when predicting\n");
     }
     
     /**
      * Runs the Simulator for the given program file
      * @param programFile Program file to load and run
+     * @param branchTable Whether or not to use the branch
+     * table prediction mechanism
      */
-    public Simulator(String programFile) {
+    public Simulator(String programFile, boolean branchTable) {
         Parser parser = new Parser();
         Program program;
         
         try {
             program = parser.parseProgram(programFile);
-            processor = new Processor(program);
+            processor = new Processor(program, branchTable);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Could not load supplied program file");
             System.exit(1);
         }
         
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-        
         while (processor.step()) {
         }
-        
-        //System.out.println("Halting");
     }
     
-    /*protected Program loadProgram(String programPath) throws Exception {
-        FileInputStream inputStream = new FileInputStream(programPath);
-        ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-        
-        return (Program) objectStream.readObject();
-    }*/
-    
-    /*@Override
-    public void actionPerformed(ActionEvent arg0) {
-        processor.step();
-    }*/
 }
