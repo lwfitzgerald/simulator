@@ -70,6 +70,9 @@ public class ExecuteStage extends PipelineStage {
                     alu.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
                     
+                    // Increment executed counter
+                    processor.incrementExecutedCount();
+                    
                     // Clear reservation station
                     rs.flush();
                 }
@@ -90,6 +93,9 @@ public class ExecuteStage extends PipelineStage {
                     lsUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
                     
+                    // Increment executed counter
+                    processor.incrementExecutedCount();
+                    
                     // Clear reservation station
                     rs.flush();
                 }
@@ -109,6 +115,9 @@ public class ExecuteStage extends PipelineStage {
                     // Dispatch to branch unit
                     branchUnit.startExecuting(rs.getInstruction(), rs.getSourceData1(),
                             rs.getSourceData2(), rs.getDestination(), rs.getRobEntry());
+                    
+                    // Increment executed counter
+                    processor.incrementExecutedCount();
                     
                     // Clear reservation station
                     rs.flush();

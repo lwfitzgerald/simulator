@@ -67,7 +67,12 @@ public class Processor {
     protected LoadStoreUnit[] lsUnits;
     protected BranchUnit[] branchUnits;
     
-    protected int cycleCount = -1;
+    /*
+     * Counters
+     */
+    protected int cycleCount = 0;
+    protected int executedCount = 0;
+    protected int incorrectDirectionCount = 0;
     
     /*
      * Speculation status
@@ -120,6 +125,8 @@ public class Processor {
      * @return false if program has finished executing
      */
     public boolean step() {
+        cycleCount++;
+        
         /*
          * Perform writeback first to ensure
          * instructions completing are not
@@ -144,6 +151,7 @@ public class Processor {
         
         // Check if the program has finished
         if (checkProgramFinished()) {
+            printSummary();
             return false;
         }
         
@@ -334,6 +342,22 @@ public class Processor {
     }
     
     /**
+     * Increment the counter for the number
+     * of executed instructions
+     */
+    public void incrementExecutedCount() {
+        executedCount++;
+    }
+    
+    /**
+     * Increment the counter for the number
+     * of incorrect branch directions
+     */
+    public void incrementIncorrectDirectionCount() {
+        incorrectDirectionCount++;
+    }
+    
+    /**
      * Get a reference to the register file
      * @return Reference to register file
      */
@@ -408,6 +432,14 @@ public class Processor {
         printReservationStations();
         printROB();
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+    }
+    
+    protected void printSummary() {
+        System.out.println("\nSummary: ");
+        System.out.println("-------");
+        System.out.println("Cycles: " + cycleCount);
+        System.out.println("Executed instructions: " + executedCount);
+        System.out.println("Branches incorrectly predicted: " + incorrectDirectionCount);
     }
     
     /**

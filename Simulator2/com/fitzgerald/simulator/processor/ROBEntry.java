@@ -334,6 +334,9 @@ public class ROBEntry {
      * @param failAddr Correct instruction address
      */
     protected void recoverWrongDirection(Processor processor, ReorderBuffer reorderBuffer, int failAddr) {
+        // Increment counter
+        processor.incrementIncorrectDirectionCount();
+        
         // Remove speculative instructions
         reorderBuffer.removeSpeculative();
         
