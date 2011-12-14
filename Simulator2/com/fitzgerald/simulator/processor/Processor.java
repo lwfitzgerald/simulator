@@ -137,13 +137,15 @@ public class Processor {
         
         fetchStage.step(program);
         
+        // Copy instructions from fetch to decode if needed
+        fetchStage.finishStep(decodeStage);
+        
+        printState();
+        
         // Check if the program has finished
         if (checkProgramFinished()) {
             return false;
         }
-        
-        // Copy instructions from fetch to decode if needed
-        fetchStage.finishStep(decodeStage);
         
         return true;
     }
@@ -393,6 +395,57 @@ public class Processor {
      */
     public BranchUnit[] getBranchUnits() {
         return branchUnits;
+    }
+    
+    /**
+     * Print the state of the processor
+     */
+    protected void printState() {
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+        printRegisters();
+        printReservationStations();
+        printROB();
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+    }
+    
+    /**
+     * Print output for registers
+     */
+    protected void printRegisters() {
+        System.out.println("Registers:");
+        
+        for (int i=0; i < NUM_REGISTERS; i++) {
+            System.out.print("r" + i + ": " + registerFile.getRegister(i).getValue() + "\t");
+            
+            if ((i+1) % 8 == 0) {
+                System.out.println();
+            }
+        }
+        
+        System.out.println();
+    }
+    
+    /**
+     * Print output for reservation stations
+     */
+    protected void printReservationStations() {
+        System.out.println("Reservation stations:");
+        
+        for (int i=0; i < NUM_RESERVATION_STATIONS / 2; i++) {
+            System.out.print(String.valueOf(i+1) + ": " + reservationStations[i]);
+            System.out.println("\t" + String.valueOf(i+1 + Processor.NUM_RESERVATION_STATIONS / 2) + ": " + reservationStations[i + Processor.NUM_RESERVATION_STATIONS / 2]);
+        }
+        
+        System.out.println();
+    }
+
+    /**
+     * Print output for the reorder buffer
+     */
+    protected void printROB() {
+        System.out.println("Reorder Buffer:");
+        
+        System.out.println(reorderBuffer);
     }
     
 }

@@ -83,11 +83,17 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
     public String toString() {
         StringBuffer strBuffer = new StringBuffer();
         
-        for (ROBEntry entry : buffer) {
-            strBuffer.append(entry);
+        if (buffer.isEmpty()) {
+            return "EMPTY";
         }
         
-        return strBuffer.toString();
+        int counter = 1;
+        
+        for (ROBEntry entry : buffer) {
+            strBuffer.append((counter++) + ": " + entry + "\n");
+        }
+        
+        return strBuffer.substring(0, strBuffer.length()-1);
     }
     
 }
