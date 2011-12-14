@@ -37,6 +37,7 @@ public class Memory {
     
     public void store(int memoryAddress, int toStore) {
         memorySpace.put(memoryAddress, toStore);
+        System.out.println("Writing " + toStore + " to memory address " + memoryAddress);
     }
     
 }

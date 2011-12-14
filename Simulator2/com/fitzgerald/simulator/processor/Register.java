@@ -33,9 +33,9 @@ public class Register {
     public void setValue(int newValue) {
         value = newValue;
         
-        if (registerNum == 4) {
-            System.out.println("r4 = " + newValue);
-        }
+        /*if (registerNum == 5 || registerNum == 6 || registerNum == 7) {
+            System.out.println("r" + registerNum + " = " + newValue);
+        }*/
     }
     
 }

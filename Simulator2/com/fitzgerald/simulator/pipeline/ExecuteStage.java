@@ -72,8 +72,6 @@ public class ExecuteStage extends PipelineStage {
                     
                     // Clear reservation station
                     rs.flush();
-                } else {
-                    break;
                 }
             } else {
                 alu.continueExecuting();
@@ -94,8 +92,6 @@ public class ExecuteStage extends PipelineStage {
                     
                     // Clear reservation station
                     rs.flush();
-                } else {
-                    break;
                 }
             } else {
                 lsUnit.continueExecuting();
@@ -116,8 +112,6 @@ public class ExecuteStage extends PipelineStage {
                     
                     // Clear reservation station
                     rs.flush();
-                } else {
-                    break;
                 }
             } else {
                 branchUnit.continueExecuting();
