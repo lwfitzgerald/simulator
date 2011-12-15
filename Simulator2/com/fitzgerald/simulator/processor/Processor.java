@@ -32,24 +32,16 @@ public class Processor {
     public static final int MAX_REORDER_BUFFER_SIZE = 16;
     
     /**
-     * Number of instructions fetched/decoded
-     * per cycle
-     */
-    public static final int FETCH_DECODE_WIDTH = 3;
-    
-    /**
-     * Number of each type of execution unit
-     */
-    public static final int NUM_ALUS = 3;
-    public static final int NUM_LOAD_STORE_UNITS = 2;
-    public static final int NUM_BRANCH_UNITS = 1;
-    
-    /**
      * Program counter register
      */
     public static final int PC_REG = 15;
     
     // End constants
+    
+    public static int fetchDecodeWidth;
+    public static int numALUs;
+    public static int numLoadStoreUnits;
+    public static int numBranchUnits;
 
     protected Program program;
     protected RegisterFile registerFile;
@@ -104,7 +96,15 @@ public class Processor {
      * @param branchTable Whether or not to use the branch
      * table prediction mechanism
      */
-    public Processor(Program program, boolean branchTable) {
+    public Processor(Program program, boolean branchTable,
+            int fetchDecodeWidth, int numALUs, int numLoadStoreUnits,
+            int numBranchUnits) {
+        
+        Processor.fetchDecodeWidth = fetchDecodeWidth;
+        Processor.numALUs = numALUs;
+        Processor.numLoadStoreUnits = numLoadStoreUnits;
+        Processor.numBranchUnits = numBranchUnits;
+        
         this.program = program;
         this.registerFile = new RegisterFile();
         this.memory = new Memory();
@@ -238,21 +238,21 @@ public class Processor {
      * Initialise execution units
      */
     protected void initExecutionUnits() {
-        alus = new ALU[NUM_ALUS];
+        alus = new ALU[numALUs];
         
-        for (int i=0; i < NUM_ALUS; i++) {
+        for (int i=0; i < numALUs; i++) {
             alus[i] = new ALU(this);
         }
         
-        lsUnits = new LoadStoreUnit[NUM_LOAD_STORE_UNITS];
+        lsUnits = new LoadStoreUnit[numLoadStoreUnits];
         
-        for (int i=0; i < NUM_LOAD_STORE_UNITS; i++) {
+        for (int i=0; i < numLoadStoreUnits; i++) {
             lsUnits[i] = new LoadStoreUnit(this);
         }
         
-        branchUnits = new BranchUnit[NUM_BRANCH_UNITS];
+        branchUnits = new BranchUnit[numBranchUnits];
         
-        for (int i=0; i < NUM_BRANCH_UNITS; i++) {
+        for (int i=0; i < numBranchUnits; i++) {
             branchUnits[i] = new BranchUnit(this);
         }
     }
@@ -494,19 +494,19 @@ public class Processor {
     protected void printExecutionUnits() {
         System.out.println("ALUs:");
         
-        for (int i=0; i < NUM_ALUS; i++) {
+        for (int i=0; i < numALUs; i++) {
             System.out.println((i+1) + ": " + alus[i]);
         }
         
         System.out.println("\nLoad Store units:");
         
-        for (int i=0; i < NUM_LOAD_STORE_UNITS; i++) {
+        for (int i=0; i < numLoadStoreUnits; i++) {
             System.out.println((i+1) + ": " + lsUnits[i]);
         }
         
         System.out.println("\nBranch units");
         
-        for (int i=0; i < NUM_BRANCH_UNITS; i++) {
+        for (int i=0; i < numBranchUnits; i++) {
             System.out.println((i+1) + ": " + branchUnits[i]);
         }
         

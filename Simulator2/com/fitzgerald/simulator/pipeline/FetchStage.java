@@ -25,8 +25,8 @@ public class FetchStage extends PipelineStage {
     }
     
     public void step(Program program) {
-        for (int i=0; i < Processor.FETCH_DECODE_WIDTH; i++) {
-            if (buffers.size() < Processor.FETCH_DECODE_WIDTH) {
+        for (int i=0; i < Processor.fetchDecodeWidth; i++) {
+            if (buffers.size() < Processor.fetchDecodeWidth) {
                 RegisterFile registerFile = processor.getRegisterFile();
                 
                 int currentPC = registerFile.getRegister(Processor.PC_REG).getValue();
@@ -125,7 +125,7 @@ public class FetchStage extends PipelineStage {
         Iterator<PipelineBuffer> fetchItr = buffers.iterator();
         
         while (fetchItr.hasNext()) {
-            if (decodeBuffers.size() < Processor.FETCH_DECODE_WIDTH) {
+            if (decodeBuffers.size() < Processor.fetchDecodeWidth) {
                 // Space in decode buffer so move to it
                 decodeBuffers.add(fetchItr.next());
                 fetchItr.remove();
@@ -181,7 +181,7 @@ public class FetchStage extends PipelineStage {
         
         Iterator<PipelineBuffer> itr = buffers.iterator();
         
-        for (int i=0; i < Processor.FETCH_DECODE_WIDTH; i++) {
+        for (int i=0; i < Processor.fetchDecodeWidth; i++) {
             if (itr.hasNext()) {
                 PipelineBuffer buffer = itr.next();
                 strBuffer.append(i + ": [[" + buffer.instruction + "]," + (buffer.speculative ? "SP" : "NONSP") + "]\n");

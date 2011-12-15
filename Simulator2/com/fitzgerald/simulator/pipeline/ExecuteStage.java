@@ -30,7 +30,7 @@ public class ExecuteStage extends PipelineStage {
         // First build a buffer of instructions for each execution unit
         Queue<ReservationStation> aluRSs = new LinkedList<ReservationStation>();
         
-        for (int i=0; i < Processor.NUM_ALUS; i++) {
+        for (int i=0; i < Processor.numALUs; i++) {
             if ((rs = processor.getReadyReservationStation(InstructionType.ALU, aluRSs)) != null) {
                 aluRSs.add(rs);
             } else {
@@ -40,7 +40,7 @@ public class ExecuteStage extends PipelineStage {
         
         Queue<ReservationStation> lsRSs = new LinkedList<ReservationStation>();
         
-        for (int i=0; i < Processor.NUM_LOAD_STORE_UNITS; i++) {
+        for (int i=0; i < Processor.numLoadStoreUnits; i++) {
             if ((rs = processor.getReadyReservationStation(InstructionType.LOADSTORE, lsRSs)) != null) {
                 lsRSs.add(rs);
             } else {
@@ -50,7 +50,7 @@ public class ExecuteStage extends PipelineStage {
         
         Queue<ReservationStation> branchRSs = new LinkedList<ReservationStation>();
         
-        for (int i=0; i < Processor.NUM_BRANCH_UNITS; i++) {
+        for (int i=0; i < Processor.numBranchUnits; i++) {
             if ((rs = processor.getReadyReservationStation(InstructionType.BRANCH, branchRSs)) != null) {
                 branchRSs.add(rs);
             } else {

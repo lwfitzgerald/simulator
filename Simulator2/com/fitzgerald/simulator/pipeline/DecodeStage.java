@@ -90,7 +90,7 @@ public class DecodeStage extends PipelineStage {
         
         Iterator<PipelineBuffer> itr = buffers.iterator();
         
-        for (int i=0; i < Processor.FETCH_DECODE_WIDTH; i++) {
+        for (int i=0; i < Processor.fetchDecodeWidth; i++) {
             if (itr.hasNext()) {
                 PipelineBuffer buffer = itr.next();
                 strBuffer.append(i + ": [[" + buffer.instruction + "]," + (buffer.speculative ? "SP" : "NONSP") + "]\n");
