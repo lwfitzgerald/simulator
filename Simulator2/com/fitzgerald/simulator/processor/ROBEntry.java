@@ -247,6 +247,11 @@ public class ROBEntry {
                     
                     recoverWrongDirection(processor, reorderBuffer, failAddr);
                 }
+            } else {
+                // Unconditional so we've already branched
+                
+                // Remove this entry from the ROB
+                itr.remove();
             }
         } else {
             // Non branch so sort out scoreboard
