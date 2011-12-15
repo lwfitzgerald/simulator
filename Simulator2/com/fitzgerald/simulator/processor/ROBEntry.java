@@ -86,6 +86,14 @@ public class ROBEntry {
     }
     
     /**
+     * Get the state of this entry
+     * @return State of entry
+     */
+    public EntryState getState() {
+        return state;
+    }
+    
+    /**
      * Set the state of this entry
      * @param state State to set
      */
@@ -136,6 +144,16 @@ public class ROBEntry {
      */
     public Instruction getInstruction() {
         return instruction;
+    }
+    
+    /**
+     * Get the RS if any storing the
+     * data of this entry
+     * @return Reservation station or null
+     * if not in one
+     */
+    public ReservationStation getRS() {
+        return reservationStation;
     }
     
     /**

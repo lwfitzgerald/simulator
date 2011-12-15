@@ -10,6 +10,7 @@ import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
 import com.fitzgerald.simulator.pipeline.FetchStage;
 import com.fitzgerald.simulator.pipeline.WritebackStage;
+import com.fitzgerald.simulator.processor.ROBEntry.EntryState;
 
 public class Processor {
     
@@ -204,24 +205,28 @@ public class Processor {
             InstructionType instructionType, Queue<ReservationStation> previousFetches) {
         
         outerLoop:
-        for (ReservationStation rs : reservationStations) {
-            if (rs.isReadyForDispatch()
-                    && rs.getRequiredExecutionType() == instructionType) {
-                
-                for (ReservationStation previousFetch : previousFetches) {
-                    // Don't return previously fetched RSs
-                    if (rs == previousFetch) {
-                        continue outerLoop;
+        for (ROBEntry entry : reorderBuffer) {
+            if (entry.getState() == EntryState.ISSUED) {
+                if (entry.isReadyForDispatch()
+                        && entry.getInstruction().getType() == instructionType) {
+                    
+                    ReservationStation rs = entry.getRS();
+                    
+                    for (ReservationStation previousFetch : previousFetches) {
+                        // Don't return previously fetched RSs
+                        if (rs == previousFetch) {
+                            continue outerLoop;
+                        }
                     }
-                }
-                
-                if (instructionType != InstructionType.LOADSTORE) {
-                    return rs;
-                }
-                
-                // Special behaviour for load stores
-                if (rs.isLoadStoreReady(reorderBuffer)) {
-                    return rs;
+                    
+                    if (instructionType != InstructionType.LOADSTORE) {
+                        return rs;
+                    }
+                    
+                    // Special behaviour for load stores
+                    if (rs.isLoadStoreReady(reorderBuffer)) {
+                        return rs;
+                    }
                 }
             }
         }
