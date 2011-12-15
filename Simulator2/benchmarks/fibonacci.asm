@@ -1,4 +1,6 @@
-
+# Calculate and print fibonacci numbers
+# Should be run with --no-status to see
+# output prints
 
         LDR r0, 0 # i-2
         LDR r1, 1 # i-1
