@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.fitzgerald.simulator.instruction.Instruction;
-import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 
 public class ReorderBuffer implements Iterable<ROBEntry> {
     
@@ -24,15 +23,7 @@ public class ReorderBuffer implements Iterable<ROBEntry> {
      */
     public ROBEntry addEntry(Instruction instruction,
             ReservationStation reservationStation, boolean speculating) {
-        
-        if (instruction.getType() == InstructionType.BRANCH) {
-            /*
-             * Only one level of speculating so branches are
-             * never speculative
-             */
-            speculating = false;
-        }
-        
+
         ROBEntry newEntry = new ROBEntry(instruction, reservationStation, speculating);
         buffer.add(newEntry);
         
