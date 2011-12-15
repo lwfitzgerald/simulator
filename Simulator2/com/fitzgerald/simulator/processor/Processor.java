@@ -38,6 +38,7 @@ public class Processor {
     
     // End constants
     
+    protected final boolean printStatus;
     public static int fetchDecodeWidth;
     public static int numALUs;
     public static int numLoadStoreUnits;
@@ -93,13 +94,20 @@ public class Processor {
     /**
      * Create a new processor
      * @param program Program to execute
+     * @param printStatus Whether to print status at end
+     * of each step
      * @param branchTable Whether or not to use the branch
      * table prediction mechanism
+     * @param fetchDecodeWidth Fetch/Decode width
+     * @param numALUs Number of ALUs
+     * @param numLoadStoreUnits Number of Load/Store units
+     * @param numBranchUnits Number of Branch units
      */
-    public Processor(Program program, boolean branchTable,
+    public Processor(Program program, boolean printStatus, boolean branchTable,
             int fetchDecodeWidth, int numALUs, int numLoadStoreUnits,
             int numBranchUnits) {
         
+        this.printStatus = printStatus;
         Processor.fetchDecodeWidth = fetchDecodeWidth;
         Processor.numALUs = numALUs;
         Processor.numLoadStoreUnits = numLoadStoreUnits;
@@ -153,7 +161,9 @@ public class Processor {
         
         fetchStage.step(program);
         
-        printState();
+        if (printStatus) {
+            printState();
+        }
         
         // Copy instructions from fetch to decode if needed
         fetchStage.finishStep(decodeStage);

@@ -17,6 +17,7 @@ public class Simulator {
     protected static int numALUs = 3;
     protected static int numLoadStoreUnits = 2;
     protected static int numBranchUnits = 2;
+    protected static boolean printStatus = true;
     protected static String filename;
     
     public static void main(String[] args) {
@@ -42,6 +43,12 @@ public class Simulator {
         if (arg.equals("--step")) {
             System.out.println("Enabling stepping");
             stepping = true;
+            return;
+        }
+        
+        if (arg.equals("--no-status")) {
+            System.out.println("Disabling status output");
+            printStatus = false;
             return;
         }
         
@@ -82,6 +89,7 @@ public class Simulator {
         System.out.println("Run as:");
         System.out.println("\tjava com.fitzgerald.simulator.processor.Simulator ASMFILE args");
         System.out.println("\n\t--step\tOptional argument enabling stepping of cycles");
+        System.out.println("\n\t--no-status\tDisable status output at the end of each step");
         System.out.println("\n\t--no-branch-table\tOptional argument disabling the branch result table when predicting\n");
         System.out.println("\n\t--fd-width=NUM\tOptional argument setting fetch/decode width, 3 by default");
         System.out.println("\n\t--num-alus=NUM\tOptional argument setting number of ALUs, 3 by default");
@@ -99,7 +107,7 @@ public class Simulator {
         
         try {
             program = parser.parseProgram(filename);
-            processor = new Processor(program, branchTable, fetchDecodeWidth,
+            processor = new Processor(program, printStatus, branchTable, fetchDecodeWidth,
                     numALUs, numLoadStoreUnits, numBranchUnits);
         } catch (Exception e) {
             e.printStackTrace();
