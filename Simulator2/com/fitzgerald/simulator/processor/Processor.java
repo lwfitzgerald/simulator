@@ -443,9 +443,9 @@ public class Processor {
         System.out.println("-----------\n");
         printRegisters();
         printFetchAndDecode();
-        printExecutionUnits();
         printReservationStations();
         printROB();
+        printExecutionUnits();
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
     }
     
@@ -535,6 +535,8 @@ public class Processor {
         System.out.println("Reorder Buffer:");
         
         System.out.println(reorderBuffer);
+        
+        System.out.println();
     }
     
 }

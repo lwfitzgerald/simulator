@@ -1,5 +1,9 @@
 package com.fitzgerald.simulator.processor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Simulator {
     
     /**
@@ -33,6 +37,12 @@ public class Simulator {
         if (arg.equals("--help") || arg.equals("-h")) {
             printHelp();
             System.exit(0);
+        }
+        
+        if (arg.equals("--step")) {
+            System.out.println("Enabling stepping");
+            stepping = true;
+            return;
         }
         
         if (arg.equals("--no-branch-table")) {
@@ -71,6 +81,7 @@ public class Simulator {
     protected static void printHelp() {
         System.out.println("Run as:");
         System.out.println("\tjava com.fitzgerald.simulator.processor.Simulator ASMFILE args");
+        System.out.println("\n\t--step\tOptional argument enabling stepping of cycles");
         System.out.println("\n\t--no-branch-table\tOptional argument disabling the branch result table when predicting\n");
         System.out.println("\n\t--fd-width=NUM\tOptional argument setting fetch/decode width, 3 by default");
         System.out.println("\n\t--num-alus=NUM\tOptional argument setting number of ALUs, 3 by default");
@@ -98,6 +109,13 @@ public class Simulator {
         
         if (!stepping) {
             while (processor.step()) {}
+        } else {
+            InputStreamReader isReader = new InputStreamReader(System.in);
+            BufferedReader reader = new BufferedReader(isReader);
+            
+            try {
+                while (reader.readLine() != null && processor.step()) {}
+            } catch (IOException e) {}
         }
     }
     

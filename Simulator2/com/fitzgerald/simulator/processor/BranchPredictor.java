@@ -1,6 +1,7 @@
 package com.fitzgerald.simulator.processor;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class BranchPredictor {
@@ -85,6 +86,12 @@ public class BranchPredictor {
             }
             
             previous.add(taken);
+        } else {
+            Queue<Boolean> previous = new LinkedList<Boolean>();
+            
+            previous.add(taken);
+            
+            previousBranches.put(address, previous);
         }
     }
     
