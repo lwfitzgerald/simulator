@@ -1,10 +1,11 @@
 package com.fitzgerald.simulator.processor;
 
 import java.util.HashMap;
+import java.util.Queue;
 
 public class BranchPredictor {
     
-    protected HashMap<Integer, Boolean> previousBranches = new HashMap<Integer, Boolean>();
+    protected HashMap<Integer, Queue<Boolean>> previousBranches = new HashMap<Integer, Queue<Boolean>>();
     
     protected boolean useBranchTable;
     
@@ -22,7 +23,28 @@ public class BranchPredictor {
         Boolean takeBranch;
         
         if (useBranchTable) {
-            if ((takeBranch = previousBranches.get(address)) == null) {
+            Queue<Boolean> previousDirections = previousBranches.get(address);
+            
+            if (previousDirections != null) {
+                int numTaken = 0;
+                int numNotTaken = 0;
+                
+                for (boolean taken : previousDirections) {
+                    if (taken) {
+                        numTaken++;
+                    } else {
+                        numNotTaken++;
+                    }
+                }
+                
+                if (numTaken > numNotTaken) {
+                    takeBranch = true;
+                } else if (numTaken < numNotTaken) {
+                    takeBranch = false;
+                } else {
+                    takeBranch = predictUnknown(address, targetAddress);
+                }
+            } else {
                 takeBranch = predictUnknown(address, targetAddress);
             }
         } else {
@@ -55,7 +77,15 @@ public class BranchPredictor {
      * @param taken True if taken
      */
     public void setTakenDirection(int address, boolean taken) {
-        previousBranches.put(address, taken);
+        if (previousBranches.containsKey(address)) {
+            Queue<Boolean> previous = previousBranches.get(address);
+            
+            if (previous.size() == 3) {
+                previous.poll();
+            }
+            
+            previous.add(taken);
+        }
     }
     
 }
