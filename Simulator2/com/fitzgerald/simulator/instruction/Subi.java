@@ -30,4 +30,11 @@ public class Subi extends Sub {
         initialSetupImm(registerFile, scoreboard, robEntry, reservationStation);
     }
 
+    @Override
+    public String toString() {
+        return "SUBI r" + operand1 + 
+               ", r" + operand2 + 
+               ", " + operand3;
+    }
+    
 }
