@@ -6,6 +6,7 @@ import java.util.Queue;
 import com.fitzgerald.simulator.executionstage.ALU;
 import com.fitzgerald.simulator.executionstage.BranchUnit;
 import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
+import com.fitzgerald.simulator.executionstage.VectorUnit;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 import com.fitzgerald.simulator.processor.Processor;
 import com.fitzgerald.simulator.processor.ReservationStation;
@@ -24,6 +25,7 @@ public class ExecuteStage extends PipelineStage {
         ALU[] alus = processor.getALUs();
         LoadStoreUnit[] lsUnits = processor.getLoadStoreUnits();
         BranchUnit[] branchUnits = processor.getBranchUnits();
+        VectorUnit[] vectorUnits = processor.getVectorUnits();
         
         ReservationStation rs;
         
@@ -53,6 +55,16 @@ public class ExecuteStage extends PipelineStage {
         for (int i=0; i < Processor.numBranchUnits; i++) {
             if ((rs = processor.getReadyReservationStation(InstructionType.BRANCH, branchRSs)) != null) {
                 branchRSs.add(rs);
+            } else {
+                break;
+            }
+        }
+        
+        Queue<ReservationStation> vectorRSs = new LinkedList<ReservationStation>();
+        
+        for (int i=0; i < Processor.numVectorUnits; i++) {
+            if ((rs = processor.getReadyReservationStation(InstructionType.VECTOR, vectorRSs)) != null) {
+                vectorRSs.add(rs);
             } else {
                 break;
             }
@@ -124,6 +136,31 @@ public class ExecuteStage extends PipelineStage {
                 }
             } else {
                 branchUnit.continueExecuting();
+            }
+        }
+        
+        for (VectorUnit vectorUnit : vectorUnits) {
+            if (vectorUnit.isIdle()) {
+                // Idle so dispatch new instruction from reservation station
+                
+                // Get ready instruction
+                rs = vectorRSs.poll();
+                
+                if (rs != null) {
+                    // Dispatch to Vector unit
+                    vectorUnit.startExecuting(rs.getInstruction(),
+                            rs.getSourceData1(), rs.getSourceData2(),
+                            rs.getVectorSrcData3(), rs.getVectorSrcData4(),
+                            rs.getDestination(), rs.getRobEntry());
+                    
+                    // Increment executed counter
+                    processor.incrementExecutedCount();
+                    
+                    // Clear reservation station
+                    rs.flush();
+                }
+            } else {
+                vectorUnit.continueExecuting();
             }
         }
     }

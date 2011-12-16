@@ -12,7 +12,7 @@ public abstract class Instruction implements Serializable {
     /**
      * Enum representing type of instruction
      */
-    public enum InstructionType { ALU, BRANCH, LOADSTORE };
+    public enum InstructionType { ALU, BRANCH, LOADSTORE, VECTOR };
     
     /**
      * Serialising ID
@@ -84,7 +84,7 @@ public abstract class Instruction implements Serializable {
     protected void initialFetchSource2Reg(RegisterFile registerFile,
             Scoreboard scoreboard, ReservationStation reservationStation, int registerNum) {
         
-        // Attempt to fetch source data 1
+        // Attempt to fetch source data 2
         if (reservationStation.getSourceData2() == null
                 && scoreboard.isAvailable(registerNum)) {
             
@@ -185,6 +185,8 @@ public abstract class Instruction implements Serializable {
             return InstructionType.LOADSTORE;
         } else if (this instanceof BranchInstruction) {
             return InstructionType.BRANCH;
+        } else if (this instanceof VectorInstruction) {
+            return InstructionType.VECTOR;
         }
         
         return null;

@@ -1,6 +1,6 @@
 package com.fitzgerald.simulator.instruction;
 
-public class XOR extends LogicalInstruction {
+public class Xor extends LogicalInstruction {
 
     /**
      * Serialisation ID

@@ -5,6 +5,7 @@ import java.util.Queue;
 import com.fitzgerald.simulator.executionstage.ALU;
 import com.fitzgerald.simulator.executionstage.BranchUnit;
 import com.fitzgerald.simulator.executionstage.LoadStoreUnit;
+import com.fitzgerald.simulator.executionstage.VectorUnit;
 import com.fitzgerald.simulator.instruction.Instruction.InstructionType;
 import com.fitzgerald.simulator.pipeline.DecodeStage;
 import com.fitzgerald.simulator.pipeline.ExecuteStage;
@@ -43,6 +44,7 @@ public class Processor {
     public static int numALUs;
     public static int numLoadStoreUnits;
     public static int numBranchUnits;
+    public static int numVectorUnits;
 
     protected Program program;
     protected RegisterFile registerFile;
@@ -66,6 +68,7 @@ public class Processor {
     protected ALU[] alus;
     protected LoadStoreUnit[] lsUnits;
     protected BranchUnit[] branchUnits;
+    protected VectorUnit[] vectorUnits;
     
     /*
      * Counters
@@ -103,16 +106,18 @@ public class Processor {
      * @param numALUs Number of ALUs
      * @param numLoadStoreUnits Number of Load/Store units
      * @param numBranchUnits Number of Branch units
+     * @param numVectorUnits Number of Vector units
      */
     public Processor(Program program, boolean printStatus, boolean branchTable,
             int fetchDecodeWidth, int numALUs, int numLoadStoreUnits,
-            int numBranchUnits) {
+            int numBranchUnits, int numVectorUnits) {
         
         this.printStatus = printStatus;
         Processor.fetchDecodeWidth = fetchDecodeWidth;
         Processor.numALUs = numALUs;
         Processor.numLoadStoreUnits = numLoadStoreUnits;
         Processor.numBranchUnits = numBranchUnits;
+        Processor.numVectorUnits = numVectorUnits;
         
         this.program = program;
         this.registerFile = new RegisterFile();
@@ -234,6 +239,11 @@ public class Processor {
                         return rs;
                     }
                     
+                    // Special behaviour for vector instructions
+                    if (rs.isVectorReadyForDispatch()) {
+                        return rs;
+                    }
+                    
                     // Special behaviour for load stores
                     if (rs.isLoadStoreReady(reorderBuffer)) {
                         return rs;
@@ -266,6 +276,12 @@ public class Processor {
         for (int i=0; i < numBranchUnits; i++) {
             branchUnits[i] = new BranchUnit(this);
         }
+        
+        vectorUnits = new VectorUnit[numVectorUnits];
+        
+        for (int i=0; i < numVectorUnits; i++) {
+            vectorUnits[i] = new VectorUnit(this);
+        }
     }
     
     /**
@@ -297,6 +313,10 @@ public class Processor {
         
         for (BranchUnit branchUnit : branchUnits) {
             branchUnit.flush();
+        }
+        
+        for (VectorUnit vectorUnit : vectorUnits) {
+            vectorUnit.flush();
         }
     }
     
@@ -451,6 +471,14 @@ public class Processor {
      */
     public BranchUnit[] getBranchUnits() {
         return branchUnits;
+    }
+    
+    /**
+     * Get a reference to the Vector units
+     * @return Reference to vector units
+     */
+    public VectorUnit[] getVectorUnits() {
+        return vectorUnits;
     }
     
     /**

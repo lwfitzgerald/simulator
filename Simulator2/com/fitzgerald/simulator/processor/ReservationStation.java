@@ -9,9 +9,13 @@ public class ReservationStation {
     
     protected boolean srcData1Ready = false;
     protected boolean srcData2Ready = false;
+    protected boolean vectorSrcData3Ready = false;
+    protected boolean vectorSrcData4Ready = false;
     
     protected Integer srcData1 = null;
     protected Integer srcData2 = null;
+    protected Integer vectorSrcData3 = null;
+    protected Integer vectorSrcData4 = null;
     protected Integer dest = null;
     
     protected Instruction instruction = null;
@@ -66,6 +70,16 @@ public class ReservationStation {
      */
     public boolean isReadyForDispatch() {
         return srcData1Ready && srcData2Ready;
+    }
+    
+    /**
+     * Returns whether the vector instruction in this
+     * reservation station is ready for dispatch to the
+     * vector execution unit
+     * @return True if vector instruction is ready
+     */
+    public boolean isVectorReadyForDispatch() {
+        return isReadyForDispatch() && vectorSrcData3Ready && vectorSrcData4Ready;
     }
     
     /**
@@ -232,6 +246,48 @@ public class ReservationStation {
     }
     
     /**
+     * @param vectorSrcData3Ready the vectorSrcData3Ready to set
+     */
+    public void setVectorSrcData3Ready() {
+        this.vectorSrcData3Ready = true;
+    }
+
+    /**
+     * @return the vectorSrcData3
+     */
+    public Integer getVectorSrcData3() {
+        return vectorSrcData3;
+    }
+    
+    /**
+     * @param vectorSrcData3 the vectorSrcData3 to set
+     */
+    public void setVectorSrcData3(Integer vectorSrcData3) {
+        this.vectorSrcData3 = vectorSrcData3;
+    }
+    
+    /**
+     * @param vectorSrcData4Ready the vectorSrcData4Ready to set
+     */
+    public void setVectorSrcData4Ready() {
+        this.vectorSrcData4Ready = true;
+    }
+
+    /**
+     * @return the vectorSrcData4
+     */
+    public Integer getVectorSrcData4() {
+        return vectorSrcData4;
+    }
+    
+    /**
+     * @param vectorSrcData4 the vectorSrcData4 to set
+     */
+    public void setVectorSrcData4(Integer vectorSrcData4) {
+        this.vectorSrcData4 = vectorSrcData4;
+    }
+
+    /**
      * Get destination
      * @return Destination or null if N/A
      */
@@ -251,7 +307,14 @@ public class ReservationStation {
         if (instruction != null) {
             String src1String = srcData1Ready ? "S1READY" : "S1NOTREADY";
             String src2String = srcData2Ready ? "S2READY" : "S2NOTREADY";
-            return "[[" + instruction + "]," + src1String + "," + src2String + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
+            
+            if (instruction.getType() != InstructionType.VECTOR) {
+                return "[[" + instruction + "]," + src1String + "," + src2String + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
+            } else {
+                String src3String = vectorSrcData3Ready ? "S3READY" : "S3NOTREADY";
+                String src4String = vectorSrcData4Ready ? "S4READY" : "S4NOTREADY";
+                return "[[" + instruction + "]," + src1String + "," + src2String + "," + src3String + "," + src4String + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
+            }
         } else {
             return "[EMPTY]";
         }

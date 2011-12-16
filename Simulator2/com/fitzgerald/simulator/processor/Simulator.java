@@ -17,6 +17,7 @@ public class Simulator {
     protected static int numALUs = 3;
     protected static int numLoadStoreUnits = 2;
     protected static int numBranchUnits = 2;
+    protected static int numVectorUnits = 1;
     protected static boolean printStatus = true;
     protected static String filename;
     
@@ -82,6 +83,12 @@ public class Simulator {
             return;
         }
         
+        if (arg.matches("--num-vector-units=\\d")) {
+            numVectorUnits = Integer.valueOf(arg.substring(19));
+            System.out.println("Setting number of Vector units to " + numVectorUnits);
+            return;
+        }
+        
         filename = arg;
     }
     
@@ -108,7 +115,7 @@ public class Simulator {
         try {
             program = parser.parseProgram(filename);
             processor = new Processor(program, printStatus, branchTable, fetchDecodeWidth,
-                    numALUs, numLoadStoreUnits, numBranchUnits);
+                    numALUs, numLoadStoreUnits, numBranchUnits, numVectorUnits);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Could not load supplied program file");
