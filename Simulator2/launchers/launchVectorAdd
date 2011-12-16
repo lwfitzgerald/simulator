@@ -1,0 +1,9 @@
+#!/bin/sh
+cd ..
+
+echo "Launching vector addition example"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/vectorAdd.asm --no-status
+
+cd launchers

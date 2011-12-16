@@ -1,0 +1,9 @@
+#!/bin/sh
+cd ..
+
+echo "Launching Indian Power"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/indianPower.asm --no-status
+
+cd launchers

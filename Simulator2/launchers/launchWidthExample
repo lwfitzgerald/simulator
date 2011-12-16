@@ -1,0 +1,15 @@
+#!/bin/sh
+cd ..
+
+# First execute with fd width 2
+echo "First running with fd width 2"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=2
+
+echo "\nNow running with fd width 3 (chosen width)"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=3
+
+cd launchers
