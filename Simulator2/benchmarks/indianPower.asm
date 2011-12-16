@@ -1,4 +1,4 @@
-        # Calculate x^y
+        # Calculate x^y using the indian power algorithm
         
         LDR r0, 2 # x
         LDR r1, 10 # y
