@@ -1,12 +1,12 @@
 #!/bin/sh
 cd ..
 
-echo "First running without the use of the vector instructions"
+echo -e "First running without the use of the vector instructions"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/vectorUnitBenefit2.asm --no-status
 
-echo "\nNow running with the use of the vector instructions"
+echo -e "\nNow running with the use of the vector instructions"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/vectorUnitBenefit1.asm --no-status

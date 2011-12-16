@@ -1,7 +1,7 @@
 #!/bin/sh
 cd ..
 
-echo "Launching Fibonacci"
+echo -e "Launching Fibonacci"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/fibonacci.asm --no-status

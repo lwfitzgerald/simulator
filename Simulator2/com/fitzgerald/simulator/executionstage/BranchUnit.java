@@ -18,6 +18,18 @@ public class BranchUnit extends ExecutionUnit {
     protected void performOperation() {
         BranchInstruction branchInstruction = (BranchInstruction) instruction;
         
+        if (ticksRemaining == 0) {
+            ticksRemaining = BranchInstruction.NUM_CYCLES_REQUIRED;
+            return;
+        }
+        
+        ticksRemaining--;
+        
+        if (ticksRemaining != 0) {
+            // More cycles required, return
+            return;
+        }
+        
         if (branchInstruction.isUnconditional()) {
             // Unconditional so don't modify speculation state
             finishedExecuting();

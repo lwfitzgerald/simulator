@@ -1,15 +1,25 @@
 #!/bin/sh
 cd ..
 
-# First execute with fd width 2
-echo "First running with fd width 2"
+# First execute with fd width 3
+echo -e "First running with fd width 3 and 3 alus"
 read temp
 
-java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=2
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=3 --num-alus=3
 
-echo "\nNow running with fd width 3 (chosen width)"
+echo -e "\nNext run with fd width 4 and 3 alus"
 read temp
 
-java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=3
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=4 --num-alus=3
+
+echo -e "\nNow running with fd width 3 and 4 alus"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=3 --num-alus=4
+
+echo -e "\nNow running with fd width 4 and 4 alus"
+read temp
+
+java com.fitzgerald.simulator.processor.Simulator benchmarks/widthExample.asm --no-status --fd-width=4 --num-alus=4
 
 cd launchers

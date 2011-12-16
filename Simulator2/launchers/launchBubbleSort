@@ -1,7 +1,7 @@
 #!/bin/sh
 cd ..
 
-echo "Launching bubble sort"
+echo -e "Launching bubble sort"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/bubbleSort.asm --no-status

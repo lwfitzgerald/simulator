@@ -2,12 +2,12 @@
 cd ..
 
 # First execute with no branch table
-echo "First running with no dynamic prediction"
+echo -e "First running with no dynamic prediction"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/branchTableBenefit.asm --no-status --no-branch-table
 
-echo "\nNow running with dynamic prediction enabled"
+echo -e "\nNow running with dynamic prediction enabled"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/branchTableBenefit.asm --no-status

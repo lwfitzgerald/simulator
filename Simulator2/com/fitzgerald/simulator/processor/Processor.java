@@ -235,19 +235,26 @@ public class Processor {
                         }
                     }
                     
-                    if (instructionType != InstructionType.LOADSTORE) {
-                        return rs;
-                    }
-                    
                     // Special behaviour for vector instructions
-                    if (rs.isVectorReadyForDispatch()) {
-                        return rs;
+                    if (instructionType == InstructionType.VECTOR) {
+                        if (rs.isVectorReadyForDispatch()) {
+                            return rs;
+                        } else {
+                            continue;
+                        }
                     }
                     
                     // Special behaviour for load stores
-                    if (rs.isLoadStoreReady(reorderBuffer)) {
-                        return rs;
+                    if (instructionType == InstructionType.LOADSTORE) {
+                        if (rs.isLoadStoreReady(reorderBuffer)) {
+                            return rs;
+                        } else {
+                            continue;
+                        }
                     }
+                    
+                    // Not Vector or LS
+                    return rs;
                 }
             }
         }

@@ -1,7 +1,7 @@
 #!/bin/sh
 cd ..
 
-echo "Launching Speculation failure example"
+echo -e "Launching Speculation failure example"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/speculationFail.asm --step

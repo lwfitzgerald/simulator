@@ -1,7 +1,7 @@
 #!/bin/sh
 cd ..
 
-echo "Launching ROB and renaming example"
+echo -e "Launching ROB and renaming example"
 read temp
 
 java com.fitzgerald.simulator.processor.Simulator benchmarks/robAndRenaming.asm --step

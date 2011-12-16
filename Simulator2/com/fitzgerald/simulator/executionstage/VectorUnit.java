@@ -28,21 +28,16 @@ public class VectorUnit extends ExecutionUnit {
     protected void performOperation() {
         VectorInstruction vInstruction = (VectorInstruction) instruction;
         
-        if (ticksRemaining > 1) {
-            // More cycles required, decrement and return
-            ticksRemaining--;
+        if (ticksRemaining == 0) {
+            ticksRemaining = vInstruction.getVectorCyclesRequired();
             return;
         }
         
-        if (ticksRemaining == 0) {
-            if ((ticksRemaining = vInstruction.getVectorCyclesRequired()) != 1) {
-                // More cycles required, decrement and return
-                ticksRemaining--;
-                return;
-            }
-            
-            // Complete so mark as so!
-            ticksRemaining = 0;
+        ticksRemaining--;
+        
+        if (ticksRemaining != 0) {
+            // More cycles required, return
+            return;
         }
         
         // Get result

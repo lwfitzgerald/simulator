@@ -12,6 +12,8 @@ public abstract class BranchInstruction extends Instruction {
      */
     private static final long serialVersionUID = 1686053093849707573L;
     
+    public static final int NUM_CYCLES_REQUIRED = 1;
+    
     /**
      * Called by the branch unit
      * Checks whether the branch should be taken

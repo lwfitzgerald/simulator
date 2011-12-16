@@ -31,21 +31,16 @@ public class LoadStoreUnit extends ExecutionUnit {
     protected void performOperation() {
         LoadStoreInstruction lsInstruction = (LoadStoreInstruction) instruction;
         
-        if (ticksRemaining > 1) {
-            // More cycles required, decrement and return
-            ticksRemaining--;
+        if (ticksRemaining == 0) {
+            ticksRemaining = LoadStoreInstruction.NUM_CYCLES_REQUIRED;
             return;
         }
         
-        if (ticksRemaining == 0) {
-            if ((ticksRemaining = LoadStoreInstruction.NUM_CYCLES_REQUIRED) != 1) {
-                // More cycles required, decrement and return
-                ticksRemaining--;
-                return;
-            }
-            
-            // Complete so mark as so!
-            ticksRemaining = 0;
+        ticksRemaining--;
+        
+        if (ticksRemaining != 0) {
+            // More cycles required, return
+            return;
         }
         
         // Get result

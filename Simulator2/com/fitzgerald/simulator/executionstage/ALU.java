@@ -17,21 +17,16 @@ public class ALU extends ExecutionUnit {
     protected void performOperation() {
         ALUInstruction aluInstruction = (ALUInstruction) instruction;
         
-        if (ticksRemaining > 1) {
-            // More cycles required, decrement and return
-            ticksRemaining--;
+        if (ticksRemaining == 0) {
+            ticksRemaining = aluInstruction.getALUCyclesRequired();
             return;
         }
         
-        if (ticksRemaining == 0) {
-            if ((ticksRemaining = aluInstruction.getALUCyclesRequired()) != 1) {
-                // More cycles required, decrement and return
-                ticksRemaining--;
-                return;
-            }
-            
-            // Complete so mark as so!
-            ticksRemaining = 0;
+        ticksRemaining--;
+        
+        if (ticksRemaining != 0) {
+            // More cycles required, return
+            return;
         }
         
         // Calculate result
