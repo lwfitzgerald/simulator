@@ -1,12 +1,13 @@
-# This program demonstrates maximum throughput of the
-# processor with default parameters
+# This program demonstrates maximum throughput as well
+# as resolution of RAW, WAR and WAW dependencies using
+# renaming and the reorder buffer
 
-        LD r7, r7, 0 # Two loads to same address
-        LD r8, r8, 0 # Allowed to both execute
-        LDR r0, 1 # ALU op
+        LD r7, r10, 0 # Two loads to same address
+        LD r8, r11, 0 # Allowed to both execute
+        LDR r8, 1 # WAW dependency with previous LDR r0
 
-        # 3x ALU ops + WAW dependency
-        LDR r0, 5 # WAW dependency with previous LDR r0
+        # 3x ALU ops
+        LDR r0, 5
         LDR r1, 2
         ADDI r2, r2, 3
 
