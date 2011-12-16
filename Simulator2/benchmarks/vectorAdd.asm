@@ -1,3 +1,6 @@
+# Fills two vectors and then adds them together
+# Run with --no-status to see output
+
         # Fill array A 1-10
         LDR r0, 0 # Mem counter
         LDR r1, 10 # Loop counter

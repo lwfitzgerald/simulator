@@ -1,4 +1,5 @@
-        # Calculate x^y using the indian power algorithm
+# Calculate x^y using the indian power algorithm
+# run with --no-status to see output
         
         LDR r0, 2 # x
         PRINT r0
