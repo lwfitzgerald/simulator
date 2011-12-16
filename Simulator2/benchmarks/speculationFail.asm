@@ -1,3 +1,7 @@
+# This program is used to show how a single level
+# of speculation can offer a poor performance
+# improvement for consecutive branches
+
         # Fetched cycle 1
         LDR r0, 10 # Loop counter
         LDR r1, 0 # 0 comparator

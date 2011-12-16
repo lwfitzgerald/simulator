@@ -1,4 +1,5 @@
 # This program implements bubble sort
+# Run with --no-status to see final result printed
 
             # Initially set up the array to be sorted
             LDR r10, 0 # Address to store in

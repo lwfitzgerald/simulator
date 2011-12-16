@@ -6,7 +6,8 @@ To execute the simulator run:
 
     java com.fitzgerald.simulator.processor.Simulator benchmarks/benchmark.asm
 
-where benchmark.asm is the filename of a benchmark in the benchmarks directory
+where benchmark.asm is the filename of a benchmark in the benchmarks directory.
+All benchmarks have a brief comment at the top explaining their purpose.
 
 The simulator also takes a range of arguments, run as:
 
@@ -27,3 +28,5 @@ The simulator also takes a range of arguments, run as:
     --num-branch-units=NUM  Optional argument setting number of Branch units, 2 by default
 
     --help  Show this message
+
+The launchers directory contains shell scripts to run programs in a particular way for the presentation
