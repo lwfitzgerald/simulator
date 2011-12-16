@@ -327,23 +327,16 @@ public class ROBEntry {
                             continue;
                         }
                     } else {
-                        /*
-                         * Only forward to instruction which
-                         * aren't already executing/finished
-                         */
-                        if (entry.state == EntryState.ISSUED) {
-                            // Update reservation station for the entry!
-                            entry.instruction.forwardResult(result, destRegister,
-                                    entry.reservationStation);
-                            
-                            if (entry.destRegister == this.destRegister) {
-                                /*
-                                 * We've reached the next write to the register
-                                 * so cannot forward to any more instructions
-                                 */
-                                entry.reservationStation.setDestinationReady();
-                                
-                                return;
+                        if (entry.destRegister == this.destRegister) {
+                            if (entry.state == EntryState.ISSUED) {
+                                entry.instruction.forwardResult(result, destRegister,
+                                        entry.reservationStation);
+                            }
+                            return;
+                        } else {
+                            if (entry.state == EntryState.ISSUED) {
+                                entry.instruction.forwardResult(result, destRegister,
+                                        entry.reservationStation);
                             }
                         }
                     }

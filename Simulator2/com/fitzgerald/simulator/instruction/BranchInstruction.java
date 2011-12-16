@@ -105,9 +105,6 @@ public abstract class BranchInstruction extends Instruction {
         if (reservationStation.getDestination() == null) {
             // Store in reservation station
             reservationStation.setDestination(branchAddr);
-            
-            // Set as ready
-            reservationStation.setDestinationReady();
         }
     }
     

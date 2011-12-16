@@ -32,7 +32,6 @@ public class Stc extends LoadStoreInstruction {
         initialSetSource2Imm(scoreboard, reservationStation);
         
         reservationStation.setDestination(operand2);
-        reservationStation.setDestinationReady();
     }
 
     @Override

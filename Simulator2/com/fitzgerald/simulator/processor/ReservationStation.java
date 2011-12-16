@@ -9,7 +9,6 @@ public class ReservationStation {
     
     protected boolean srcData1Ready = false;
     protected boolean srcData2Ready = false;
-    protected boolean destReady = false;
     
     protected Integer srcData1 = null;
     protected Integer srcData2 = null;
@@ -66,7 +65,7 @@ public class ReservationStation {
      * @return True if instruction is ready for dispatch
      */
     public boolean isReadyForDispatch() {
-        return srcData1Ready && srcData2Ready && destReady;
+        return srcData1Ready && srcData2Ready;
     }
     
     /**
@@ -165,7 +164,6 @@ public class ReservationStation {
         this.instruction = null;
         this.srcData1Ready = false;
         this.srcData2Ready = false;
-        this.destReady = false;
         this.srcData1 = null;
         this.srcData2 = null;
         this.dest = null;
@@ -249,19 +247,11 @@ public class ReservationStation {
         this.dest = value;
     }
     
-    /**
-     * Set destination as ready
-     */
-    public void setDestinationReady() {
-        this.destReady = true;
-    }
-    
     public String toString() {
         if (instruction != null) {
             String src1String = srcData1Ready ? "S1READY" : "S1NOTREADY";
             String src2String = srcData2Ready ? "S2READY" : "S2NOTREADY";
-            String destString = destReady ? "DSTREADY" : "DSTNOTREADY";
-            return "[[" + instruction + "]," + src1String + "," + src2String + "," + destString + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
+            return "[[" + instruction + "]," + src1String + "," + src2String + "," + (robEntry.isSpeculative() ? "SP" : "NONSP") + "]";
         } else {
             return "[EMPTY]";
         }

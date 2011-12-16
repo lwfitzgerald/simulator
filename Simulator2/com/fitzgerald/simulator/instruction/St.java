@@ -32,7 +32,6 @@ public class St extends LoadStoreInstruction {
         initialFetchSource2Reg(registerFile, scoreboard, reservationStation, operand2);
         
         reservationStation.setDestination(operand3);
-        reservationStation.setDestinationReady();
     }
     
     @Override

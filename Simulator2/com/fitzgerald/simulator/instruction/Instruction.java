@@ -141,9 +141,6 @@ public abstract class Instruction implements Serializable {
         if (scoreboard.isAvailable(operand1)) {
             // Claim in scoreboard
             scoreboard.setAvailablity(operand1, false);
-            
-            // Set as ready
-            reservationStation.setDestinationReady();
         }
     }
     

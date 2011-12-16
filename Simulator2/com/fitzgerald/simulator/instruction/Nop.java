@@ -30,7 +30,6 @@ public class Nop extends ALUInstruction {
         
         reservationStation.setSourceData1Ready();
         reservationStation.setSourceData2Ready();
-        reservationStation.setDestinationReady();
     }
 
     @Override

@@ -29,7 +29,6 @@ public class Print extends ALUInstruction {
         
         initialFetchSource1Reg(registerFile, scoreboard, reservationStation, operand1);
         reservationStation.setSourceData2Ready();
-        reservationStation.setDestinationReady();
     }
     
     @Override
