@@ -23,6 +23,7 @@ LoopB:  ST r3, r0, 0
 VectorL:LD r5, r3, 0 # Load A[i]
         LD r6, r4, 0 # Load B[i]
         MUL r7, r5, r6 # A[i] * B[i]
+        PRINT r7
         ST r7, r0, 0 # C[i] = A[i] + B[i]
         ADDI r0, r0, 4 # C mem counter += 4
         ADDI r3, r3, 4 # A mem counter += 4

@@ -1,7 +1,9 @@
         # Calculate x^y using the indian power algorithm
         
         LDR r0, 2 # x
+        PRINT r0
         LDR r1, 10 # y
+        PRINT r1
         LDR r2, 1 # result
         LDR r3, 0 # 0 comparator
         LDR r4, 1 # 1 for ANDing
@@ -20,4 +22,4 @@ Odd:    MUL r2, r0, r2 # result = x * result
         SUBI r1, r1, 1 # y--
         BNE r1, r3, While # Branch if y != 0
 
-End:    NOP
+End:    PRINT r2
