@@ -72,6 +72,7 @@ public class Processor {
      */
     protected int cycleCount = 0;
     protected int executedCount = 0;
+    protected int correctDirectionCount = 0;
     protected int incorrectDirectionCount = 0;
     
     /*
@@ -374,7 +375,15 @@ public class Processor {
     
     /**
      * Increment the counter for the number
-     * of incorrect branch directions
+     * of correct branch predictions
+     */
+    public void incrementCorrectDirectionCount() {
+        correctDirectionCount++;
+    }
+    
+    /**
+     * Increment the counter for the number
+     * of incorrect branch predictions
      */
     public void incrementIncorrectDirectionCount() {
         incorrectDirectionCount++;
@@ -464,6 +473,7 @@ public class Processor {
         System.out.println("--------");
         System.out.println("Cycles: " + cycleCount);
         System.out.println("Executed instructions: " + executedCount);
+        System.out.println("Branches correctly predicted: " + correctDirectionCount);
         System.out.println("Branches incorrectly predicted: " + incorrectDirectionCount);
     }
     

@@ -258,6 +258,9 @@ public class ROBEntry {
                 if (result == 1) {
                     // Correct
                     
+                    // Increment correct prediction count
+                    processor.incrementCorrectDirectionCount();
+                    
                     // Approve all speculative instructions
                     processor.approveSpeculative();
                 } else {
